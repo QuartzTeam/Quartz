@@ -1,0 +1,61 @@
+Koren/UI/Generator/GenerateUI.cs
+  s_7b03489e9832b6::t_e0ddf8a19318bb 251-254
+Koren/Resource/Export/Lang/ko-KR.json
+  s_7b03489e9832b6::t_1ba50e879d70ba 328-334
+  s_7b03489e9832b6::t_a5a72d23a815f7 28
+  s_7b03489e9832b6::t_fc364b4f926592 93-95
+Koren/Resource/Export/Lang/en-US.json
+  s_7b03489e9832b6::t_27829e147f5528 328-334
+  s_7b03489e9832b6::t_8480524bd2e6e0 28
+  s_7b03489e9832b6::t_e26dd33a22e650 93-95
+Koren/Features/Status/GameStats.cs
+  s_7b03489e9832b6::t_48bf6a617da433 144-179
+Koren/UI/Factory/Page/PageVisuals.cs
+  s_7b03489e9832b6::t_e29370b37e1a54 263-265
+Koren/Features/Panels/PanelsSettings.cs
+  s_7b03489e9832b6::t_f9171d586dcca1 14-17,21-35,46-48
+Koren/UI/Objects/Impl/UISlider.cs
+  s_7b03489e9832b6::t_8b25300b270e11 95-100,113-116
+  s_7b03489e9832b6::t_584739b4327fd2 136-138
+Koren/Features/Panels/PanelsOverlay.cs
+  s_7b03489e9832b6::t_54ac3a7dd7038d 488-520
+  s_7b03489e9832b6::t_77bc524f2cac32 412-426
+Koren/UI/Factory/Page/PageOverlay.cs
+  s_7b03489e9832b6::t_23fb185e6f6fc2 876,922-931,933-944,946-963,965-970,974-990,992-1002,1004-1012,1014-1028,1030-1040,1042-1049
+  s_7b03489e9832b6::t_d023103cd6917b 971-973
+  s_7b03489e9832b6::t_6118dcc95d322d 945
+  s_7b03489e9832b6::t_9f2fc3b41ff927 844,854
+  s_7b03489e9832b6::t_c319073594bb5b 364,366,458-465,467,478,481,485
+  s_7b03489e9832b6::t_7d5c6959c9f28a 881-921,932
+  s_7b03489e9832b6::t_10c047c9ffaa0e 1003
+  s_7b03489e9832b6::t_210336d03673b0 1013
+  s_7b03489e9832b6::t_6670c75bdd2a68 360-363,365,367-444,447,474-477,479-480,482-484
+  s_7b03489e9832b6::t_b40d254c02f014 1029
+  s_7b03489e9832b6::t_901d2de798403a 787,790
+  s_7b03489e9832b6::t_ea736609bb13ba 1041
+  s_7b03489e9832b6::t_c77c2a60794098 964
+  s_7b03489e9832b6::t_4dddddc7c21a49 991
+Koren/Features/Panels/StatColor.cs
+  s_7b03489e9832b6::t_dfa26589b635e4 1-73,76-193
+  s_7b03489e9832b6::t_4b1ef296bf715a 74-75
+Koren/UI/Transition/PageSwicher.cs
+  s_7b03489e9832b6::t_ec185f4710b196 39,50,52,54-59,61-67
+Koren/UI/Objects/Impl/UIInput.cs
+  s_7b03489e9832b6::t_ea6ad66d84d448 285-286
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "80a5dcc276fc1b88d03ab5120ebd25977f578480",
+  "prompts": {},
+  "sessions": {
+    "s_7b03489e9832b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d37c3eb-0a4b-4322-98e2-2cb35d5546f4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
