@@ -1,0 +1,94 @@
+Koren/UI/UICore.cs
+  s_623ab683fe176c::t_71ab0003880de0 685-719
+  s_623ab683fe176c::t_a10acab5d08391 391
+  s_623ab683fe176c::t_5fccfafea84a17 903-907
+Koren/Features/Combo/ComboOverlay.cs
+  s_623ab683fe176c::t_e7a92365009d14 191-195
+  s_623ab683fe176c::t_c1ce364fb3c136 246
+  s_623ab683fe176c::t_836805d9f43f1e 349-352
+  s_623ab683fe176c::t_3da14586ccfe65 367
+Koren/Features/KeyViewer/KeyViewerOverlay.cs
+  s_623ab683fe176c::t_63f378c6ae6cfa 468-480
+  s_623ab683fe176c::t_3ce0bce21a9509 1587-1589,1594
+  s_623ab683fe176c::t_d68950713065f3 105-108
+  s_623ab683fe176c::t_617af0a500e2ed 1579-1582,1584-1585
+Koren/Features/SongTitle/SongTitleOverlay.cs
+  s_623ab683fe176c::t_485a89298981f8 1-84,99-270
+  s_6ae8332206b639::t_025987fc8570ad 85-98
+Koren/Features/SongTitle/SongTitleSettings.cs
+  s_623ab683fe176c::t_531afc02fcaeb9 1-89
+Koren/IO/CoreSettings.cs
+  s_623ab683fe176c::t_e1ec6098b521c5 106-107
+  s_623ab683fe176c::t_7dd3e268be7adb 103
+  s_623ab683fe176c::t_da696cd5fc44a9 129
+  s_623ab683fe176c::t_870e6bcb9576e9 132-133
+  s_623ab683fe176c::t_57eb1ad5dfd78a 34-39
+  s_623ab683fe176c::t_cedb0c0be2a6bf 24-28
+Koren/Resource/FontManager.cs
+  s_623ab683fe176c::t_2dbf0b220230ec 26-29,33-43
+Koren/Features/Editor/EditorGameplayDifficultyPatches.cs
+  s_652460aa82d913::t_84ce89afd9ccbe 1,3-15,17-27,29-32
+  s_652460aa82d913::t_55cf7481b3a72e 2,16,28
+Koren/Core/KorenRuntime.cs
+  s_623ab683fe176c::t_ea2e6bba877c7b 220
+  s_623ab683fe176c::t_54c8b63f4469d8 18
+  s_623ab683fe176c::t_99d3854fa0a46d 239
+Koren/Features/Editor/EditorDifficultySelectorPatches.cs
+  s_652460aa82d913::t_9df593e34a206f 1-73
+Koren/Features/UiHider/UiHider.cs
+  s_652460aa82d913::t_140959aa39c2a1 95-97,259-278
+Koren/UI/Factory/Page/PageOverlay.cs
+  s_623ab683fe176c::t_4381a6c50a547a 111
+  s_623ab683fe176c::t_3dc2db54349d6e 182-188
+Koren/Features/Status/GameStats.cs
+  s_6ae8332206b639::t_f74b5741e84d4c 120-124,129
+  s_623ab683fe176c::t_6e18e649c5fdc0 125-128,130-159
+Koren/UI/Factory/Page/PageSettings.cs
+  s_623ab683fe176c::t_916df8fa88217f 748-798
+  s_623ab683fe176c::t_3a5285fc10c474 39-40
+  s_623ab683fe176c::t_5e2a5b82ad4130 737
+Koren/UI/Factory/Page/PageSongTitle.cs
+  s_623ab683fe176c::t_d9020f9eb9440b 1-113
+Koren/Features/GameOverlayFont/GameOverlayFont.cs
+  s_623ab683fe176c::t_c8fc7836fa807f 446-454,457
+  s_623ab683fe176c::t_c589f80a8226cb 246-264
+  s_623ab683fe176c::t_9af25d76cca719 60
+  s_623ab683fe176c::t_190be9468d9e2f 120,211
+  s_623ab683fe176c::t_e8c26966fe5d4c 342
+  s_623ab683fe176c::t_e3987d1a35a529 380-396,398
+  s_623ab683fe176c::t_156837f9dba855 417-421
+Koren/UI/Utility/ResizeHandle.cs
+  s_623ab683fe176c::t_a08470b8d37eac 59-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1a0d069b0ad0ae0370137d5b47a0479f7f4b20f6",
+  "prompts": {},
+  "sessions": {
+    "s_623ab683fe176c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c9dd4071-475f-454a-b719-e427c4f1652e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_652460aa82d913": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ec5e1-fdee-7743-89d4-c019e33b2844",
+        "model": "gpt-5.5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_6ae8332206b639": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "566bcaf1-5daa-4760-8186-eb2ac163dae7",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
