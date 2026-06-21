@@ -1,0 +1,20 @@
+Koren/Features/Nostalgia/NostalgiaPatches.Play.cs
+  s_aa7fbfd666db54::t_54dcb9467ecc2b 219-220,222,225
+  s_aa7fbfd666db54::t_ae5b595929a17c 200-207,218,221,223-224,226-250
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "532c936c9a9e7505909cc77f9f836ac7cf332ad9",
+  "prompts": {},
+  "sessions": {
+    "s_aa7fbfd666db54": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f97f531e-3ca1-4cc8-8473-fa32ec59b96e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
