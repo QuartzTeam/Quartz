@@ -1,0 +1,19 @@
+agents/i18n.md
+  s_3eb916bdfe94de::t_f1574fd0e14d72 1-151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "c976fefd16cd8ae1eba9df0536f8f15b5d8ff5e9",
+  "prompts": {},
+  "sessions": {
+    "s_3eb916bdfe94de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "76289881-2d2d-419b-9795-62f02094f195",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
