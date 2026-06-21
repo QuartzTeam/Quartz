@@ -1,0 +1,25 @@
+README.md
+  h_6eeb8441a8a159 22
+  s_f5cd5ba9eb06ac::t_5f69cf474dd6b5 1-2,5-10,12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "df78023f41f009d9d8459b27a479fa44bc8c2d61",
+  "prompts": {},
+  "humans": {
+    "h_6eeb8441a8a159": {
+      "author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_f5cd5ba9eb06ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4f394ae-8c02-470d-a25c-3195f6d9a54e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
