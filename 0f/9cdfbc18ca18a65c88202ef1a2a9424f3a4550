@@ -1,0 +1,23 @@
+Quartz/Features/Optimizer/Optimizer.cs
+  s_047ee69fcba669::t_42bc148d248e74 146-152
+Quartz/Features/GameOverlayFont/GameOverlayFont.cs
+  s_047ee69fcba669::t_e71ec626a0da64 56-74
+Quartz/Core/QuartzRuntime.cs
+  s_047ee69fcba669::t_d5936a0c32f2d3 313-314
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.2",
+  "base_commit_sha": "0f9cdfbc18ca18a65c88202ef1a2a9424f3a4550",
+  "prompts": {},
+  "sessions": {
+    "s_047ee69fcba669": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f484365d-43c1-4cec-bc95-d303892e36e0",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
