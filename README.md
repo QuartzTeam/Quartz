@@ -48,3 +48,11 @@
 ![Main Menu](readme/mainmenu.png)
 ![Credits](readme/credits.png)
 ![In-Game](readme/ingame.png)
+
+<a href="https://www.star-history.com/?repos=kkorenn%2FQuartz&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=kkorenn/Quartz&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=kkorenn/Quartz&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=kkorenn/Quartz&type=date&legend=top-left" />
+ </picture>
+</a>
