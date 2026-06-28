@@ -59,9 +59,21 @@ public static partial class UiHider {
         ShowOrHideElements();
     }
 
+    // Tracks whether the feature was active on the previous tick so the disabled
+    // path can early-out. A feature that is off (or a disabled mod) only needs ONE
+    // restore pass, not an unconditional per-frame reconcile (the reflective member
+    // reads in ShowOrHideElements + native HUD writes ran every frame even with
+    // nothing to hide). Seeded true so the first inactive frame still restores once.
+    private static bool lastActive = true;
+
     private static void TickInternal() {
         if(!MainCore.IsModEnabled) {
-            Restore();
+            // Hide patches are gated on IsModEnabled, so a disabled mod never
+            // re-hides anything — one restore on the active->disabled edge suffices.
+            if(lastActive) {
+                Restore();
+                lastActive = false;
+            }
             return;
         }
 
@@ -69,7 +81,15 @@ public static partial class UiHider {
             ToggleRecordingMode();
         }
 
+        bool active = IsFeatureActive();
+        if(!active && !lastActive) {
+            // Already reconciled to "everything shown"; the game cannot have
+            // re-hidden anything while the feature is off, so there is nothing to do.
+            return;
+        }
+
         ShowOrHideElements();
+        lastActive = active;
     }
 
     private static void ShowOrHideElements(bool forceDisabled = false) {
