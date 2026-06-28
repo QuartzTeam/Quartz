@@ -26,9 +26,14 @@ public static partial class GenerateUI {
         string id,
         bool showAlpha = true
     ) {
-        // Body sizing depends on whether the alpha row is present, so the rounded
-        // background always wraps the last channel slider (no overflow).
-        float lastSliderBottom = showAlpha ? 228f : 190f;
+        // The R/G/B/A channel sliders stack full-width below the SV/hue band as
+        // standard 50px slider rows. Body sizing follows the last one so the
+        // rounded background always wraps it (no overflow).
+        const float sliderTop = 212f;
+        const float sliderStep = 58f;
+        const float sliderHeight = 50f;
+        int sliderCount = showAlpha ? 4 : 3;
+        float lastSliderBottom = sliderTop + (sliderCount - 1) * sliderStep + sliderHeight;
         float bodyHeight = Mathf.Max(200f, lastSliderBottom) + 14f;
         float expandedHeight = 62f + bodyHeight;
 
@@ -86,7 +91,9 @@ public static partial class GenerateUI {
         Image bodyBg = body.AddComponent<Image>();
         bodyBg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
         bodyBg.type = Image.Type.Sliced;
-        bodyBg.color = UIColors.ObjectBG;
+        // Slightly darker than ObjectBG so the channel sliders (standard
+        // ObjectBG bars) sit on it with the same contrast they get on a page.
+        bodyBg.color = Color.Lerp(UIColors.ObjectBG, Color.black, 0.18f);
 
         // Fades the body in/out during the expand animation.
         CanvasGroup bodyCg = body.AddComponent<CanvasGroup>();
@@ -183,108 +190,57 @@ public static partial class GenerateUI {
         hexInput.textViewport = hexRect;
         hexInput.textComponent = hexText;
 
+        // Forward-declared so each channel slider's callbacks can reach the
+        // picker; it's assigned just below, before any callback can fire.
+        UIColorPicker picker = null;
+
         UIColorPicker.ChannelSlider CreateChannelSlider(string channelLabel, int channel, float top) {
-            GameObject row = new(channelLabel + "Slider");
-            row.transform.SetParent(body.transform, false);
-
-            RectTransform rowRect = row.AddComponent<RectTransform>();
-            rowRect.anchorMin = new(0f, 1f);
-            rowRect.anchorMax = new(1f, 1f);
-            rowRect.pivot = new(0f, 1f);
-            rowRect.offsetMin = new(264f, -top - 28f);
-            rowRect.offsetMax = new(-18f, -top);
-
-            GameObject labelObj = new("Label");
-            labelObj.transform.SetParent(row.transform, false);
-            RectTransform labelRect = labelObj.AddComponent<RectTransform>();
-            labelRect.anchorMin = new(0f, 0f);
-            labelRect.anchorMax = new(0f, 1f);
-            labelRect.pivot = new(0f, 0.5f);
-            labelRect.offsetMin = Vector2.zero;
-            labelRect.offsetMax = new(24f, 0f);
-            TextMeshProUGUI labelText = labelObj.AddComponent<TextMeshProUGUI>();
-            labelText.font = FontManager.Current;
-            labelText.fontSize = 18f;
-            labelText.color = Color.white;
-            labelText.alignment = TextAlignmentOptions.Left;
-            labelText.verticalAlignment = VerticalAlignmentOptions.Middle;
-            labelText.characterSpacing = -3f;
-            labelText.text = channelLabel;
-
-            GameObject track = new("Track");
-            track.transform.SetParent(row.transform, false);
-            RectTransform trackRect = track.AddComponent<RectTransform>();
-            trackRect.anchorMin = new(0f, 0.5f);
-            trackRect.anchorMax = new(1f, 0.5f);
-            trackRect.pivot = new(0.5f, 0.5f);
-            trackRect.offsetMin = new(28f, -7f);
-            trackRect.offsetMax = new(-60f, 7f);
-            Image trackBg = track.AddComponent<Image>();
-            trackBg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
-            trackBg.type = Image.Type.Sliced;
-            trackBg.color = Color.Lerp(UIColors.ObjectBG, Color.white, 0.08f);
-
-            GameObject trough = new("Trough");
-            trough.transform.SetParent(track.transform, false);
-            RectTransform troughRect = trough.AddComponent<RectTransform>();
-            troughRect.anchorMin = Vector2.zero;
-            troughRect.anchorMax = Vector2.one;
-            troughRect.pivot = new(0.5f, 0.5f);
-            troughRect.offsetMin = new(3f, 3f);
-            troughRect.offsetMax = new(-3f, -3f);
-            Image troughImg = trough.AddComponent<Image>();
-            troughImg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
-            troughImg.type = Image.Type.Sliced;
-            troughImg.color = new Color(0f, 0f, 0f, 0.34f);
-            troughImg.raycastTarget = false;
-
-            GameObject fill = new("Fill");
-            fill.transform.SetParent(track.transform, false);
-            RectTransform fillRect = fill.AddComponent<RectTransform>();
-            fillRect.anchorMin = Vector2.zero;
-            fillRect.anchorMax = new(0f, 1f);
-            fillRect.pivot = new(0f, 0.5f);
-            fillRect.offsetMin = new(3f, 3f);
-            fillRect.offsetMax = new(-3f, -3f);
-            Image fillImg = fill.AddComponent<Image>();
-            fillImg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
-            fillImg.type = Image.Type.Sliced;
-            fillImg.color = channel switch {
-                0 => new Color(1f, 0.22f, 0.22f, 1f),
-                1 => new Color(0.35f, 1f, 0.45f, 1f),
-                2 => new Color(0.35f, 0.55f, 1f, 1f),
-                _ => new Color(1f, 1f, 1f, 0.55f),
+            float component = channel switch {
+                0 => value.r,
+                1 => value.g,
+                2 => value.b,
+                _ => value.a,
+            };
+            float componentDefault = channel switch {
+                0 => defaultValue.r,
+                1 => defaultValue.g,
+                2 => defaultValue.b,
+                _ => defaultValue.a,
             };
 
-            GameObject valueObj = new("Value");
-            valueObj.transform.SetParent(row.transform, false);
-            RectTransform valueRect2 = valueObj.AddComponent<RectTransform>();
-            valueRect2.anchorMin = new(1f, 0f);
-            valueRect2.anchorMax = new(1f, 1f);
-            valueRect2.pivot = new(1f, 0.5f);
-            valueRect2.offsetMin = new(-54f, 0f);
-            valueRect2.offsetMax = Vector2.zero;
-            TextMeshProUGUI valueLabel = valueObj.AddComponent<TextMeshProUGUI>();
-            valueLabel.font = FontManager.Current;
-            valueLabel.fontSize = 18f;
-            valueLabel.color = Color.white;
-            valueLabel.alignment = TextAlignmentOptions.Right;
-            valueLabel.verticalAlignment = VerticalAlignmentOptions.Middle;
-            valueLabel.characterSpacing = -3f;
+            UISlider slider = Slider(
+                body.transform,
+                componentDefault, 0f, 1f, component,
+                null,
+                v => picker?.SetChannelValue(channel, v),
+                _ => picker?.Commit(),
+                channelLabel,
+                id + "_ch" + channel
+            );
+            slider.Format = "0.00";
 
-            return new UIColorPicker.ChannelSlider(channel, trackRect, fillRect, valueLabel);
+            // Pin as a full-width 50px row below the SV/hue band. Override the
+            // bar's default -250 right reservation so it fills the picker body.
+            RectTransform sr = slider.Rect;
+            sr.anchorMin = new(0f, 1f);
+            sr.anchorMax = new(1f, 1f);
+            sr.pivot = new(0.5f, 1f);
+            sr.offsetMin = new(16f, -top - sliderHeight);
+            sr.offsetMax = new(-16f, -top);
+
+            return new UIColorPicker.ChannelSlider(channel, slider);
         }
 
-        UIColorPicker.ChannelSlider redSlider = CreateChannelSlider("R", 0, 86f);
-        UIColorPicker.ChannelSlider greenSlider = CreateChannelSlider("G", 1, 124f);
-        UIColorPicker.ChannelSlider blueSlider = CreateChannelSlider("B", 2, 162f);
-        UIColorPicker.ChannelSlider alphaSlider = showAlpha ? CreateChannelSlider("A", 3, 200f) : null;
+        UIColorPicker.ChannelSlider redSlider = CreateChannelSlider("R", 0, sliderTop);
+        UIColorPicker.ChannelSlider greenSlider = CreateChannelSlider("G", 1, sliderTop + sliderStep);
+        UIColorPicker.ChannelSlider blueSlider = CreateChannelSlider("B", 2, sliderTop + sliderStep * 2f);
+        UIColorPicker.ChannelSlider alphaSlider = showAlpha ? CreateChannelSlider("A", 3, sliderTop + sliderStep * 3f) : null;
 
         UIColorPicker.ChannelSlider[] sliders = showAlpha
             ? new[] { redSlider, greenSlider, blueSlider, alphaSlider }
             : new[] { redSlider, greenSlider, blueSlider };
 
-        var picker = new UIColorPicker(
+        picker = new UIColorPicker(
             id,
             rootRect,
             parent.GetComponent<LayoutElement>(),
@@ -349,35 +305,6 @@ public static partial class GenerateUI {
 
         AddPickerDrag(svRect, picker.SetFromSvPointer);
         AddPickerDrag(hueRect, picker.SetFromHuePointer);
-
-        void AddChannelDrag(UIColorPicker.ChannelSlider slider) {
-            EventTrigger trigger = slider.TrackRect.gameObject.AddComponent<EventTrigger>();
-
-            UnityUtils.AddEvent(EventTriggerType.PointerDown, e => {
-                PointerEventData p = e as PointerEventData;
-                if(p == null || p.button != InputButton.Left) return;
-                picker.SetFromChannelPointer(slider, p.position);
-            }, trigger);
-
-            UnityUtils.AddEvent(EventTriggerType.Drag, e => {
-                PointerEventData p = e as PointerEventData;
-                if(p == null || !UnityEngine.Input.GetMouseButton(0)) return;
-                picker.SetFromChannelPointer(slider, p.position);
-            }, trigger);
-
-            UnityUtils.AddEvent(EventTriggerType.PointerUp, e => {
-                PointerEventData p = e as PointerEventData;
-                if(p == null || p.button != InputButton.Left) return;
-                picker.Commit();
-            }, trigger);
-        }
-
-        AddChannelDrag(redSlider);
-        AddChannelDrag(greenSlider);
-        AddChannelDrag(blueSlider);
-        if(showAlpha) {
-            AddChannelDrag(alphaSlider);
-        }
 
         return picker;
     }

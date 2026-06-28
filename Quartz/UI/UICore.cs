@@ -401,7 +401,19 @@ public static class UICore {
         Panel.anchorMax = new(0.5f, 0.5f);
         Panel.pivot = new(0.5f, 0.5f);
         Panel.sizeDelta = LastPanelSize = LoadSavedPanelSize();
-        LastPanelPosition = Panel.position;
+        // anchoredPosition (centered = zero here), NOT .position. Every consumer of
+        // LastPanelPosition feeds it back as an anchoredPosition (Open()'s
+        // GTAnchorPos, Close() at L922, ResetScalePosition), so it must be captured
+        // as one. .position is the pivot's world/screen-pixel coord — and worse,
+        // it's read while the canvas is still SetActive(false) (L58), so its value
+        // is layout-state-dependent: ~zero on one machine (panel opens centered,
+        // looks fine) but ~(screenW/2, screenH/2) on another, which then animates
+        // the panel into the top-right corner, mostly off-screen ("pressed Alt+K,
+        // nothing happens"). It does not self-correct — Close() saves the corner
+        // back — and position isn't persisted, so every launch re-rolls the bug.
+        // That machine-dependence is why it hit a Windows user but not local macOS.
+        // anchoredPosition is deterministically zero here: panel opens centered.
+        LastPanelPosition = Panel.anchoredPosition;
 
         panel.AddComponent<RectMask2D>();
         panelCanvasGroup = panel.AddComponent<CanvasGroup>();

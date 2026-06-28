@@ -30,17 +30,18 @@ public sealed class UIColorPicker : UIObject {
     public Image PreviewImage { get; }
     public Image ChangedImage { get; }
 
+    // Each R/G/B/A channel is now a standard UISlider (same look, fill, drag and
+    // click-to-type value editor as every other slider in Quartz), instead of
+    // the old hand-rolled track/fill bars. The picker drives them when the
+    // colour changes elsewhere (SV square, hue, hex); they drive the colour back
+    // through the slider's OnChanged.
     public sealed class ChannelSlider {
         public readonly int Channel;
-        public readonly RectTransform TrackRect;
-        public readonly RectTransform FillRect;
-        public readonly TextMeshProUGUI ValueText;
+        public readonly UISlider Slider;
 
-        public ChannelSlider(int channel, RectTransform trackRect, RectTransform fillRect, TextMeshProUGUI valueText) {
+        public ChannelSlider(int channel, UISlider slider) {
             Channel = channel;
-            TrackRect = trackRect;
-            FillRect = fillRect;
-            ValueText = valueText;
+            Slider = slider;
         }
     }
 
@@ -59,6 +60,7 @@ public sealed class UIColorPicker : UIObject {
     private readonly ChannelSlider[] channelSliders;
     private readonly float expandedHeight;
     private bool suppressHexInput;
+    private bool suppressChannelSync;
 
     private Texture2D svTexture;
     private Texture2D hueTexture;
@@ -236,21 +238,11 @@ public sealed class UIColorPicker : UIObject {
         SetFromHsv();
     }
 
-    public void SetFromChannelPointer(ChannelSlider slider, Vector2 screenPosition) {
-        if(slider == null || slider.TrackRect == null) {
-            return;
-        }
-
-        if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(slider.TrackRect, screenPosition, null, out Vector2 local)) {
-            return;
-        }
-
-        Rect rect = slider.TrackRect.rect;
-        float value = Mathf.Clamp01(Mathf.InverseLerp(rect.xMin, rect.xMax, local.x));
-        SetChannel(slider.Channel, value);
-    }
-
-    private void SetChannel(int channel, float component) {
+    // Driven by a channel slider's OnChanged (live, during drag/edit). Applies
+    // the one component and runs the normal Set path; the guard stops Set's
+    // UpdateVisual from pushing the value straight back into the slider that's
+    // currently being dragged (which would fight the drag).
+    public void SetChannelValue(int channel, float component) {
         Color next = Value;
         component = Mathf.Clamp01(component);
 
@@ -259,7 +251,9 @@ public sealed class UIColorPicker : UIObject {
         else if(channel == 2) next.b = component;
         else next.a = component;
 
+        suppressChannelSync = true;
         Set(next);
+        suppressChannelSync = false;
     }
 
     private void SetFromHsv() {
@@ -338,9 +332,15 @@ public sealed class UIColorPicker : UIObject {
     }
 
     private void UpdateChannelSliders() {
+        // Skipped while a channel slider is the source of the change, so its own
+        // UpdateVisual doesn't snap the value back mid-drag.
+        if(suppressChannelSync) {
+            return;
+        }
+
         for(int i = 0; i < channelSliders.Length; i++) {
             ChannelSlider slider = channelSliders[i];
-            if(slider == null) continue;
+            if(slider?.Slider == null) continue;
 
             float value = slider.Channel == 0
                 ? Value.r
@@ -350,15 +350,8 @@ public sealed class UIColorPicker : UIObject {
                         ? Value.b
                         : Value.a;
 
-            if(slider.FillRect != null) {
-                Vector2 max = slider.FillRect.anchorMax;
-                max.x = value;
-                slider.FillRect.anchorMax = max;
-            }
-
-            if(slider.ValueText != null) {
-                slider.ValueText.text = value.ToString("0.00");
-            }
+            // No invoke, no animation — just reflect the externally-set colour.
+            slider.Slider.SetOnlyValue(value, true);
         }
     }
 
