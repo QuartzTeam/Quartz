@@ -1,0 +1,22 @@
+Quartz/Features/KeyViewer/KeyViewerOverlay.cs
+  s_ef63b2402053c1::t_84e1f4c4debeb7 82-83,375-376,1522-1531,1534-1538,1541-1543,2249-2340,2541-2544,2554,2573
+  s_ef63b2402053c1::t_207397f705deae 2574
+Quartz/Features/KeyLimiter/KeyLimiter.cs
+  s_ef63b2402053c1::t_b85648722dad1e 268,295-297,300-302,304
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "2b0adf9edd7267c12b7c2e1fd347c6a48adbae6b",
+  "prompts": {},
+  "sessions": {
+    "s_ef63b2402053c1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f156c-1953-7190-be4d-a9efc7dd5e9d",
+        "model": "gpt-5.5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
