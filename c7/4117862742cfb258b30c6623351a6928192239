@@ -1,0 +1,20 @@
+Quartz/Resource/FontManager.cs
+  s_5992c0bbbb7e53::t_a25e19fcde66e3 2
+  s_5992c0bbbb7e53::t_0e00b8d29d7457 71-133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c74117862742cfb258b30c6623351a6928192239",
+  "prompts": {},
+  "sessions": {
+    "s_5992c0bbbb7e53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "972e1ef7-c407-4f40-9523-f88576ed67d4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
