@@ -43,7 +43,7 @@ public static class ChatterBlocker {
     // injected, even with chatter + limiter off, so the synthetic keypress can be
     // dropped from the hit count instead of wrecking judgement.
     private static bool HasAnyFilter() =>
-        IsActive() || KeyLimiter.KeyLimiter.IsEnabled() || AutoDeafen.AutoDeafen.InjectBypassActive;
+        IsActive() || KeyLimiter.KeyLimiter.IsEnabled() || AutoDeafen.AutoDeafen.InjectGuardActive;
 
     private static long ThresholdMs() => Math.Max(0L, (long)Math.Round(Conf?.ThresholdMs ?? 0f));
 

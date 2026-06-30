@@ -27,7 +27,14 @@ internal static class Judgement {
 
     private static readonly int[] counts = new int[16];
 
-    internal static void Reset() => System.Array.Clear(counts, 0, counts.Length);
+    // TEMP DIAG (remove after debugging the overlay): throttle so each run logs
+    // only its first handful of hits, re-armed on every Reset.
+    private static int diagHits;
+
+    internal static void Reset() {
+        System.Array.Clear(counts, 0, counts.Length);
+        diagHits = 0;
+    }
 
     internal static int SlotCount(int slot) => slot switch {
         0 => Count(HitMargin.FailOverload),
@@ -50,15 +57,27 @@ internal static class Judgement {
     [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
     private static class AddHitPatch {
         private static void Postfix(HitMargin hit) {
-            if(!MainCore.IsModEnabled) return;
             int idx = (int)hit;
-            if(idx >= 0 && idx < counts.Length) counts[idx]++;
+            if(MainCore.IsModEnabled && idx >= 0 && idx < counts.Length) counts[idx]++;
+
+            // TEMP DIAG: logs every AddHit (even when disabled) for the first few
+            // hits of each run, plus the live XPerfect bridge readout.
+            if(diagHits < 8) {
+                diagHits++;
+                MainCore.Log.Msg(
+                    $"[JDIAG] AddHit hit={hit}({idx}) modEnabled={MainCore.IsModEnabled} " +
+                    $"perfect={counts[(int)HitMargin.Perfect]} auto={counts[(int)HitMargin.Auto]} " +
+                    $"miss={counts[(int)HitMargin.FailMiss]} overload={counts[(int)HitMargin.FailOverload]} " +
+                    $"| xActive={Interop.XPerfectBridge.Active} X={Interop.XPerfectBridge.XCount()} " +
+                    $"plus={Interop.XPerfectBridge.PlusCount()} minus={Interop.XPerfectBridge.MinusCount()}");
+            }
         }
     }
 
     [HarmonyPatch(typeof(scnGame), "Play")]
     private static class ResetOnRunStartPatch {
         private static void Postfix() {
+            MainCore.Log.Msg($"[JDIAG] Reset via scnGame.Play (modEnabled={MainCore.IsModEnabled})");
             if(MainCore.IsModEnabled) Reset();
         }
     }
@@ -71,6 +90,7 @@ internal static class Judgement {
     [HarmonyPatch(typeof(scrController), "Start")]
     private static class ResetOnControllerStartPatch {
         private static void Postfix(scrController __instance) {
+            MainCore.Log.Msg($"[JDIAG] scrController.Start (gameworld={__instance.gameworld}, modEnabled={MainCore.IsModEnabled})");
             if(MainCore.IsModEnabled && __instance.gameworld) Reset();
         }
     }
@@ -78,6 +98,7 @@ internal static class Judgement {
     [HarmonyPatch(typeof(scrController), "StartLoadingScene")]
     private static class ResetOnRunExitPatch {
         private static void Postfix() {
+            MainCore.Log.Msg($"[JDIAG] Reset via StartLoadingScene (modEnabled={MainCore.IsModEnabled})");
             if(MainCore.IsModEnabled) Reset();
         }
     }

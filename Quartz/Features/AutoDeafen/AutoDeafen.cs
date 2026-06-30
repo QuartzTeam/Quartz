@@ -160,34 +160,58 @@ public static class AutoDeafen {
     // The shortcut chord is injected system-wide so Discord's global keybind
     // sees it — but the synthetic presses also reach ADOFAI and would register
     // as gameplay hits, wrecking judgement mid-run (Shift and the base key are
-    // both real gameplay keys). NativeKeySender marks the whole chord for a
-    // short window; the game's key-count funnel (ChatterBlocker
-    // .CountValidKeysPressed) drops IsInjectedKey presses so they never count as
-    // hits, while the SkyHook hook honours InjectBypassActive to keep the
-    // keystrokes flowing out to Discord. Keys are stored normalized
-    // (NativeKeySender normalizes) so callers compare normalized.
+    // both real gameplay keys). NativeKeySender marks the whole chord on inject;
+    // the game's key-count funnel (ChatterBlocker.CountValidKeysPressed) drops
+    // IsInjectedKey presses so they never count as hits, while the SkyHook hook
+    // honours InjectBypassActive to keep the keystrokes flowing out to Discord.
+    // Keys are stored normalized (NativeKeySender normalizes) so callers compare
+    // normalized.
+    //
+    // Two windows, because the two jobs run on different timescales:
+    //   * InjectBypassActive (short) — only has to stay open long enough for
+    //     Discord's hook to receive the keystroke, so the SkyHook prefix lets it
+    //     through instead of the limiter swallowing it.
+    //   * InjectGuardActive (long) — keeps the count-drop alive. Synthetic input
+    //     reaches the game's input poll a few frames late, and a GC hitch right
+    //     at the deafen point can push that well past the bypass window. A single
+    //     150ms window let those late presses slip through as hits (the reported
+    //     "it clicks in ADOFAI"); the guard window is deliberately generous so the
+    //     press is dropped whenever the game finally polls it. The only downside
+    //     is that manually pressing the exact chord keys within the window right
+    //     after an auto-deafen is ignored — negligible for a modifier chord that
+    //     fires once per run.
     //
     // Touched only on the main thread (the deafen tick injects; the count funnel
-    // reads) so the set needs no lock; the window stamp is volatile because the
+    // reads) so the set needs no lock; the window stamps are volatile because the
     // SkyHook hook thread reads InjectBypassActive.
-    private const int InjectWindowMs = 150;
+    private const int InjectBypassWindowMs = 150;
+    private const int InjectGuardWindowMs = 400;
     private static volatile int injectBypassUntil;
+    private static volatile int injectGuardUntil;
     private static readonly HashSet<KeyCode> injectedKeys = [];
 
-    // True for InjectWindowMs after a chord is injected: the SkyHook hook must
-    // not suppress during this window or the limiter could eat the keystroke
+    // True for InjectBypassWindowMs after a chord is injected: the SkyHook hook
+    // must not suppress during this window or the limiter could eat the keystroke
     // before Discord sees it. Read from the hook thread, so kept lock-free.
     public static bool InjectBypassActive =>
         injectBypassUntil != 0 && Environment.TickCount - injectBypassUntil <= 0;
 
+    // True for the longer InjectGuardWindowMs: keeps ChatterBlocker's count
+    // prefix engaged and IsInjectedKey live so a synthetic press the game polls a
+    // few frames late is still dropped from the hit count.
+    public static bool InjectGuardActive =>
+        injectGuardUntil != 0 && Environment.TickCount - injectGuardUntil <= 0;
+
     // Whether key (already normalized) is part of the chord currently injected.
     public static bool IsInjectedKey(KeyCode key) =>
-        InjectBypassActive && injectedKeys.Contains(key);
+        InjectGuardActive && injectedKeys.Contains(key);
 
     internal static void MarkInject(IEnumerable<KeyCode> normalizedKeys) {
         injectedKeys.Clear();
         foreach(KeyCode k in normalizedKeys) injectedKeys.Add(k);
-        injectBypassUntil = Environment.TickCount + InjectWindowMs;
+        int now = Environment.TickCount;
+        injectBypassUntil = now + InjectBypassWindowMs;
+        injectGuardUntil = now + InjectGuardWindowMs;
     }
 
     // A run (re)started — allow deafening again and re-measure where it began.
