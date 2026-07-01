@@ -2,6 +2,7 @@ using Quartz.Core;
 using Quartz.IO;
 using MonsterLove.StateMachine;
 using SkyHook;
+using System.Runtime.InteropServices;
 using System.Threading;
 using UnityEngine;
 
@@ -334,9 +335,16 @@ public static class KeyLimiter {
     }
 
     public static bool HookKeyHeld(KeyCode key) {
+        if(key == KeyCode.None) return false;
+        // macOS: read the real physical state for the Unity-blind right modifiers,
+        // bypassing the SkyHook edge stream entirely (see MacModifierHeld). The
+        // sticky/expiring hook state below can't hold these — the native hook
+        // emits a spurious KeyReleased ~1s into a hold, dropping them mid-press.
+        bool? mac = MacModifierHeld(key);
+        if(mac.HasValue) return mac.Value;
         // Lock-free fast reject for the overwhelmingly common no-hook-keys-held
         // case (volatile read, no lock acquired per un-pressed key per frame).
-        if(!hookActive || key == KeyCode.None) return false;
+        if(!hookActive) return false;
         lock(hookHeldUntil) {
             // Sticky press (reliable-release platforms): held until the release.
             if(hookHeldKeys.Contains(key)) return true;
@@ -344,6 +352,55 @@ public static class KeyLimiter {
             // keeps the right sign across the ~49-day Environment.TickCount wrap.
             return hookHeldUntil.TryGetValue(key, out int until)
                 && unchecked(until - Environment.TickCount) > 0;
+        }
+    }
+
+    // ===== macOS physical key-state poll =====
+    //
+    // On macOS the SkyHook edge stream can't be trusted for RightAlt/RightControl:
+    // Unity's Input is blind to them, AND the native hook emits a spurious
+    // KeyReleased about a second into a sustained hold (a key-repeat-delay
+    // artifact), so no amount of edge bookkeeping keeps the box lit while the key
+    // is physically down. CGEventSourceKeyState reads the window server's current
+    // key state directly — no edges, no repeats — so it always reflects the true
+    // hold. Called on the main thread only (every HookKeyHeld caller runs there).
+    // Wrapped so a missing framework/symbol degrades to the hook state, never a
+    // crash. The DllImport is only ever INVOKED on macOS (MacModifierHeld gates on
+    // IsMacRuntime first), so the extern is inert on Windows/Linux.
+    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private static extern bool CGEventSourceKeyState(int stateID, ushort keyCode);
+
+    private const int MacHidStateID = 1; // kCGEventSourceStateHIDSystemState
+    private static bool macKeyStateUnavailable;
+    private static int isMacRuntime = -1; // -1 unknown, 0 no, 1 yes (main-thread cached)
+
+    private static bool IsMacRuntime() {
+        if(isMacRuntime < 0) {
+            isMacRuntime = Application.platform is RuntimePlatform.OSXPlayer or RuntimePlatform.OSXEditor ? 1 : 0;
+        }
+        return isMacRuntime == 1;
+    }
+
+    // macOS virtual keycode for a Unity-blind right modifier, or -1 for any other
+    // key — the fast exit, since this runs for every un-pressed viewer box/frame.
+    private static int MacModifierVK(KeyCode key) => key switch {
+        KeyCode.RightAlt => 0x3D,      // kVK_RightOption
+        KeyCode.RightControl => 0x3E,  // kVK_RightControl
+        _ => -1,
+    };
+
+    // Physical held state if key is a natively-pollable macOS modifier; null if it
+    // isn't one, we're not on macOS, or the native call is unavailable — the
+    // caller then falls back to the hook-fed state.
+    private static bool? MacModifierHeld(KeyCode key) {
+        int vk = MacModifierVK(key);
+        if(vk < 0 || macKeyStateUnavailable || !IsMacRuntime()) return null;
+        try {
+            return CGEventSourceKeyState(MacHidStateID, (ushort)vk);
+        } catch {
+            macKeyStateUnavailable = true; // framework/symbol missing — stop trying
+            return null;
         }
     }
 
