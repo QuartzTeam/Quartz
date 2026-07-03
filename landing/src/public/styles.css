@@ -56,7 +56,7 @@ a {
   width: 30px;
   height: 50px;
   margin: 0;
-  background: url("/assets/QuartzLogo.png") center / 50px 50px no-repeat;
+  background: url("assets/QuartzLogo.png") center / 50px 50px no-repeat;
 }
 .nav-links {
   display: flex;
@@ -117,7 +117,7 @@ main > section { scroll-margin-top: 120px; }
   width: 132px;
   height: 200px;
   margin: 0 auto 0px;
-  background: url("/assets/QuartzLogo.png") center / 200px 200px no-repeat;
+  background: url("assets/QuartzLogo.png") center / 200px 200px no-repeat;
 }
 h1,
 h2,
@@ -246,9 +246,9 @@ h1 {
 .mock-screen:hover::after { opacity: 1; }
 .mock-screen:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .mock-screen span { display: none; }
-.menu-screen { background-image: url("/assets/mainmenu.png"); }
-.hud-screen { background-image: url("/assets/ingame.png"); }
-.credits-screen { background-image: url("/assets/credits.png"); }
+.menu-screen { background-image: url("assets/mainmenu.png"); }
+.hud-screen { background-image: url("assets/ingame.png"); }
+.credits-screen { background-image: url("assets/credits.png"); }
 .shot-card figcaption {
   margin-top: 14px;
   color: var(--ink);

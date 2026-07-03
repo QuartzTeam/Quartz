@@ -2,9 +2,9 @@ const stepList = document.querySelector("#installSteps");
 const loaderTabs = document.querySelector(".loader-tabs");
 const loaderButtons = [...document.querySelectorAll("[data-loader]")];
 const screenshotSources = {
-  "menu-screen": "/assets/mainmenu.png",
-  "hud-screen": "/assets/ingame.png",
-  "credits-screen": "/assets/credits.png"
+  "menu-screen": "assets/mainmenu.png",
+  "hud-screen": "assets/ingame.png",
+  "credits-screen": "assets/credits.png"
 };
 let isInstallVisible = false;
 let hasQueuedStepReveal = false;
@@ -24,10 +24,62 @@ window.addEventListener("pageshow", () => {
   }
 });
 
-async function getInstallSteps(loader) {
-  const response = await fetch(`/api/install?loader=${encodeURIComponent(loader)}`);
-  if (!response.ok) throw new Error(`Install API returned ${response.status}`);
-  return response.json();
+const installSteps = {
+  melonloader: [
+    {
+      type: "note",
+      parts: [
+        { text: "If on Mac, there is an " },
+        { text: "auto installer", href: "https://github.com/sbrothers7/UMMInstall/releases/latest" },
+        { text: " for your convenience." }
+      ]
+    },
+    {
+      type: "step",
+      parts: [
+        { text: "Download " },
+        { text: "modlist.org app", href: "https://github.com/modlist-org/modlist_org_app/releases/latest" },
+        { text: " and " },
+        { text: "Quartz", href: "https://github.com/QuartzTeam/Quartz/releases/latest" },
+        { text: "." }
+      ]
+    },
+    { type: "step", text: "If not installed MelonLoader yet, install it using the modlist.org app." },
+    {
+      type: "note",
+      text: "If on Mac, In the modlist.org app, press \"Copy Native Launch Options\" in the \"Installed\" tab and paste it into your Steam launch arguments."
+    },
+    { type: "step", text: "Press \"Install Mod From File\" then select the zip (Quartz.zip)." },
+    { type: "step", text: "Done!" }
+  ],
+  unitymodmanager: [
+    { type: "step", marker: "0", text: "First make sure you have UnityModManager set up for ADoFaI." },
+    {
+      type: "step",
+      parts: [
+        { text: "Download " },
+        { text: "QuartzUmm.zip", code: true },
+        { text: " from " },
+        { text: "releases", href: "https://github.com/QuartzTeam/Quartz/releases/latest" },
+        { text: "." }
+      ]
+    },
+    {
+      type: "step",
+      parts: [
+        { text: "In the UMM installer, use \"Install mod\" and pick " },
+        { text: "QuartzUmm.zip", code: true },
+        { text: " - or just simply drag the " },
+        { text: "QuartzUmm.zip", code: true },
+        { text: " into the drag zip box" }
+      ]
+    },
+    { type: "step", text: "Done! Open the in-game menu with the mod's keybind (settings live there, not in the UMM panel)." }
+  ]
+};
+
+function getInstallSteps(loader) {
+  return installSteps[loader] || installSteps.melonloader;
 }
 
 function renderInline(target, step) {
@@ -64,7 +116,9 @@ function animateStepListHeight(previousHeight) {
   const newHeight = stepList.getBoundingClientRect().height;
   if (Math.abs(newHeight - previousHeight) < 1) return;
   if (stepHeightCleanup) stepHeightCleanup();
+  let failsafeTimer = 0;
   const finish = () => {
+    clearTimeout(failsafeTimer);
     stepList.style.height = "";
     stepList.style.overflow = "";
     stepList.style.transition = "";
@@ -82,6 +136,7 @@ function animateStepListHeight(previousHeight) {
   stepList.style.transition = "height 360ms cubic-bezier(0.22, 1, 0.36, 1)";
   stepList.style.height = `${newHeight}px`;
   stepList.addEventListener("transitionend", onEnd);
+  failsafeTimer = window.setTimeout(finish, 600);
 }
 
 function renderSteps(steps) {
@@ -170,15 +225,10 @@ function setActiveLoader(loader) {
   moveLoaderThumb(activeButton);
 }
 
-async function loadSteps(loader) {
+function loadSteps(loader) {
   setActiveLoader(loader);
   if (!hasPlayedStepReveal) stepList.classList.add("is-switching");
-  try {
-    const data = await getInstallSteps(loader);
-    renderSteps(data.steps);
-  } catch {
-    renderSteps(["Install details are unavailable right now. Try again in a moment."]);
-  }
+  renderSteps(getInstallSteps(loader));
 }
 
 function watchStepVisibility() {

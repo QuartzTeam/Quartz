@@ -16,72 +16,6 @@ const contentTypes = {
   ".ico": "image/x-icon"
 };
 
-const installSteps = {
-  melonloader: [
-    {
-      type: "note",
-      parts: [
-        { text: "If on Mac, there is an " },
-        { text: "auto installer", href: "https://github.com/sbrothers7/UMMInstall/releases/latest" },
-        { text: " for your convenience." }
-      ]
-    },
-    {
-      type: "step",
-      parts: [
-        { text: "Download " },
-        { text: "modlist.org app", href: "https://github.com/modlist-org/modlist_org_app/releases/latest" },
-        { text: " and " },
-        { text: "Quartz", href: "https://github.com/QuartzTeam/Quartz/releases/latest" },
-        { text: "." }
-      ]
-    },
-    { type: "step", text: "If not installed MelonLoader yet, install it using the modlist.org app." },
-    {
-      type: "note",
-      text: "If on Mac, In the modlist.org app, press \"Copy Native Launch Options\" in the \"Installed\" tab and paste it into your Steam launch arguments."
-    },
-    { type: "step", text: "Press \"Install Mod From File\" then select the zip (Quartz.zip)." },
-    { type: "step", text: "Done!" }
-  ],
-  unitymodmanager: [
-    { type: "step", marker: "0", text: "First make sure you have UnityModManager set up for ADoFaI." },
-    {
-      type: "step",
-      parts: [
-        { text: "Download " },
-        { text: "QuartzUmm.zip", code: true },
-        { text: " from " },
-        { text: "releases", href: "https://github.com/QuartzTeam/Quartz/releases/latest" },
-        { text: "." }
-      ]
-    },
-    {
-      type: "step",
-      parts: [
-        { text: "In the UMM installer, use \"Install mod\" and pick " },
-        { text: "QuartzUmm.zip", code: true },
-        { text: " - or just simply drag the " },
-        { text: "QuartzUmm.zip", code: true },
-        { text: " into the drag zip box" }
-      ]
-    },
-    { type: "step", text: "Done! Open the in-game menu with the mod's keybind (settings live there, not in the UMM panel)." }
-  ]
-};
-
-const pageMeta = {
-  product: "Quartz",
-  description: "An all-in-one mod for A Dance of Fire and Ice.",
-  loaders: ["melonloader", "unitymodmanager"],
-  status: ["Open Source", "MelonLoader & UMM", "Actively Maintained"],
-  links: {
-    github: "https://github.com/sbrothers7/Quartz",
-    discord: "#",
-    download: "https://github.com/sbrothers7/Quartz/releases"
-  }
-};
-
 function sendJson(res, statusCode, payload) {
   const body = JSON.stringify(payload);
   res.writeHead(statusCode, {
@@ -124,25 +58,6 @@ async function serveStatic(req, res, pathname) {
   }
 }
 
-function handleApi(req, res, url) {
-  if (url.pathname === "/api/meta") {
-    sendJson(res, 200, pageMeta);
-    return true;
-  }
-
-  if (url.pathname === "/api/install") {
-    const loader = String(url.searchParams.get("loader") || "melonloader").toLowerCase();
-    if (!Object.hasOwn(installSteps, loader)) {
-      sendJson(res, 400, { error: "Unsupported loader", validLoaders: Object.keys(installSteps) });
-      return true;
-    }
-    sendJson(res, 200, { loader, steps: installSteps[loader] });
-    return true;
-  }
-
-  return false;
-}
-
 function createServer() {
   return http.createServer(async (req, res) => {
     if (!req.url || !req.method) {
@@ -156,7 +71,6 @@ function createServer() {
     }
 
     const url = new URL(req.url, "http://localhost");
-    if (url.pathname.startsWith("/api/") && handleApi(req, res, url)) return;
     await serveStatic(req, res, url.pathname);
   });
 }
@@ -167,4 +81,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { createServer, installSteps, pageMeta, safeStaticPath };
+module.exports = { createServer, safeStaticPath };

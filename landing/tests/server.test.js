@@ -30,22 +30,11 @@ test("serves the landing page", async () => {
   assert.match(response.body, /The all-in-one mod/);
 });
 
-test("returns install steps for a valid loader", async () => {
-  const response = await request("/api/install?loader=unitymodmanager");
-  const body = JSON.parse(response.body);
+test("serves static assets with correct content type", async () => {
+  const response = await request("/app.js");
   assert.equal(response.status, 200);
-  assert.equal(body.loader, "unitymodmanager");
-  assert.equal(body.steps.length, 5);
-  assert.equal(body.steps[0].marker, "0");
-  assert.equal(body.steps[1].parts[1].text, "QuartzUmm.zip");
-  assert.equal(body.steps[4].type, "warning");
-});
-
-test("rejects unsupported loader input", async () => {
-  const response = await request("/api/install?loader=../../bad");
-  const body = JSON.parse(response.body);
-  assert.equal(response.status, 400);
-  assert.equal(body.error, "Unsupported loader");
+  assert.match(response.contentType, /text\/javascript/);
+  assert.match(response.body, /installSteps/);
 });
 
 test("blocks path traversal for static assets", () => {
