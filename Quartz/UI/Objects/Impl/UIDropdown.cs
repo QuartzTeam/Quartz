@@ -11,8 +11,6 @@ using Quartz.Tween;
 
 using GTweens.Builders;
 using GTweens.Easings;
-using GTweens.Extensions;
-using GTweenExtensions = GTweens.Extensions.GTweenExtensions;
 
 using TMPro;
 
@@ -183,17 +181,7 @@ public class UIDropDown<T> : UIObject {
                     .SetEasing(Easing.OutSine)
             ).Build();
         MainCore.TC.Play(triangleSeq);
-        changeSeq = GTweenSequenceBuilder.New()
-            .Append(GTweenExtensions.Tween(
-                () => ChangedImage.color.a,
-                x => {
-                    Color c = ChangedImage.color;
-                    c.a = x;
-                    ChangedImage.color = c;
-                },
-                isDefault ? 0f : 1f,
-                0.2f
-            ).SetEasing(Easing.OutSine)).Build();
+        changeSeq = ChangedImage.GTAlpha(isDefault ? 0f : 1f, 0.2f).SetEasing(Easing.OutSine);
         MainCore.TC.Play(changeSeq);
     }
 

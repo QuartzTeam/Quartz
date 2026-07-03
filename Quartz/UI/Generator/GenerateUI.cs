@@ -577,23 +577,30 @@ public static partial class GenerateUI {
         RectTransform parentRect = parent as RectTransform ?? parent.GetComponent<RectTransform>();
         LayoutElement parentLayout = parent.GetComponent<LayoutElement>();
 
+        // Parenting is final by the time a dropdown is built (widgets are
+        // parented at creation and never reparented), so resolve which
+        // ancestors actually drive a layout once, instead of GetComponent-
+        // walking the whole chain on every tick of the expand/collapse tween.
+        // Captured per instance, so the cache dies with the widget.
+        List<RectTransform> layoutChain = [];
+        for(Transform current = parent.parent; current != null; current = current.parent) {
+            if(
+                current is RectTransform chainRect &&
+                (
+                    current.GetComponent<LayoutGroup>() != null ||
+                    current.GetComponent<ContentSizeFitter>() != null
+                )
+            )
+                layoutChain.Add(chainRect);
+        }
+
         void RebuildParentLayouts() {
             if(rootRect != null) LayoutRebuilder.ForceRebuildLayoutImmediate(rootRect);
             if(parentRect != null) LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
 
-            Transform current = parent.parent;
-            while(current != null) {
-                RectTransform currentRect = current as RectTransform;
-                if(
-                    currentRect != null &&
-                    (
-                        current.GetComponent<LayoutGroup>() != null ||
-                        current.GetComponent<ContentSizeFitter>() != null
-                    )
-                )
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(currentRect);
-
-                current = current.parent;
+            for(int i = 0; i < layoutChain.Count; i++) {
+                RectTransform currentRect = layoutChain[i];
+                if(currentRect != null) LayoutRebuilder.ForceRebuildLayoutImmediate(currentRect);
             }
         }
 
@@ -776,12 +783,6 @@ public static partial class GenerateUI {
         return input;
     }
 
-    public enum BackGroundType {
-        Main,
-        Sub,
-        Full
-    }
-
     public static RectTransform BackGround() {
         GameObject obj = new("Bg");
         RectTransform rect = obj.AddComponent<RectTransform>();
@@ -833,40 +834,16 @@ public static partial class GenerateUI {
         Color baseColor = UIColors.ObjectActive;
         hoverImage.color = new Color(baseColor.r, baseColor.g, baseColor.b, 0f);
 
-        UnityUtils.AddEvent(EventTriggerType.PointerEnter, (e) => {
+        // Enter/exit are the same fade with a different target alpha; GTAlpha
+        // is the same current-alpha -> target tween the inline blocks built.
+        void FadeOutline(float target) {
             hoverSeq?.Kill();
-            hoverSeq = GTweenSequenceBuilder.New()
-                .Append(GTweenExtensions.Tween(
-                    () => hoverImage.color.a,
-                    x => {
-                        Color c = hoverImage.color;
-                        c.a = x;
-                        hoverImage.color = c;
-                    },
-                    1f,
-                    0.1f
-                ).SetEasing(Easing.OutSine))
-                .Build();
-
+            hoverSeq = hoverImage.GTAlpha(target, 0.1f).SetEasing(Easing.OutSine);
             MainCore.TC.Play(hoverSeq);
-        }, trigger);
+        }
 
-        UnityUtils.AddEvent(EventTriggerType.PointerExit, (e) => {
-            hoverSeq?.Kill();
-            hoverSeq = GTweenSequenceBuilder.New()
-                .Append(GTweenExtensions.Tween(
-                    () => hoverImage.color.a,
-                    x => {
-                        Color c = hoverImage.color;
-                        c.a = x;
-                        hoverImage.color = c;
-                    },
-                    0f,
-                    0.1f
-                ).SetEasing(Easing.OutSine))
-                .Build();
-            MainCore.TC.Play(hoverSeq);
-        }, trigger);
+        UnityUtils.AddEvent(EventTriggerType.PointerEnter, e => FadeOutline(1f), trigger);
+        UnityUtils.AddEvent(EventTriggerType.PointerExit, e => FadeOutline(0f), trigger);
     }
 
     public static TextMeshProUGUI AddText(Transform parent, bool noPad = false) => CreateText(parent, 24f, false, noPad);

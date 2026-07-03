@@ -95,19 +95,7 @@ public class UIToggle : UIObject {
             ).Build();
         MainCore.TC.Play(circleSeq);
 
-        changeSeq = GTweenSequenceBuilder.New()
-            .Append(
-                GTweenExtensions.Tween(
-                    () => ChangedImage.color.a,
-                    x => {
-                        Color c = ChangedImage.color;
-                        c.a = x;
-                        ChangedImage.color = c;
-                    },
-                    target,
-                    0.2f
-                ).SetEasing(Easing.OutSine)
-            ).Build();
+        changeSeq = ChangedImage.GTAlpha(target, 0.2f).SetEasing(Easing.OutSine);
         MainCore.TC.Play(changeSeq);
     }
 }

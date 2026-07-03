@@ -64,6 +64,8 @@ public sealed class UIColorPicker : UIObject {
 
     private Texture2D svTexture;
     private Texture2D hueTexture;
+    private Color32[] svPixels;
+    private float builtHue = float.NaN;
 
     private float hue;
     private float saturation;
@@ -347,6 +349,11 @@ public sealed class UIColorPicker : UIObject {
     }
 
     private void BuildSvTexture() {
+        // The SV square is a pure function of hue — skip the 128x128 repaint
+        // (and its GPU upload) when the hue hasn't moved, e.g. alpha-channel
+        // drags or hex edits that only change saturation/brightness.
+        if(Mathf.Approximately(builtHue, hue)) return;
+
         if(svTexture == null) {
             svTexture = new Texture2D(SvTextureSize, SvTextureSize, TextureFormat.RGBA32, false);
             svTexture.wrapMode = TextureWrapMode.Clamp;
@@ -354,14 +361,20 @@ public sealed class UIColorPicker : UIObject {
             if(svImage != null) svImage.texture = svTexture;
         }
 
+        svPixels ??= new Color32[SvTextureSize * SvTextureSize];
+
+        // SetPixels32 fills rows bottom-to-top — same order as SetPixel(x, y).
+        int i = 0;
         for(int y = 0; y < SvTextureSize; y++) {
             float v = y / (SvTextureSize - 1f);
             for(int x = 0; x < SvTextureSize; x++) {
                 float s = x / (SvTextureSize - 1f);
-                svTexture.SetPixel(x, y, Color.HSVToRGB(hue, s, v));
+                svPixels[i++] = Color.HSVToRGB(hue, s, v);
             }
         }
+        svTexture.SetPixels32(svPixels);
         svTexture.Apply(false);
+        builtHue = hue;
     }
 
     private static bool SameColor(Color a, Color b) =>

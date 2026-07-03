@@ -4,7 +4,9 @@ using GTweens.Tweens;
 using GTweens.Extensions;
 using GTweens.Easings;
 using GTweens.Builders;
+using GTweenExtensions = GTweens.Extensions.GTweenExtensions;
 using Quartz.Core;
+using Quartz.Tween;
 
 using TMPro;
 
@@ -100,17 +102,7 @@ public sealed class UIInput : UIObject {
             return;
         }
 
-        changeTween = GTweenExtensions.Tween(
-            () => ChangedImage.color.a,
-            x => {
-                Color c = ChangedImage.color;
-                c.a = x;
-                ChangedImage.color = c;
-            },
-            target,
-            0.2f
-        )
-        .SetEasing(Easing.OutSine);
+        changeTween = ChangedImage.GTAlpha(target, 0.2f).SetEasing(Easing.OutSine);
         MainCore.TC.Play(changeTween);
     }
 
@@ -141,16 +133,7 @@ public sealed class UIInput : UIObject {
 
             caretLooping = true;
             caretTween = GTweenSequenceBuilder.New()
-                .Append(GTweenExtensions.Tween(
-                    () => InputField.caretColor.a,
-                    x => {
-                        var c = UIColors.ObjectActive;
-                        c.a = x;
-                        InputField.caretColor = c;
-                    },
-                    1f,
-                    0.2f
-                ).SetEasing(Easing.OutSine))
+                .Append(CreateCaretFade(1f, 0.2f))
                 .AppendCallback(() => {
                     caretTween?.Kill();
                     caretTween = CreateCaretLoop();
@@ -165,41 +148,28 @@ public sealed class UIInput : UIObject {
         caretLooping = false;
 
         caretTween?.Kill();
-        caretTween = GTweenExtensions.Tween(
+        caretTween = CreateCaretFade(0f, 0.3f);
+        MainCore.TC.Play(caretTween);
+    }
+
+    // Caret alpha rides on UIColors.ObjectActive (not the current caretColor,
+    // which starts out Color.clear), so this can't be a Graphic.GTAlpha.
+    private GTween CreateCaretFade(float to, float duration)
+        => GTweenExtensions.Tween(
             () => InputField.caretColor.a,
             x => {
                 var c = UIColors.ObjectActive;
                 c.a = x;
                 InputField.caretColor = c;
             },
-            0f,
-            0.3f
+            to,
+            duration
         ).SetEasing(Easing.OutSine);
-        MainCore.TC.Play(caretTween);
-    }
 
     private GTween CreateCaretLoop() {
         return GTweenSequenceBuilder.New()
-            .Append(GTweenExtensions.Tween(
-                () => InputField.caretColor.a,
-                x => {
-                    var c = UIColors.ObjectActive;
-                    c.a = x;
-                    InputField.caretColor = c;
-                },
-                1f,
-                0.02f
-            ).SetEasing(Easing.OutSine))
-            .Append(GTweenExtensions.Tween(
-                () => InputField.caretColor.a,
-                x => {
-                    var c = UIColors.ObjectActive;
-                    c.a = x;
-                    InputField.caretColor = c;
-                },
-                0.4f,
-                0.62f
-            ).SetEasing(Easing.OutSine))
+            .Append(CreateCaretFade(1f, 0.02f))
+            .Append(CreateCaretFade(0.4f, 0.62f))
             .Build().SetMaxLoops();
     }
 
@@ -209,35 +179,14 @@ public sealed class UIInput : UIObject {
         float target = focused ? 0f : 0.2f;
         float duration = focused ? 0.2f : 0.3f;
 
-        placeholderTween = GTweenSequenceBuilder.New()
-            .Append(GTweenExtensions.Tween(
-                () => Placeholder.color.a,
-                x => {
-                    Color c = Placeholder.color;
-                    c.a = x;
-                    Placeholder.color = c;
-                },
-            target,
-            duration
-        )
-        .SetEasing(Easing.OutQuad)).Build();
+        placeholderTween = Placeholder.GTAlpha(target, duration).SetEasing(Easing.OutQuad);
         MainCore.TC.Play(placeholderTween);
     }
 
     private void UpdateIconImage(bool focused) {
         iconTween?.Kill();
-        iconTween = GTweenSequenceBuilder.New()
-            .Append(GTweenExtensions.Tween(
-                () => IconImage.color.a,
-                x => {
-                    Color c = IconImage.color;
-                    c.a = x;
-                    IconImage.color = c;
-                },
-                focused ? 0f : 0.2f,
-                focused ? 0.2f : 0.3f
-            )
-            .SetEasing(Easing.OutQuad)).Build();
+        iconTween = IconImage.GTAlpha(focused ? 0f : 0.2f, focused ? 0.2f : 0.3f)
+            .SetEasing(Easing.OutQuad);
         MainCore.TC.Play(iconTween);
     }
 

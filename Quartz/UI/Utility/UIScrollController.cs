@@ -10,9 +10,6 @@ public class UIScrollController : MonoBehaviour {
     public RectTransform content;
     public RectTransform viewport;
 
-    public float dragSensitivity = 1f;
-    public float dragToScrollRatio = 1f;
-
     public float scrollDuration = 0.2f;
     public Easing scrollEase = Easing.OutCirc;
 

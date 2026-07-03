@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using GTweens.Tweens;
 using Quartz.Core;
+using Quartz.Tween;
 using Quartz.Utility.Math;
 using GTweens.Extensions;
 
 using GTweens.Builders;
 using GTweens.Easings;
+using GTweenExtensions = GTweens.Extensions.GTweenExtensions;
 
 using TMPro;
 
@@ -127,9 +129,6 @@ public class UISlider : UIObject {
     public float Normalize() => Mathf.InverseLerp(Min, Max, Value);
     public float Normalize(float value) => Mathf.InverseLerp(Min, Max, value);
 
-    public void SetNormalized(float t, bool invoke = true)
-        => Set(Mathf.Lerp(Min, Max, t), invoke);
-
     private float ApplyFilter(float v) => Filter?.Invoke(v) ?? v;
 
     private void UpdateValueText() => ValueText?.text = Value.ToString(Format);
@@ -176,34 +175,11 @@ public class UISlider : UIObject {
         MainCore.TC.Play(fillSeq);
 
         changeSeq = GTweenSequenceBuilder.New()
-            .Join(
-                GTweenExtensions.Tween(
-                    () => ChangedImage.color.a,
-                    x => {
-                        Color c = ChangedImage.color;
-                        c.a = x;
-                        ChangedImage.color = c;
-                    },
-                    changeAlpha,
-                    0.2f
-                ).SetEasing(Easing.OutSine)
-            )
-            .Join(
-                GTweenExtensions.Tween(
-                    () => ChangedUpImage.color.a,
-                    x => {
-                        Color c = ChangedUpImage.color;
-                        c.a = x;
-                        ChangedUpImage.color = c;
-                    },
-                    changeAlpha,
-                    0.2f
-                ).SetEasing(Easing.OutSine)
-            ).Build();
+            .Join(ChangedImage.GTAlpha(changeAlpha, 0.2f).SetEasing(Easing.OutSine))
+            .Join(ChangedUpImage.GTAlpha(changeAlpha, 0.2f).SetEasing(Easing.OutSine))
+            .Build();
         MainCore.TC.Play(changeSeq);
     }
-
-    public void OnDrag(float normalizedValue) => SetNormalized(normalizedValue, true);
 
     // ── Expression-evaluator editing ─────────────────────────────────────────
     // Driven by the editor field's onValueChanged/onEndEdit (wired in

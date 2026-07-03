@@ -86,7 +86,13 @@ public static class UICore {
         };
 
         _onRefresh = state => {
-            if(state == TranslationFailState.Success) TextLocalization.RefreshAll();
+            if(state == TranslationFailState.Success) {
+                // Dropdowns rebuild their option rows on load-end (their own
+                // handlers run first — subscribed during CreatePanel above) —
+                // new Images the accent-preview cache can't know about.
+                themeImages = null;
+                TextLocalization.RefreshAll();
+            }
         };
 
         MainCore.Tr.OnLoadEnd += _onPageSettings;
@@ -330,7 +336,6 @@ public static class UICore {
     public static Image CloseImage;
     public const float MENU_WIDTH = 210f;
     private const float TOP_BAR_HEIGHT = 60f;
-    public static RectTransform MenuPanel;
     public static RectTransform Menu;
     public static RectTransform MenuContent;
     private static RectTransform Page;
@@ -348,11 +353,6 @@ public static class UICore {
                 new Vector2(ReferenceResolution.x, ReferenceResolution.y) / field;
         }
     } = 1f;
-
-    public static float PanelRatio {
-        get => canvasScaler.matchWidthOrHeight;
-        set => canvasScaler.matchWidthOrHeight = value;
-    }
 
     private static void CreatePanel() {
         GameObject panel = new("Panel");
@@ -1011,18 +1011,36 @@ public static class UICore {
         }
     }
 
+    // Non-exempt Images collected by the last RefreshTheme scan. The full
+    // GetComponentsInChildren sweep plus the per-image exempt-ancestor walk is
+    // the expensive part of a live accent drag, and its result only changes
+    // when the canvas is (re)built — every accent commit goes through
+    // Rebuild/Dispose — or when a translation load-end regenerates dropdown
+    // rows, so the cache is dropped at both of those points and rebuilt lazily
+    // on the next drag event.
+    private static List<Image> themeImages;
+
     private static void RefreshTheme(UIColors.Palette previous) {
         if(canvasObj != null) {
-            Image[] images = canvasObj.GetComponentsInChildren<Image>(true);
-            for(int i = 0; i < images.Length; i++) {
-                Image img = images[i];
+            if(themeImages == null) {
+                themeImages = [];
+                Image[] images = canvasObj.GetComponentsInChildren<Image>(true);
+                for(int i = 0; i < images.Length; i++) {
+                    Image img = images[i];
+                    if(img == null) continue;
+                    // Data-colored images (colour swatches/previews, the logo) opt
+                    // out of accent remapping — their colour isn't a theme colour
+                    // and must not be hijacked just because it matches a palette
+                    // entry. Walk parents by hand (active-agnostic, and avoids the
+                    // newer GetComponentInParent(bool) overload).
+                    if(IsThemeExempt(img.transform)) continue;
+                    themeImages.Add(img);
+                }
+            }
+
+            for(int i = 0; i < themeImages.Count; i++) {
+                Image img = themeImages[i];
                 if(img == null) continue;
-                // Data-colored images (colour swatches/previews, the logo) opt
-                // out of accent remapping — their colour isn't a theme colour
-                // and must not be hijacked just because it matches a palette
-                // entry. Walk parents by hand (active-agnostic, and avoids the
-                // newer GetComponentInParent(bool) overload).
-                if(IsThemeExempt(img.transform)) continue;
                 img.color = RemapThemeColor(img.color, previous);
             }
         }
@@ -1098,6 +1116,7 @@ public static class UICore {
     public static void Dispose() {
         MainCore.Tr.OnLoadEnd -= _onPageSettings;
         MainCore.Tr.OnLoadEnd -= _onRefresh;
+        themeImages = null;
         UIObject.DisposeAll();
         Reorganizer.Dispose();
         UpdateToast.Dispose();
