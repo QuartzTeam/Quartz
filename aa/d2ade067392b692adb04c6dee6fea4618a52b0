@@ -1,0 +1,59 @@
+Quartz/UI/Generator/GenerateUI.cs
+  s_e03bf5eb2b3681::t_64af7898e1c553 983-1096
+Quartz/UI/Factory/Page/PageVisuals.cs
+  s_e03bf5eb2b3681::t_9807a1242a77c1 637-638,641,643,647-648,651,653,657-658,661,663,667-668,671,673
+  s_e03bf5eb2b3681::t_f1b52d34f3cb2e 273-274,276,279-280,282,284-285,287,289-290,292,294-295,297
+  s_e03bf5eb2b3681::t_6cabe37f2b1fe3 409-410,419
+  s_e03bf5eb2b3681::t_6051b122194c3d 341-342,352
+  s_e03bf5eb2b3681::t_412ae1e5b7151e 511-512,522
+Quartz/UI/Factory/Page/PageTweaks.cs
+  s_e03bf5eb2b3681::t_6dcd07c5611c3f 21-22,25,27,31-32,35,37,51-52,55,57,61-62,65,67,71-72,75,77,81-82,85,87,91-92,95,97,101-102,105,107,111-112,115,117,123-124,127,129,133-134,137,139,163-164,167,169,173-174,177,179,183-184,187,189,193-194,197,199
+Quartz/UI/Factory/Page/PageCombo.cs
+  s_e03bf5eb2b3681::t_05677e20c6c48d 54,58,85,89,102,106,110,127,140,144,148,174,178,182,189
+Quartz/UI/Factory/Page/PageKeyViewer.cs
+  s_e03bf5eb2b3681::t_9e44fed46431a8 1058
+  s_e03bf5eb2b3681::t_b090535421df3d 90-91
+Quartz/UI/Factory/Page/PageProgressBar.cs
+  s_e03bf5eb2b3681::t_f246698ac99963 115
+Quartz/UI/Factory/Page/PageSongTitle.cs
+  s_e03bf5eb2b3681::t_05677e20c6c48d 39,43,66,70,74
+Quartz/UI/Factory/Page/PageProfiles.cs
+  s_e03bf5eb2b3681::t_63d10fd5aed315 338
+  s_e03bf5eb2b3681::t_b11fc895c5c404 77,96,99,223,231,239,244,264,276,280,293,309-310,348,356,360,373,387
+  s_e03bf5eb2b3681::t_f9ced01253d1a8 74
+  s_e03bf5eb2b3681::t_37d16bbafbac70 199
+Quartz/UI/Factory/Page/PageSettings.cs
+  s_e03bf5eb2b3681::t_400a83c2c5da94 502,515,528,537,686,688,712,714,737,748,754,765,778,788,802,850-853,855,858,862-866,895
+  s_e03bf5eb2b3681::t_b3a77a318be34e 491
+  s_e03bf5eb2b3681::t_d32958da20456f 481
+Quartz/UI/Factory/Page/PageImport.cs
+  s_e03bf5eb2b3681::t_1e2c75a7504f37 130
+  s_e03bf5eb2b3681::t_15ee1a5487e4b5 158,165,223-225,237,243,252-253
+  s_e03bf5eb2b3681::t_eccc165e94d5f4 150
+Quartz/UI/Factory/Page/PageEditor.cs
+  s_e03bf5eb2b3681::t_adebeb5801e844 17-25,29-32,40-43,45-48,50-53,55-58,60-63,68-71,73-76,78-81
+Quartz/UI/Factory/Page/PageSearch.cs
+  s_e03bf5eb2b3681::t_b11fc895c5c404 78-87,99,117,123-124
+Quartz/UI/Factory/Page/PageJudgement.cs
+  s_e03bf5eb2b3681::t_21c384e1bf3367 32-33,38
+  s_e03bf5eb2b3681::t_05677e20c6c48d 46,50,66,70,74
+Quartz/UI/Factory/Page/PageGameplay.cs
+  s_e03bf5eb2b3681::t_120ad4ede59414 500
+  s_e03bf5eb2b3681::t_c456e68b7c57bc 513
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "aad2ade067392b692adb04c6dee6fea4618a52b0",
+  "prompts": {},
+  "sessions": {
+    "s_e03bf5eb2b3681": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4a35d5-d4c8-48f0-a560-989570ab28d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
