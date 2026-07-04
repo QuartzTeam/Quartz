@@ -1,0 +1,80 @@
+Quartz/Features/UiHider/UiHider.cs
+  s_e03bf5eb2b3681::t_3cbe644115d734 29
+Quartz/Features/Judgement/JudgementOverlay.cs
+  s_e03bf5eb2b3681::t_c73a849d6f84c4 80
+  s_e03bf5eb2b3681::t_80572c494d5e7a 92-93
+  s_e03bf5eb2b3681::t_33f62eddc5864f 71
+Quartz/Features/KeyViewer/KeyViewerOverlay.cs
+  s_e03bf5eb2b3681::t_a94ca6c8ab9ec4 856-857,859-863,871
+  s_e03bf5eb2b3681::t_90f6943ce4cee7 872
+  s_8d9d880dabf62d::t_dab02696906f4d 850-851,875
+Quartz/Features/EffectRemover/EffectRemover.cs
+  s_e03bf5eb2b3681::t_d623111c1c3e89 23
+Quartz/UI/Utility/UnityUtils.cs
+  s_e03bf5eb2b3681::t_7355a3bf3f25e2 3,8-29
+Quartz/Features/Combo/ComboOverlay.cs
+  s_e03bf5eb2b3681::t_908fc65a2d523d 43
+  s_e03bf5eb2b3681::t_9ba2c0b89b052c 55
+  s_e03bf5eb2b3681::t_809558f055f21c 36
+Quartz/Features/Optimizer/Optimizer.cs
+  s_e03bf5eb2b3681::t_3de66d48bd691b 51
+Quartz/IO/SettingsFile.cs
+  s_e03bf5eb2b3681::t_a82eae0c38924e 75-83
+Quartz/Features/ProgressBar/ProgressBar.cs
+  s_e03bf5eb2b3681::t_9b658614a621b4 46
+  s_e03bf5eb2b3681::t_0089c12ab50d3e 54
+Quartz/Features/AutoDeafen/AutoDeafen.cs
+  s_e03bf5eb2b3681::t_a07b8311efd24a 40
+Quartz/Features/KeyLimiter/KeyLimiter.cs
+  s_e03bf5eb2b3681::t_45e3a485c0f213 31
+Quartz/Features/OttoIcon/OttoIcon.cs
+  s_e03bf5eb2b3681::t_e31443e91a7378 24
+Quartz/Features/Nostalgia/Nostalgia.cs
+  s_e03bf5eb2b3681::t_a30365e52c43fc 21
+Quartz/Features/Editor/Editor.cs
+  s_e03bf5eb2b3681::t_3aa67f911bc5bc 37
+Quartz/Features/Judgement/JudgementPopupHider.cs
+  s_e03bf5eb2b3681::t_388e825d97a660 30
+Quartz/Features/ChatterBlocker/ChatterBlocker.cs
+  s_e03bf5eb2b3681::t_0aba5a486972fb 28
+Quartz/Features/Restriction/Restriction.cs
+  s_e03bf5eb2b3681::t_dd31e5724dfc21 23
+Quartz/Features/Tweaks/Tweaks.cs
+  s_e03bf5eb2b3681::t_c410d481240cb9 32
+Quartz/Features/SongTitle/SongTitleOverlay.cs
+  s_e03bf5eb2b3681::t_6b54396bcf12a3 99
+  s_e03bf5eb2b3681::t_38cd3fc501c705 52
+  s_e03bf5eb2b3681::t_3d4db282934c05 70
+Quartz/Features/Panels/PanelsOverlay.cs
+  s_e03bf5eb2b3681::t_832b8d5e074893 190
+  s_e03bf5eb2b3681::t_282fe4313be166 181
+  s_e03bf5eb2b3681::t_5e6bde34d5951f 325
+Quartz/Features/PlanetColors/PlanetColors.cs
+  s_e03bf5eb2b3681::t_82454503e23b58 29
+Quartz/UI/Utility/Reorganizer.cs
+  s_e03bf5eb2b3681::t_b944bf30951a0f 83-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2ee8b0f5c2290bed6306c35ac2075cf5fada971c",
+  "prompts": {},
+  "sessions": {
+    "s_8d9d880dabf62d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a0c34ab6abbbab065",
+        "model": "unknown"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_e03bf5eb2b3681": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4a35d5-d4c8-48f0-a560-989570ab28d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
