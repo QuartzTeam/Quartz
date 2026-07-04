@@ -187,6 +187,12 @@ public static partial class KeyViewerOverlay {
         public Color CounterText, ActiveCounterText, Rain, GhostRain;
         public Color CounterStroke, ActiveCounterStroke;
         public Color RainTop, RainBottom, GhostRainTop, GhostRainBottom;
+        // DmNote's per-note glow (noteGlowEnabled/Size/Opacity/Color): a soft
+        // halo around the falling rain, independent colour + opacity from the
+        // rain itself, defaulting to the rain's own colour when unset.
+        public bool RainGlowOn;
+        public float RainGlowSize;
+        public Color RainGlowTop, RainGlowBottom, GhostRainGlowTop, GhostRainGlowBottom;
         public float BorderRadius = KeyRadius;
         public float BoxBorderWidth = KeyViewerOverlay.BorderWidth;
         public bool CounterOutside;
@@ -1039,7 +1045,6 @@ public static partial class KeyViewerOverlay {
     }
 
     private static void ResolveDmNoteColors(JObject p, bool glow, out Color top, out Color bottom) {
-        string colorKey = glow ? "noteGlowColor" : "noteColor";
         string opacityKey = glow ? "noteGlowOpacity" : "noteOpacity";
         string opacityTopKey = glow ? "noteGlowOpacityTop" : "noteOpacityTop";
         string opacityBottomKey = glow ? "noteGlowOpacityBottom" : "noteOpacityBottom";
@@ -1048,7 +1053,10 @@ public static partial class KeyViewerOverlay {
         float opacityTop = Mathf.Clamp01(JFloat(p, opacityTopKey, baseOpacity) / 100f);
         float opacityBottom = Mathf.Clamp01(JFloat(p, opacityBottomKey, baseOpacity) / 100f);
 
-        JToken color = p?[colorKey];
+        // Glow colour defaults to the note's own colour when unset (DmNote:
+        // `noteGlowColor ?? noteColor`); opacity always comes from the glow keys.
+        JToken color = p?[glow ? "noteGlowColor" : "noteColor"];
+        if(glow && color == null) color = p?["noteColor"];
         if(color is JObject obj && string.Equals(JStr(obj, "type", ""), "gradient", StringComparison.OrdinalIgnoreCase)) {
             top = HexToColor(JStr(obj, "top", "#FFFFFF"), opacityTop);
             bottom = HexToColor(JStr(obj, "bottom", "#FFFFFF"), opacityBottom);
@@ -1141,14 +1149,21 @@ public static partial class KeyViewerOverlay {
 
         ResolveDmNoteColors(p, false, out spec.RainTop, out spec.RainBottom);
         spec.Rain = spec.RainBottom;
+        spec.RainGlowOn = JBool(p, "noteGlowEnabled", false);
+        spec.RainGlowSize = Mathf.Clamp(JFloat(p, "noteGlowSize", 20f), 0f, 50f);
+        ResolveDmNoteColors(p, true, out spec.RainGlowTop, out spec.RainGlowBottom);
         string ghostNoteHex = JOptionalString(p, "ghostNoteColor");
         if(string.IsNullOrEmpty(ghostNoteHex)) {
             spec.GhostRainTop = new Color(spec.RainTop.r, spec.RainTop.g, spec.RainTop.b, spec.RainTop.a * 0.45f);
             spec.GhostRainBottom = new Color(spec.RainBottom.r, spec.RainBottom.g, spec.RainBottom.b, spec.RainBottom.a * 0.45f);
+            spec.GhostRainGlowTop = new Color(spec.RainGlowTop.r, spec.RainGlowTop.g, spec.RainGlowTop.b, spec.RainGlowTop.a * 0.45f);
+            spec.GhostRainGlowBottom = new Color(spec.RainGlowBottom.r, spec.RainGlowBottom.g, spec.RainGlowBottom.b, spec.RainGlowBottom.a * 0.45f);
         } else {
             Color ghostColor = HexToColor(ghostNoteHex, JFloat(p, "ghostNoteOpacity", 45f) / 100f);
             spec.GhostRainTop = ghostColor;
             spec.GhostRainBottom = ghostColor;
+            spec.GhostRainGlowTop = ghostColor;
+            spec.GhostRainGlowBottom = ghostColor;
         }
         spec.GhostRain = spec.GhostRainBottom;
 
@@ -2025,6 +2040,9 @@ public static partial class KeyViewerOverlay {
             Color = ghost ? spec.GhostRain : spec.Rain,
             ColorTop = ghost ? spec.GhostRainTop : spec.RainTop,
             ColorBottom = ghost ? spec.GhostRainBottom : spec.RainBottom,
+            GlowSize = spec.RainGlowOn ? spec.RainGlowSize : 0f,
+            GlowTop = ghost ? spec.GhostRainGlowTop : spec.RainGlowTop,
+            GlowBottom = ghost ? spec.GhostRainGlowBottom : spec.RainGlowBottom,
         };
         rainManager.Enqueue(raw);
         return raw;
@@ -2050,6 +2068,11 @@ public static partial class KeyViewerOverlay {
         public Color Color;
         public Color ColorTop;
         public Color ColorBottom;
+        // DM Note glow halo. GlowSize <= 0 (simple-mode rain, or glow disabled)
+        // skips the halo entirely.
+        public float GlowSize;
+        public Color GlowTop;
+        public Color GlowBottom;
     }
 
     // Renderer for ALL rain drops in one mesh. Drops are held in 3 ordering
@@ -2119,12 +2142,14 @@ public static partial class KeyViewerOverlay {
                         Color cMid = ColorForY(raw, dNear, dFar, yMid, yMin, height);
                         AddQuad(vh, xMin, yMin, xMax, yMid, cMin, cMid);
                         AddQuad(vh, xMin, yMid, xMax, yMax, cMid, cMax);
+                        AddGlow(vh, raw, xMin, yMin, xMax, yMax, cMin, cMax);
                         return;
                     }
                 }
             }
 
             AddQuad(vh, xMin, yMin, xMax, yMax, cMin, cMax);
+            AddGlow(vh, raw, xMin, yMin, xMax, yMax, cMin, cMax);
         }
 
         private static void AddQuad(VertexHelper vh, float xMin, float yMin, float xMax, float yMax, Color bottom, Color top) {
@@ -2136,6 +2161,57 @@ public static partial class KeyViewerOverlay {
             v.position = new Vector3(xMin, yMax, 0f); v.color = top; vh.AddVert(v);
             vh.AddTriangle(idx, idx + 1, idx + 2);
             vh.AddTriangle(idx + 2, idx + 3, idx);
+        }
+
+        // Four independently-coloured corners: (xMin,yMin), (xMax,yMin),
+        // (xMax,yMax), (xMin,yMax) — used by the glow halo, where a strip's
+        // outer edge fades to transparent while its inner edge doesn't.
+        private static void AddQuad4(VertexHelper vh, float xMin, float yMin, float xMax, float yMax,
+            Color bl, Color br, Color tr, Color tl) {
+            int idx = vh.currentVertCount;
+            UIVertex v = UIVertex.simpleVert;
+            v.position = new Vector3(xMin, yMin, 0f); v.color = bl; vh.AddVert(v);
+            v.position = new Vector3(xMax, yMin, 0f); v.color = br; vh.AddVert(v);
+            v.position = new Vector3(xMax, yMax, 0f); v.color = tr; vh.AddVert(v);
+            v.position = new Vector3(xMin, yMax, 0f); v.color = tl; vh.AddVert(v);
+            vh.AddTriangle(idx, idx + 1, idx + 2);
+            vh.AddTriangle(idx + 2, idx + 3, idx);
+        }
+
+        // DM Note's noteGlow halo: a soft border around the drop's current
+        // rect, GlowSize px wide, faded to transparent outward. DmNote does
+        // this in a fragment shader via a rounded-rect SDF; a plain UI mesh
+        // has no per-pixel shader, so it's approximated with 4 edge strips
+        // (linear fade, matching the linear track fade above) plus 4 corner
+        // patches using a bilinear diagonal fade — the same separable
+        // falloff GlowSprite() bakes into a texture for the CSS box-shadow,
+        // just done in vertex colour here instead. cMin/cMax are the body's
+        // own (already fade-adjusted) edge colours, so glow alpha correctly
+        // vanishes wherever the body itself has already faded out.
+        private static void AddGlow(VertexHelper vh, RawRain raw, float xMin, float yMin, float xMax, float yMax, Color cMin, Color cMax) {
+            float g = raw.GlowSize;
+            if(g <= 0.5f) return;
+
+            Color glowBottom = new(raw.GlowBottom.r, raw.GlowBottom.g, raw.GlowBottom.b, raw.GlowBottom.a * cMin.a);
+            Color glowTop = new(raw.GlowTop.r, raw.GlowTop.g, raw.GlowTop.b, raw.GlowTop.a * cMax.a);
+            Color zeroBottom = new(glowBottom.r, glowBottom.g, glowBottom.b, 0f);
+            Color zeroTop = new(glowTop.r, glowTop.g, glowTop.b, 0f);
+
+            // Left / right edges: the body's own top-bottom gradient, faded
+            // to 0 outward.
+            AddQuad4(vh, xMin - g, yMin, xMin, yMax, zeroBottom, glowBottom, glowTop, zeroTop);
+            AddQuad4(vh, xMax, yMin, xMax + g, yMax, glowBottom, zeroBottom, zeroTop, glowTop);
+
+            // Top / bottom edges: flat colour at that Y, faded to 0 outward.
+            AddQuad4(vh, xMin, yMax, xMax, yMax + g, glowTop, glowTop, zeroTop, zeroTop);
+            AddQuad4(vh, xMin, yMin - g, xMax, yMin, zeroBottom, zeroBottom, glowBottom, glowBottom);
+
+            // Corners: one full (inner) vertex, three zero — a bilinear
+            // diagonal fade.
+            AddQuad4(vh, xMin - g, yMin - g, xMin, yMin, zeroBottom, zeroBottom, glowBottom, zeroBottom);
+            AddQuad4(vh, xMax, yMin - g, xMax + g, yMin, zeroBottom, zeroBottom, zeroBottom, glowBottom);
+            AddQuad4(vh, xMin - g, yMax, xMin, yMax + g, zeroTop, glowTop, zeroTop, zeroTop);
+            AddQuad4(vh, xMax, yMax, xMax + g, yMax + g, glowTop, zeroTop, zeroTop, zeroTop);
         }
 
         private static Color ColorForY(RawRain raw, float dNear, float dFar, float y, float yMin, float height) {

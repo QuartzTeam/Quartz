@@ -121,6 +121,7 @@ public static class JudgementOverlay {
             text.alignment = TextAlignmentOptions.Center;
             text.color = Judgement.SlotColors[i];
             text.raycastTarget = false;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
             text.text = "0";
             labels[i] = text;
         }
@@ -167,6 +168,7 @@ public static class JudgementOverlay {
         rowLabel.alignment = TextAlignmentOptions.Center;
         rowLabel.richText = true;
         rowLabel.raycastTarget = false;
+        rowLabel.textWrappingMode = TextWrappingModes.NoWrap;
         rowLabel.text = "0";
     }
 
@@ -216,6 +218,7 @@ public static class JudgementOverlay {
         text.alignment = TextAlignmentOptions.Center;
         text.color = color;
         text.raycastTarget = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
         text.text = "0";
         return text;
     }
