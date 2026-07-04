@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using HarmonyLib;
 using Quartz.Core;
 using Quartz.IO;
@@ -42,7 +43,9 @@ public static class ChatterBlocker {
 
     private static long ThresholdMs() => Math.Max(0L, (long)Math.Round(Conf?.ThresholdMs ?? 0f));
 
-    private static long NowMs() => DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    private static readonly Stopwatch clock = Stopwatch.StartNew();
+
+    private static long NowMs() => clock.ElapsedMilliseconds;
 
     private static readonly Dictionary<KeyCode, long> lastKeyPress = [];
     private static readonly Dictionary<ushort, long> lastAsyncKeyPress = [];
