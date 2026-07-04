@@ -31,23 +31,21 @@ internal static class PageKeyViewer {
         void Save() => KeyViewerOverlay.Save();
         void Apply() => KeyViewerOverlay.Apply();
 
-        var sec = GenerateUI.Collapsible(
+        GenerateUI.CollapsibleSection sec = null;
+        sec = GenerateUI.Collapsible(
             content, "Key Viewer", startExpanded: false,
-            v => { conf.Enabled = v; Save(); },
+            v => { conf.Enabled = v; Save(); ApplyHeaderEnabledCue(sec, conf.Enabled); },
             conf.Enabled
         );
+        ApplyHeaderEnabledCue(sec, conf.Enabled);
 
         RectTransform simpleBody = null;
         RectTransform dmNoteBody = null;
-        Image simpleModeBg = null;
-        Image dmNoteModeBg = null;
-        TextMeshProUGUI simpleModeLabel = null;
-        TextMeshProUGUI dmNoteModeLabel = null;
+        Action<string> refreshModeControl = null;
 
         void RefreshMode() {
             bool simple = conf.IsSimpleMode;
-            ApplyModeButton(simpleModeBg, simpleModeLabel, simple);
-            ApplyModeButton(dmNoteModeBg, dmNoteModeLabel, !simple);
+            refreshModeControl?.Invoke(conf.Mode);
 
             simpleBody?.gameObject.SetActive(simple);
             dmNoteBody?.gameObject.SetActive(!simple);
@@ -71,9 +69,14 @@ internal static class PageKeyViewer {
             KeyViewerOverlay.RaiseSyncSettingChanged();
         }
 
-        RectTransform modeRow = GenerateUI.Row(sec.Body);
-        AddModeButton(modeRow, "Simple", "KEYVIEWER_MODE_SIMPLE", () => SetMode(KeyViewerSettings.ModeSimple), out simpleModeBg, out simpleModeLabel);
-        AddModeButton(modeRow, "DM Note", "KEYVIEWER_MODE_DMNOTE", () => SetMode(KeyViewerSettings.ModeDmNote), out dmNoteModeBg, out dmNoteModeLabel);
+        refreshModeControl = GenerateUI.SegmentedControl(
+            GenerateUI.Row(sec.Body),
+            new[] { KeyViewerSettings.ModeSimple, KeyViewerSettings.ModeDmNote },
+            mode => mode == KeyViewerSettings.ModeDmNote ? "DM Note" : "Simple",
+            mode => mode == KeyViewerSettings.ModeDmNote ? "KEYVIEWER_MODE_DMNOTE" : "KEYVIEWER_MODE_SIMPLE",
+            conf.Mode,
+            SetMode
+        );
 
         GenerateUI.Toggle(
             GenerateUI.Row(sec.Body),
@@ -1071,6 +1074,17 @@ internal static class PageKeyViewer {
             id
         );
 
+    // Dims the section header's title when the feature is disabled, so the
+    // Key Viewer's on/off state reads at a glance without opening the section.
+    private static void ApplyHeaderEnabledCue(GenerateUI.CollapsibleSection sec, bool enabled) {
+        if(sec.HeaderObj.transform.Find("Bar") is not RectTransform bar) return;
+        if(bar.Find("Label") is not Transform labelT) return;
+        if(labelT.GetComponent<TextMeshProUGUI>() is not TextMeshProUGUI label) return;
+
+        label.color = enabled ? Color.white : new Color(1f, 1f, 1f, 0.45f);
+        label.fontStyle = enabled ? FontStyles.Bold : FontStyles.Normal;
+    }
+
     // A self-sizing card with a background, used for the per-key popup. Reads as
     // a distinct panel that collapses to nothing when hidden (SetActive false on
     // the returned panel). A full-width holder with right padding makes the
@@ -1098,58 +1112,6 @@ internal static class PageKeyViewer {
         layout.padding = new RectOffset(16, 16, 16, 16);
 
         return rect;
-    }
-
-    private static void AddModeButton(
-        Transform row,
-        string text,
-        string key,
-        Action onClick,
-        out Image bg,
-        out TextMeshProUGUI label
-    ) {
-        HorizontalLayoutGroup layout = row.GetComponent<HorizontalLayoutGroup>();
-        if(layout == null) {
-            layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = 8f;
-            layout.padding = new RectOffset(0, 250, 0, 0);
-            layout.childControlWidth = true;
-            layout.childControlHeight = true;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = true;
-        }
-
-        GameObject obj = new("Mode_" + text.Replace(" ", ""));
-        obj.transform.SetParent(row, false);
-
-        RectTransform rect = obj.AddComponent<RectTransform>();
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.offsetMin = Vector2.zero;
-        rect.offsetMax = Vector2.zero;
-
-        LayoutElement le = obj.AddComponent<LayoutElement>();
-        le.flexibleWidth = 1f;
-        le.minHeight = 50f;
-        le.preferredHeight = 50f;
-
-        bg = obj.AddComponent<Image>();
-        bg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
-        bg.type = Image.Type.Sliced;
-
-        label = GenerateUI.AddText(obj.transform, true);
-        GenerateUI.Localize(label, key, text);
-        label.alignment = TextAlignmentOptions.Center;
-        label.fontSize = 22f;
-
-        GenerateUI.AddButton(obj, btn => {
-            if(btn == InputButton.Left) onClick?.Invoke();
-        });
-    }
-
-    private static void ApplyModeButton(Image bg, TextMeshProUGUI label, bool selected) {
-        if(bg != null) bg.color = selected ? UIColors.ObjectActive : UIColors.ObjectBG;
-        if(label != null) label.color = selected ? Color.white : new Color(1f, 1f, 1f, 0.6f);
     }
 
     // Polls for the next key press while the preview is armed. Focusing the

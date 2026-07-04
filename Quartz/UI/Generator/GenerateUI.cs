@@ -1076,6 +1076,89 @@ public static partial class GenerateUI {
         });
     }
 
+    // Segmented control: a row of equal-width buttons where exactly one option
+    // is selected at a time — the button-row equivalent of a DropDown for a
+    // small fixed set of options that should stay visible instead of hiding
+    // behind a click. Returns a refresh callback the caller invokes whenever
+    // the selected value changes (including externally, e.g. after a reset).
+    internal static Action<T> SegmentedControl<T>(
+        Transform row,
+        IReadOnlyList<T> values,
+        Func<T, string> display,
+        Func<T, string> localeKey,
+        T value,
+        Action<T> onChanged
+    ) {
+        HorizontalLayoutGroup layout = row.GetComponent<HorizontalLayoutGroup>();
+        if(layout == null) {
+            layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.spacing = 8f;
+            layout.padding = new RectOffset(0, 250, 0, 0);
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = true;
+        }
+
+        var options = new List<(T value, Image bg, TextMeshProUGUI label)>();
+        T current = value;
+
+        void Refresh() {
+            foreach((T optValue, Image bg, TextMeshProUGUI label) in options) {
+                bool selected = EqualityComparer<T>.Default.Equals(optValue, current);
+                bg.color = selected ? UIColors.ObjectActive : UIColors.ObjectBG;
+                label.color = selected ? Color.white : new Color(1f, 1f, 1f, 0.6f);
+            }
+        }
+
+        foreach(T optValue in values) {
+            string text = display(optValue);
+
+            GameObject obj = new("Segment_" + text.Replace(" ", ""));
+            obj.transform.SetParent(row, false);
+
+            RectTransform rect = obj.AddComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            LayoutElement le = obj.AddComponent<LayoutElement>();
+            le.flexibleWidth = 1f;
+            le.minHeight = 50f;
+            le.preferredHeight = 50f;
+
+            Image bg = obj.AddComponent<Image>();
+            bg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
+            bg.type = Image.Type.Sliced;
+
+            TextMeshProUGUI label = AddText(obj.transform, true);
+            if(localeKey != null) Localize(label, localeKey(optValue), text);
+            else label.text = text;
+            label.alignment = TextAlignmentOptions.Center;
+            label.fontSize = 22f;
+
+            T captured = optValue;
+            AddButton(obj, btn => {
+                if(btn != InputButton.Left) return;
+                if(EqualityComparer<T>.Default.Equals(current, captured)) return;
+
+                current = captured;
+                Refresh();
+                onChanged?.Invoke(captured);
+            });
+
+            options.Add((optValue, bg, label));
+        }
+
+        Refresh();
+
+        return v => {
+            current = v;
+            Refresh();
+        };
+    }
+
     // A self-sizing vertical container whose children can be rebuilt in place
     // (used for mode bodies and editors that add/remove rows).
     internal static RectTransform MakeBody(Transform parent, string name) {
