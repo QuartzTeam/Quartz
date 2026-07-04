@@ -27,7 +27,7 @@ namespace Quartz.UI.Factory.Page;
 // top (no category), then the Progress Bar / Combo / Judgement sections, then
 // the Panels category: user-created, named panels that any catalog stat can
 // be placed on — replacing the old fixed Left/Right HUD.
-internal static class PageOverlay {
+internal static partial class PageOverlay {
     private static GameObject panelsList;
 
     public static void Create(RectTransform parent) {
@@ -345,57 +345,20 @@ internal static class PageOverlay {
             if(picker == null) return;
             GenerateUI.ClearChildren(picker.transform);
 
-            bool any = false;
-            string[] categories = ["Accuracy", "Time", "BPM", "Map Stats", "Other"];
-            foreach(string category in categories) {
-                bool headerAdded = false;
-
-                foreach(PanelsOverlay.StatDef stat in PanelsOverlay.Catalog) {
-                    if(stat.Category != category) continue;
-                    // Skip stats already on the panel (including the one
-                    // being replaced — swapping to itself is a no-op). The
-                    // "text" stat is exempt: each carries its own custom string,
-                    // so any number can sit on one panel.
-                    if(stat.Id != "text" && panel.Stats.Exists(e => e.Id == stat.Id)) continue;
-
-                    if(!headerAdded) {
-                        headerAdded = true;
-                        GenerateUI.AddLocalizedMutedText(
-                            GenerateUI.Row(picker.transform, 32f),
-                            GenerateUI.LocaleKeyFromText("PANEL_CATEGORY", category),
-                            category
-                        );
-                    }
-
-                    any = true;
-                    string statId = stat.Id;
-                    GenerateUI.Button(
-                        GenerateUI.Row(picker.transform),
-                        () => {
-                            if(replaceTarget != null) {
-                                replaceTarget.Id = statId;
-                            } else {
-                                StatEntry added = new(statId);
-                                // A custom-text line has no meaningful "Text"
-                                // label prefix, so default it to value-only.
-                                if(statId == "text") added.ShowLabel = false;
-                                panel.Stats.Add(added);
-                            }
-                            Save();
-                            ClosePicker();
-                            RebuildRows();
-                        },
-                        stat.Label,
-                        idp + "_pick_" + statId
-                    ).SetSecondary();
+            BuildStatPickerCategories(picker.transform, panel, idp, statId => {
+                if(replaceTarget != null) {
+                    replaceTarget.Id = statId;
+                } else {
+                    StatEntry added = new(statId);
+                    // A custom-text line has no meaningful "Text" label
+                    // prefix, so default it to value-only.
+                    if(statId == "text") added.ShowLabel = false;
+                    panel.Stats.Add(added);
                 }
-            }
-
-            if(!any) {
-                GenerateUI.AddLocalizedMutedText(
-                    GenerateUI.Row(picker.transform), "PANEL_ALL_STATS_ADDED",
-                    "All stats are already on this panel.", 19f);
-            }
+                Save();
+                ClosePicker();
+                RebuildRows();
+            });
         }
 
         addBtn = GenerateUI.Button(
@@ -613,6 +576,50 @@ internal static class PageOverlay {
             "Delete Panel",
             idp + "_delete"
         ).SetSecondary();
+    }
+
+    // Builds the picker's category-grouped list of catalog stats not already
+    // on the panel (the "text" stat is exempt — each carries its own custom
+    // string, so any number can sit on one panel). `onPick` is invoked with
+    // the chosen stat's id; the caller decides whether that's an add or a
+    // swap-in-place.
+    private static void BuildStatPickerCategories(
+        Transform picker, PanelConfig panel, string idp, Action<string> onPick
+    ) {
+        bool any = false;
+        string[] categories = ["Accuracy", "Time", "BPM", "Map Stats", "Other"];
+        foreach(string category in categories) {
+            bool headerAdded = false;
+
+            foreach(PanelsOverlay.StatDef stat in PanelsOverlay.Catalog) {
+                if(stat.Category != category) continue;
+                if(stat.Id != "text" && panel.Stats.Exists(e => e.Id == stat.Id)) continue;
+
+                if(!headerAdded) {
+                    headerAdded = true;
+                    GenerateUI.AddLocalizedMutedText(
+                        GenerateUI.Row(picker, 32f),
+                        GenerateUI.LocaleKeyFromText("PANEL_CATEGORY", category),
+                        category
+                    );
+                }
+
+                any = true;
+                string statId = stat.Id;
+                GenerateUI.Button(
+                    GenerateUI.Row(picker),
+                    () => onPick(statId),
+                    stat.Label,
+                    idp + "_pick_" + statId
+                ).SetSecondary();
+            }
+        }
+
+        if(!any) {
+            GenerateUI.AddLocalizedMutedText(
+                GenerateUI.Row(picker), "PANEL_ALL_STATS_ADDED",
+                "All stats are already on this panel.", 19f);
+        }
     }
 
     // ===== stat-list row plumbing =====
@@ -865,136 +872,6 @@ internal static class PageOverlay {
         obj.AddComponent<RectMask2D>();
 
         return body;
-    }
-
-    // Per-stat color settings, expanded under the stat's row — v1's ColorRange
-    // editor: enable toggle, gradient stops (position + color, add/delete),
-    // perfect-color override, and Max BPM for the BPM-driven stats.
-    private static void BuildStatColorSettings(
-        Transform parent, StatEntry entry, Action save, Action rebuild, string idp
-    ) {
-        StatColor color = entry.EnsureColor();
-        bool hasRatio = StatColor.HasRatio(entry.Id);
-
-        GenerateUI.Toggle(
-            GenerateUI.Row(parent),
-            false,
-            color.Enabled,
-            v => { color.Enabled = v; save(); },
-            "Custom Color",
-            idp + "_statcolor_on"
-        ).Rect.AddToolTip(
-            "DESC_PANEL_STATCOLOR_ON",
-            "Tints this stat's value by blending the colors below across the stat's own 0–100% range."
-        );
-
-        if(StatColor.IsBpm(entry.Id)) {
-            UISlider maxBpm = GenerateUI.Slider(
-                GenerateUI.Row(parent),
-                8000f, 1f, 9999f, color.MaxBpm,
-                v => Mathf.Clamp(Mathf.Round(v), 1f, 9999f), null, null,
-                "Color Max BPM", idp + "_statcolor_maxbpm"
-            );
-            maxBpm.Format = "0";
-            maxBpm.OnChanged = v => color.MaxBpm = v;
-            maxBpm.OnComplete = v => { color.MaxBpm = v; save(); };
-            maxBpm.Rect.AddToolTip(
-                "DESC_PANEL_STATCOLOR_MAXBPM",
-                "BPM that maps to the 100% end of the gradient."
-            );
-        }
-
-        // === Gradient stops ===
-        for(int i = 0; i < color.Points.Count; i++) {
-            ColorPoint point = color.Points[i];
-
-            if(hasRatio) {
-                RectTransform posRow = GenerateUI.Row(parent);
-                UISlider pos = GenerateUI.Slider(
-                    posRow,
-                    100f, 0f, 100f, point.Pos * 100f,
-                    v => Mathf.Clamp(Mathf.Round(v * 2f) * 0.5f, 0f, 100f), null, null,
-                    "Position", idp + "_statcolor_pos"
-                );
-                // '%' must be quoted: bare % in a .NET format string multiplies
-                // the value by 100 (slider already holds 0..100).
-                pos.Format = "0.#' %'";
-                pos.OnChanged = v => point.Pos = v * 0.01f;
-                pos.OnComplete = v => {
-                    point.Pos = v * 0.01f;
-                    color.SortPoints();
-                    save();
-                };
-
-                if(color.Points.Count > 1) {
-                    GenerateUI.MiniButton(posRow, "X", "DELETE_SHORT", -8f, 44f, () => {
-                        color.Points.Remove(point);
-                        save();
-                        rebuild();
-                    });
-                }
-            }
-
-            GenerateUI.ColorPicker(
-                GenerateUI.Row(parent),
-                Color.white,
-                point.GetColor(),
-                c => point.SetColor(c),
-                c => { point.SetColor(c); save(); },
-                "Color",
-                idp + "_statcolor_color"
-            );
-
-            if(!hasRatio && color.Points.Count > 1) {
-                // No position rows for static stats — extra stops are
-                // meaningless there, offer delete on its own row.
-                GenerateUI.MiniButton(GenerateUI.Row(parent, 40f), "X", "DELETE_SHORT", -8f, 44f, () => {
-                    color.Points.Remove(point);
-                    save();
-                    rebuild();
-                });
-            }
-        }
-
-        if(hasRatio && color.Points.Count < 8) {
-            GenerateUI.Button(
-                GenerateUI.Row(parent),
-                () => {
-                    float pos = color.Points.Count > 0 ? 0.5f : 1f;
-                    color.Points.Add(new ColorPoint(pos, color.Evaluate(pos)));
-                    color.SortPoints();
-                    save();
-                    rebuild();
-                },
-                "+ Add Color",
-                idp + "_statcolor_add"
-            ).SetSecondary();
-        }
-
-        // === Perfect color (v1 gold at 100%) ===
-        if(hasRatio) {
-            GenerateUI.Toggle(
-                GenerateUI.Row(parent),
-                false,
-                color.UsePerfect,
-                v => { color.UsePerfect = v; save(); },
-                "Perfect Color (100%)",
-                idp + "_statcolor_perfect"
-            ).Rect.AddToolTip(
-                "DESC_PANEL_STATCOLOR_PERFECT",
-                "Overrides the gradient with this color while the stat sits at exactly 100% — v1's gold accuracy."
-            );
-
-            GenerateUI.ColorPicker(
-                GenerateUI.Row(parent),
-                new Color(1f, 0.854902f, 0f, 1f),
-                color.Perfect.GetColor(),
-                c => color.Perfect.SetColor(c),
-                c => { color.Perfect.SetColor(c); save(); },
-                "Perfect Color",
-                idp + "_statcolor_perfectcolor"
-            );
-        }
     }
 
     private static string AnchorName(PanelAnchor anchor) => anchor switch {
