@@ -1,0 +1,21 @@
+Quartz/Core/Keybind.cs
+  s_90010d0854592e::t_a25f2ff7b3f1a0 90-119
+Quartz/UI/Factory/Page/PageGameplay.cs
+  s_90010d0854592e::t_18fce08b2bf1aa 495
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "82ee9a60184649fdab0c57984f3df59b4fe81405",
+  "prompts": {},
+  "sessions": {
+    "s_90010d0854592e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1eb3e6ee-7fd4-405a-948e-978db5260610",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
