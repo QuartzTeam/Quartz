@@ -1,0 +1,19 @@
+Quartz/UI/Factory/Page/PageCredits.cs
+  s_e03bf5eb2b3681::t_f6703d351518d0 13,17,20,25,29-31,33-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "af49d8246610da3b4d542239c6ab7f7ad83138bc",
+  "prompts": {},
+  "sessions": {
+    "s_e03bf5eb2b3681": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4a35d5-d4c8-48f0-a560-989570ab28d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
