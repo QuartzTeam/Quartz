@@ -102,18 +102,28 @@ public static partial class KeyViewerOverlay {
         public RawImage AfterLayer;
         public RawImage KeyImage;
         // Last text the per-glyph gradient coloured, so the mesh is only forced
-        // to rebuild when the string actually changes.
+        // to rebuild when the string actually changes. Nulled wherever the mesh
+        // colours get wiped (text write, press flip, font swap) so CssTick
+        // re-applies a static gradient exactly once.
         public string GradLabelText;
         public string GradValueText;
+        // Last gradient object the per-glyph pass applied (per text); a static
+        // gradient re-uploads only when this or the text tracker changes.
+        public CssAnimGradient GradLabelApplied;
+        public CssAnimGradient GradValueApplied;
         // transition: timestamp the state flip started (<0 = settled).
         public float TransStart = -1f;
         public TextMeshProUGUI Label;
         public TextMeshProUGUI Value;
         // Simple-mode KPS/Total stat boxes: when StatTogether, the caption and
         // value render centred together in the Value text ("KPS  0") and Label
-        // is hidden; otherwise the caption sits left and the value right.
-        public string StatCaption;
+        // is hidden; otherwise the caption sits left and the value right. The
+        // caption is pre-baked as "caption + two spaces" chars for the
+        // alloc-free counter write.
+        public char[] StatCaptionChars;
         public bool StatTogether;
+        // DM inline-stat prefix ("KPS" + two spaces) chars, same purpose.
+        public char[] DmStatPrefix;
         public bool Pressed;
         public bool GhostPressed;
         public bool RawPressed;
@@ -730,7 +740,7 @@ public static partial class KeyViewerOverlay {
         box.IsKps = !total;
         box.IsTotal = total;
         string caption = total ? "Total" : "KPS";
-        box.StatCaption = caption;
+        box.StatCaptionChars = (caption + "  ").ToCharArray();
 
         // 10/12-key styles (0/1): the stat box is narrow, so stack the caption
         // over the value instead of side by side. Overrides Together/Apart.
@@ -1214,6 +1224,7 @@ public static partial class KeyViewerOverlay {
 
         if(spec.InlineStatCounter) {
             box.Label.text = DmInlineStatText(spec, spec.IsTotal ? totalCount : 0);
+            box.DmStatPrefix = ((spec.DisplayText ?? "") + "  ").ToCharArray();
             LayoutDmText(box.Label.rectTransform, spec, false);
             box.Label.alignment = TextAlignmentOptions.Center;
         } else {
@@ -1435,9 +1446,37 @@ public static partial class KeyViewerOverlay {
     // reuses this shared buffer with no allocation (mirrors the JipperKeyViewer
     // reference's NumBuffer). Main-thread only (Updater.Update), so unsynced.
     private static readonly char[] countBuf = new char[16];
+    // Prefixed variant ("KPS  123"): cached caption chars + the digits from
+    // countBuf. Grown to fit the longest prefix seen (DM displayText is
+    // user-defined, so its length is unbounded).
+    private static char[] prefixedCountBuf = new char[32];
 
-    private static void SetCount(TextMeshProUGUI tmp, int value) {
-        bool thousands = Conf != null && Conf.CountFormatting;
+    private static void SetCount(TextMeshProUGUI tmp, int value)
+        => SetCount(tmp, value, Conf != null && Conf.CountFormatting);
+
+    // DM Note counters pass thousands: false — they always render the plain
+    // invariant integer, regardless of the CountFormatting toggle.
+    private static void SetCount(TextMeshProUGUI tmp, int value, bool thousands) {
+        int pos = WriteCountDigits(value, thousands);
+        tmp.SetText(countBuf, pos, countBuf.Length - pos);
+    }
+
+    private static void SetPrefixedCount(TextMeshProUGUI tmp, char[] prefix, int value)
+        => SetPrefixedCount(tmp, prefix, value, Conf != null && Conf.CountFormatting);
+
+    private static void SetPrefixedCount(TextMeshProUGUI tmp, char[] prefix, int value, bool thousands) {
+        int pos = WriteCountDigits(value, thousands);
+        int digits = countBuf.Length - pos;
+        int len = prefix.Length + digits;
+        if(prefixedCountBuf.Length < len) prefixedCountBuf = new char[len * 2];
+        Array.Copy(prefix, prefixedCountBuf, prefix.Length);
+        Array.Copy(countBuf, pos, prefixedCountBuf, prefix.Length, digits);
+        tmp.SetText(prefixedCountBuf, 0, len);
+    }
+
+    // Digits (optionally comma-grouped, mirroring FormatCount's "N0" output)
+    // written right-aligned into countBuf; returns the start index.
+    private static int WriteCountDigits(int value, bool thousands) {
         int pos = countBuf.Length;
         if(value == 0) {
             countBuf[--pos] = '0';
@@ -1454,7 +1493,7 @@ public static partial class KeyViewerOverlay {
             }
             if(neg) countBuf[--pos] = '-';
         }
-        tmp.SetText(countBuf, pos, countBuf.Length - pos);
+        return pos;
     }
 
     internal static TextMeshProUGUI NewText(Transform parent, string name, string text, float fontSize) {
@@ -1482,6 +1521,11 @@ public static partial class KeyViewerOverlay {
             box.Fill.color = dmPressed ? spec.ActiveBg : spec.Bg;
             if(box.Label != null) box.Label.color = dmPressed ? spec.ActiveText : spec.Text;
             if(box.Value != null) box.Value.color = dmPressed ? spec.ActiveCounterText : spec.CounterText;
+            // The colour writes above dirty the TMP meshes, whose rebuild wipes
+            // per-glyph gradient colours — null the trackers so CssTick re-applies
+            // them once (static gradients no longer re-upload every frame).
+            box.GradLabelText = null;
+            box.GradValueText = null;
 
             if(spec.NeedsCssState) ApplyCssState(box, dmPressed);
             return;
@@ -1514,7 +1558,8 @@ public static partial class KeyViewerOverlay {
     // rare in play; the hook-based KeyLimiter path stays NumLock-independent.)
     private static bool KeyHeld(KeyCode key) {
         if(key == KeyCode.None) return false;
-        if(!Application.isFocused) return false;
+        // No per-call focus check (a native call per key per frame): every call
+        // site is downstream of the Updater's !Application.isFocused gate.
 
         try {
             if(Input.GetKey(key)) return true;
@@ -2435,8 +2480,10 @@ public static partial class KeyViewerOverlay {
         int limiterMode = Mathf.Clamp(Conf.DmOutOfLimiterMode, 0, 2);
 
         foreach(Box box in boxes) {
-            if(box.Label != null && box.Label.font != font) box.Label.font = font;
-            if(box.Value != null && box.Value.font != font) box.Value.font = font;
+            // A font swap re-tessellates the mesh, wiping per-glyph gradient
+            // colours — null the trackers so CssTick re-applies them.
+            if(box.Label != null && box.Label.font != font) { box.Label.font = font; box.GradLabelText = null; }
+            if(box.Value != null && box.Value.font != font) { box.Value.font = font; box.GradValueText = null; }
 
             DmNoteSpec spec = box.Dm;
             if(spec == null) continue;
@@ -2444,9 +2491,13 @@ public static partial class KeyViewerOverlay {
             if(spec.IsStat) {
                 int value = DmStatValue(box);
                 if(box.Value != null && box.LastShown != value) {
-                    box.Value.text = value.ToString(CultureInfo.InvariantCulture);
+                    // Nulling GradValueText tells the glyph-gradient pass to
+                    // recolour (and re-mesh) the new digits; see TickBox.
+                    SetCount(box.Value, value, thousands: false);
+                    box.GradValueText = null;
                 } else if(box.Value == null && box.Label != null && spec.InlineStatCounter && box.LastShown != value) {
-                    box.Label.text = DmInlineStatText(spec, value);
+                    SetPrefixedCount(box.Label, box.DmStatPrefix, value, thousands: false);
+                    box.GradLabelText = null;
                 }
                 box.LastShown = value;
                 continue;
@@ -2502,7 +2553,8 @@ public static partial class KeyViewerOverlay {
 
             if(box.Value != null && box.Count != box.LastShown) {
                 box.LastShown = box.Count;
-                box.Value.text = box.Count.ToString(CultureInfo.InvariantCulture);
+                SetCount(box.Value, box.Count, thousands: false);
+                box.GradValueText = null;
             }
         }
 
@@ -2606,9 +2658,9 @@ public static partial class KeyViewerOverlay {
                     int value = box.IsKps ? pressLog.Count : totalCount;
                     if(box.Value != null && box.LastShown != value) {
                         // Together mode renders the caption inline with the value;
-                        // apart mode is the bare number, written alloc-free.
+                        // apart mode is the bare number. Both written alloc-free.
                         if(box.StatTogether) {
-                            box.Value.text = box.StatCaption + "  " + FormatCount(value);
+                            SetPrefixedCount(box.Value, box.StatCaptionChars, value);
                         } else {
                             SetCount(box.Value, value);
                         }

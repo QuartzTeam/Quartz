@@ -495,14 +495,25 @@ public static partial class KeyViewerOverlay {
         DmNoteSpec spec = box.Dm;
         bool pressed = box.Pressed;
 
-        // Per-glyph gradient text.
+        // Per-glyph gradient text. Animated gradients recolour every frame; a
+        // static gradient's colours only change when the coloured mesh does, so
+        // it re-applies only when invalidated — a text write / press flip / font
+        // swap nulls the Grad*Text tracker (the null also forces the re-mesh the
+        // re-apply needs to outlive the pending TMP rebuild), and a state swap
+        // shows up as a different gradient object. A mere `transition:` keeps a
+        // box in cssFx, which otherwise re-uploaded static glyph colours (and a
+        // GPU colour stream) every LateUpdate.
         CssAnimGradient lg = pressed ? spec.ActiveLabelGradient : spec.LabelGradient;
-        if(box.Label != null && lg != null) {
+        if(box.Label != null && lg != null
+            && (lg.Period > 0.01f || lg != box.GradLabelApplied || box.GradLabelText == null)) {
             ApplyGlyphGradient(box.Label, lg, time, ref box.GradLabelText);
+            box.GradLabelApplied = lg;
         }
         CssAnimGradient cg = pressed ? spec.ActiveCounterGradient : spec.CounterGradient;
-        if(box.Value != null && cg != null) {
+        if(box.Value != null && cg != null
+            && (cg.Period > 0.01f || cg != box.GradValueApplied || box.GradValueText == null)) {
             ApplyGlyphGradient(box.Value, cg, time, ref box.GradValueText);
+            box.GradValueApplied = cg;
         }
 
         // Fill gradient scroll.
