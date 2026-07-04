@@ -56,7 +56,7 @@ internal static class PageSettings {
     // For jumping to the Updates section from the update toast.
     private static UIScrollController scrollController;
     private static RectTransform pageContent;
-    private static RectTransform updatesAnchor;
+    private static GenerateUI.CollapsibleSection updatesSection;
 
     public static void Create(RectTransform parent) {
         // The page can be built more than once per session (profile switches
@@ -104,6 +104,14 @@ internal static class PageSettings {
 
                     mainRow.SetActive(isMainMatch);
 
+                    // The row's ancestor Collapsible body is hidden while
+                    // collapsed regardless of its own active state, so a
+                    // match inside one needs the section snapped open too.
+                    if(isMainMatch && !isBlank) {
+                        foreach(GenerateUI.CollapsibleSection sec in GenerateUI.Sections)
+                            if(sec.HeaderObj == labelRow) sec.SetExpanded(true, false, false);
+                    }
+
                     if(isMainMatch) labelActivationMap[labelRow] = true;
                 }
 
@@ -119,12 +127,12 @@ internal static class PageSettings {
         findInput.Placeholder.gameObject.AddComponent<TextLocalization>().Init("FIND", "Find");
         findInput.InputField.characterLimit = 22;
 
-        var langLabelRow = GenerateUI.Row(content.transform);
-        var langText = GenerateUI.AddTextH1(langLabelRow);
-        var langTextTr = langText.gameObject.AddComponent<TextLocalization>().Init("LANGUAGE", "Language");
+        var langSec = GenerateUI.Collapsible(content.transform, "Language", startExpanded: true);
+        var langTextTr = langSec.HeaderObj.transform.Find("Bar/Label").gameObject
+            .AddComponent<TextLocalization>().Init("LANGUAGE", "Language");
 
         string[] langs = [.. MainCore.Tr.GetLanguages().OrderBy(x => x, StringComparer.OrdinalIgnoreCase)];
-        var langRow = GenerateUI.Row(content.transform);
+        var langRow = GenerateUI.Row(langSec.Body);
         languageDropdown = GenerateUI.DropDown(
             langRow,
             null,
@@ -177,12 +185,13 @@ internal static class PageSettings {
         }
         langBtn.Label.gameObject.AddComponent<TextLocalization>().Init("RELOAD", "Reload");
 
-        objects[langTextTr] = (langLabelRow.gameObject, langRow.gameObject);
+        objects[langTextTr] = (langSec.HeaderObj, langRow.gameObject);
 
-        var overlayerText = GenerateUI.AddTextH1(GenerateUI.Row(content.transform));
-        var overlayerTextTr = overlayerText.gameObject.AddComponent<TextLocalization>().Init("OVERLAYER", "Quartz");
+        var overlaySec = GenerateUI.Collapsible(content.transform, "Quartz", startExpanded: true);
+        var overlayerTextTr = overlaySec.HeaderObj.transform.Find("Bar/Label").gameObject
+            .AddComponent<TextLocalization>().Init("OVERLAYER", "Quartz");
 
-        var startupRow = GenerateUI.Row(content.transform);
+        var startupRow = GenerateUI.Row(overlaySec.Body);
         UIToggle startupToggle = GenerateUI.Toggle(
             startupRow,
             defSet.ShowOnStartup,
@@ -195,9 +204,9 @@ internal static class PageSettings {
             "show_on_startup"
         );
         var startupToggleTr = startupToggle.Label.gameObject.AddComponent<TextLocalization>().Init("SHOW_OVERLAYER_PANEL_AT_STARTUP", "Show Quartz Settings at Startup");
-        objects[startupToggleTr] = (overlayerText.gameObject, startupRow.gameObject);
+        objects[startupToggleTr] = (overlaySec.HeaderObj, startupRow.gameObject);
 
-        var keybindRow = GenerateUI.Row(content.transform);
+        var keybindRow = GenerateUI.Row(overlaySec.Body);
         var keybindLabel = GenerateUI.KeyBind(
             keybindRow,
             (Keybind.KeyModifier)MainCore.Conf.ToggleModifier,
@@ -211,9 +220,9 @@ internal static class PageSettings {
             "toggle_keybind"
         );
         var keybindTr = keybindLabel.gameObject.AddComponent<TextLocalization>().Init("TOGGLE_KEYBIND", "Toggle Menu Keybind");
-        objects[keybindTr] = (overlayerText.gameObject, keybindRow.gameObject);
+        objects[keybindTr] = (overlaySec.HeaderObj, keybindRow.gameObject);
 
-        var tooltipRow = GenerateUI.Row(content.transform);
+        var tooltipRow = GenerateUI.Row(overlaySec.Body);
         UIToggle tooltipToggle = GenerateUI.Toggle(
             tooltipRow,
             defSet.Tooltip,
@@ -228,12 +237,12 @@ internal static class PageSettings {
         );
         tooltipToggle.Rect.AddToolTip(
             "DESC_SHOW_TOOLTIP",
-            "This is a Tooltip!"
+            "Shows a description bubble when you hover over a setting. Turning this off hides all tooltips, including this one."
         );
         var tooltipToggleTr = tooltipToggle.Label.gameObject.AddComponent<TextLocalization>().Init("SHOW_TOOLTIP", "Show Tooltip");
-        objects[tooltipToggleTr] = (overlayerText.gameObject, tooltipRow.gameObject);
+        objects[tooltipToggleTr] = (overlaySec.HeaderObj, tooltipRow.gameObject);
 
-        var middleClickRow = GenerateUI.Row(content.transform);
+        var middleClickRow = GenerateUI.Row(overlaySec.Body);
         UIToggle middleClickToggle = GenerateUI.Toggle(
             middleClickRow,
             defSet.MiddleClickToDefault,
@@ -250,13 +259,13 @@ internal static class PageSettings {
             "Setting that restores an item to its default value when you middle-click on it.\nYou can identify it by a small dot at the top-left of the item"
         );
         var middleClickToggleTr = middleClickToggle.Label.gameObject.AddComponent<TextLocalization>().Init("MIDDLE_CLICK_TO_SET_AS_DEFAULT", "Middle-click to set as default");
-        objects[middleClickToggleTr] = (overlayerText.gameObject, middleClickRow.gameObject);
+        objects[middleClickToggleTr] = (overlaySec.HeaderObj, middleClickRow.gameObject);
 
         static float uiScaleFilter(float v) {
             v = Mathf.Round(v * 100f) / 100f;
             return Mathf.Clamp(v, 0.8f, 1.6f);
         }
-        var uiScaleRow = GenerateUI.Row(content.transform);
+        var uiScaleRow = GenerateUI.Row(overlaySec.Body);
         UISlider uiScale = GenerateUI.Slider(
             uiScaleRow,
             1f,
@@ -301,9 +310,9 @@ internal static class PageSettings {
         };
         var uiScaleTr = uiScale.Label.gameObject.AddComponent<TextLocalization>().Init("UI_SCALE", "UI Scale");
 
-        objects[uiScaleTr] = (overlayerText.gameObject, uiScaleRow.gameObject);
+        objects[uiScaleTr] = (overlaySec.HeaderObj, uiScaleRow.gameObject);
 
-        var scrollRow = GenerateUI.Row(content.transform);
+        var scrollRow = GenerateUI.Row(overlaySec.Body);
         UISlider scrollSpeed = GenerateUI.Slider(
             scrollRow,
             80f,
@@ -318,9 +327,9 @@ internal static class PageSettings {
         );
         scrollSpeed.Format = "0 px";
         var scrollTr = scrollSpeed.Label.gameObject.AddComponent<TextLocalization>().Init("SCROLL_SPEED", "Scroll Speed");
-        objects[scrollTr] = (overlayerText.gameObject, scrollRow.gameObject);
+        objects[scrollTr] = (overlaySec.HeaderObj, scrollRow.gameObject);
 
-        var opacityRow = GenerateUI.Row(content.transform);
+        var opacityRow = GenerateUI.Row(overlaySec.Body);
         UISlider opacity = GenerateUI.Slider(
             opacityRow,
             100f,
@@ -340,9 +349,9 @@ internal static class PageSettings {
             "Transparency of the settings window."
         );
         var opacityTr = opacity.Label.gameObject.AddComponent<TextLocalization>().Init("WINDOW_OPACITY", "Window Opacity");
-        objects[opacityTr] = (overlayerText.gameObject, opacityRow.gameObject);
+        objects[opacityTr] = (overlaySec.HeaderObj, opacityRow.gameObject);
 
-        var accentRow = GenerateUI.Row(content.transform);
+        var accentRow = GenerateUI.Row(overlaySec.Body);
         UIColorPicker accentPicker = GenerateUI.ColorPicker(
             accentRow,
             new Color(1f, 0.6f, 0.6f, 1f),
@@ -358,12 +367,11 @@ internal static class PageSettings {
             "Recolors the whole Quartz UI. Middle-click to reset."
         );
         var accentTr = accentPicker.Label.gameObject.AddComponent<TextLocalization>().Init("ACCENT_COLOR", "Accent Color");
-        objects[accentTr] = (overlayerText.gameObject, accentRow.gameObject);
+        objects[accentTr] = (overlaySec.HeaderObj, accentRow.gameObject);
 
-        var updatesLabelRow = GenerateUI.Row(content.transform);
-        var updatesText = GenerateUI.AddTextH1(updatesLabelRow);
-        var updatesTextTr = updatesText.gameObject.AddComponent<TextLocalization>().Init("UPDATES", "Updates");
-        updatesAnchor = updatesLabelRow;
+        updatesSection = GenerateUI.Collapsible(content.transform, "Updates", startExpanded: true);
+        var updatesTextTr = updatesSection.HeaderObj.transform.Find("Bar/Label").gameObject
+            .AddComponent<TextLocalization>().Init("UPDATES", "Updates");
 
         ReleaseChannel[] channels = [
             ReleaseChannel.Stable,
@@ -371,7 +379,7 @@ internal static class PageSettings {
             ReleaseChannel.Beta,
             ReleaseChannel.Alpha,
         ];
-        var channelRow = GenerateUI.Row(content.transform);
+        var channelRow = GenerateUI.Row(updatesSection.Body);
         UIDropDown<ReleaseChannel> channelDropdown = GenerateUI.DropDown(
             channelRow,
             ReleaseChannel.Stable,
@@ -394,9 +402,9 @@ internal static class PageSettings {
             "DESC_UPDATE_CHANNEL",
             "Which builds to receive when updating. Alpha includes every build; each step up is more stable, with Stable being only final releases."
         );
-        objects[updatesTextTr] = (updatesLabelRow.gameObject, channelRow.gameObject);
+        objects[updatesTextTr] = (updatesSection.HeaderObj, channelRow.gameObject);
 
-        var updateCheckRow = GenerateUI.Row(content.transform);
+        var updateCheckRow = GenerateUI.Row(updatesSection.Body);
         updateCheckButton = GenerateUI.Button(
             updateCheckRow,
             () => UpdateService.Check(),
@@ -405,7 +413,7 @@ internal static class PageSettings {
         );
         updateCheckButton.Label.gameObject.AddComponent<TextLocalization>().Init("CHECK_FOR_UPDATES", "Check for Updates");
 
-        var updateStatusRow = GenerateUI.Row(content.transform);
+        var updateStatusRow = GenerateUI.Row(updatesSection.Body);
         // noPad so the text lines up with the progress bar track below.
         updateStatusText = GenerateUI.AddText(updateStatusRow, noPad: true);
         updateStatusText.text = "";
@@ -415,7 +423,7 @@ internal static class PageSettings {
             // width follows UpdateService.Progress, plus a percent readout.
             // Visible only while Installing (and progress is known); drives
             // both real downloads and the dev-simulated one.
-            var progressRect = GenerateUI.Row(content.transform, 32f);
+            var progressRect = GenerateUI.Row(updatesSection.Body, 32f);
             updateProgressRow = progressRect.gameObject;
 
             GameObject track = new("ProgressTrack");
@@ -475,7 +483,7 @@ internal static class PageSettings {
 
         // Version text on its own row; action buttons on the row below so
         // long tags get the full width instead of squeezing the buttons.
-        var updateActionRect = GenerateUI.Row(content.transform);
+        var updateActionRect = GenerateUI.Row(updatesSection.Body);
         updateActionRow = updateActionRect.gameObject;
 
         GenerateUI.ButtonRow(updateActionRect, 0f);
@@ -485,7 +493,7 @@ internal static class PageSettings {
         LayoutElement versionLe = updateVersionText.gameObject.AddComponent<LayoutElement>();
         versionLe.flexibleWidth = 1f;
 
-        var updateButtonRect = GenerateUI.Row(content.transform);
+        var updateButtonRect = GenerateUI.Row(updatesSection.Body);
         updateButtonRow = updateButtonRect.gameObject;
 
         GenerateUI.ButtonRow(updateButtonRect);
@@ -546,14 +554,14 @@ internal static class PageSettings {
         }
         RefreshUpdates();
 
-        var fontLabelRow = GenerateUI.Row(content.transform);
-        var fontText = GenerateUI.AddTextH1(fontLabelRow);
-        var fontTextTr = fontText.gameObject.AddComponent<TextLocalization>().Init("FONT", "Font");
+        var fontSec = GenerateUI.Collapsible(content.transform, "Font", startExpanded: true);
+        var fontTextTr = fontSec.HeaderObj.transform.Find("Bar/Label").gameObject
+            .AddComponent<TextLocalization>().Init("FONT", "Font");
 
         // Dropdown + the custom-font manage controls live in one container so
         // the settings search shows/hides them together.
         GameObject fontGroup = new("FontGroup");
-        fontGroup.transform.SetParent(content.transform, false);
+        fontGroup.transform.SetParent(fontSec.Body, false);
         fontGroup.AddComponent<RectTransform>();
         GenerateUI.FitVertical(fontGroup, 8f);
 
@@ -633,17 +641,17 @@ internal static class PageSettings {
 
         RefreshFontManageRow();
 
-        objects[fontTextTr] = (fontLabelRow.gameObject, fontGroup);
+        objects[fontTextTr] = (fontSec.HeaderObj, fontGroup);
 
         // Settings-window font: lets this mod's own settings window use a
         // different face than the gameplay overlays. "Same as overlay font"
         // (the default) follows the Font picker above, so setups that never
         // touch this are unchanged.
-        var settingsFontLabelRow = GenerateUI.Row(content.transform);
-        var settingsFontText = GenerateUI.AddTextH1(settingsFontLabelRow);
-        var settingsFontTextTr = settingsFontText.gameObject.AddComponent<TextLocalization>().Init("SETTINGS_FONT", "Settings Window Font");
+        var settingsFontSec = GenerateUI.Collapsible(content.transform, "Settings Window Font", startExpanded: true);
+        var settingsFontTextTr = settingsFontSec.HeaderObj.transform.Find("Bar/Label").gameObject
+            .AddComponent<TextLocalization>().Init("SETTINGS_FONT", "Settings Window Font");
 
-        var settingsFontRow = GenerateUI.Row(content.transform);
+        var settingsFontRow = GenerateUI.Row(settingsFontSec.Body);
         settingsFontDropdown = GenerateUI.DropDown(
             settingsFontRow,
             FontManager.SameAsOverlay,
@@ -658,7 +666,7 @@ internal static class PageSettings {
             "DESC_SETTINGS_FONT",
             "Font for this mod's own settings window. \"Same as overlay font\" follows the Font picker above."
         );
-        objects[settingsFontTextTr] = (settingsFontLabelRow.gameObject, settingsFontRow.gameObject);
+        objects[settingsFontTextTr] = (settingsFontSec.HeaderObj, settingsFontRow.gameObject);
     }
 
     private static string CurrentSettingsFontValue() {
@@ -824,15 +832,20 @@ internal static class PageSettings {
     }
 
     // Scrolls the page so the Updates section heading sits at the top of the
-    // viewport. Used by the update toast after switching to this page.
+    // viewport, expanding it first if it's collapsed. Used by the update
+    // toast after switching to this page — same expand-and-scroll mechanism
+    // PageSearch uses to jump to a result hidden inside a collapsed section.
     internal static void ScrollToUpdates() {
-        if(scrollController == null || updatesAnchor == null || pageContent == null) return;
+        if(scrollController == null || updatesSection?.Section == null || pageContent == null) return;
+
+        updatesSection.SetExpanded(true, false, false);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(pageContent);
 
-        // Layout children keep the default centre pivot, so anchoredPosition.y
-        // is -(distance from content top + half the row height).
-        float top = -updatesAnchor.anchoredPosition.y - (updatesAnchor.rect.height * 0.5f);
+        RectTransform target = updatesSection.Section;
+        Vector3 worldCenter = target.TransformPoint(target.rect.center);
+        float localY = pageContent.InverseTransformPoint(worldCenter).y;
+        float top = -localY - (target.rect.height * 0.5f);
         scrollController.ScrollTo(top - 6f);
     }
 
