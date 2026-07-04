@@ -389,26 +389,7 @@ public sealed class KeyViewerStylesheet {
         }
     }
 
-    private static void ParseGraphBorder(string v, CssGraphStyle s) {
-        string t = v.Trim();
-        if(t.Equals("none", StringComparison.OrdinalIgnoreCase) || t.Length == 0) {
-            s.BorderWidth = 0f;
-            return;
-        }
-        bool gotWidth = false;
-        foreach(string tok in SplitTopLevel(t, ' ')) {
-            string p = tok.Trim();
-            if(p.Length == 0 || p.Equals("solid", StringComparison.OrdinalIgnoreCase)
-                || p.Equals("dashed", StringComparison.OrdinalIgnoreCase)
-                || p.Equals("dotted", StringComparison.OrdinalIgnoreCase)) {
-                continue;
-            }
-            if(!gotWidth && TryLen(p, out float w) && !LooksLikeColor(p)) {
-                s.BorderWidth = w;
-                gotWidth = true;
-            } else if(TryParseColor(p, out CssColor bc)) { s.BorderColor = bc; }
-        }
-    }
+    private static void ParseGraphBorder(string v, CssGraphStyle s) => ParseBorderCore(v, ref s.BorderWidth, ref s.BorderColor);
 
     private static HashSet<string> ClassSet(string? className) {
         var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -655,10 +636,12 @@ public sealed class KeyViewerStylesheet {
         return false;
     }
 
-    private static void ParseBorder(string v, CssKeyStyle s) {
+    private static void ParseBorder(string v, CssKeyStyle s) => ParseBorderCore(v, ref s.BorderWidth, ref s.BorderColor);
+
+    private static void ParseBorderCore(string v, ref float? width, ref CssColor color) {
         string t = v.Trim();
         if(t.Equals("none", StringComparison.OrdinalIgnoreCase) || t.Length == 0) {
-            s.BorderWidth = 0f;
+            width = 0f;
             return;
         }
         bool gotWidth = false;
@@ -670,9 +653,9 @@ public sealed class KeyViewerStylesheet {
                 continue;
             }
             if(!gotWidth && TryLen(p, out float w) && !LooksLikeColor(p)) {
-                s.BorderWidth = w;
+                width = w;
                 gotWidth = true;
-            } else if(TryParseColor(p, out CssColor c)) { s.BorderColor = c; }
+            } else if(TryParseColor(p, out CssColor c)) { color = c; }
         }
     }
 
@@ -977,7 +960,7 @@ public sealed class KeyViewerStylesheet {
 
     private static int Hex(char c) => Convert.ToInt32(c.ToString(), 16);
 
-    private static float Comp(string s, float scale) {
+    internal static float Comp(string s, float scale) {
         string t = s.Trim();
         if(t.EndsWith("%", StringComparison.Ordinal)) {
             return float.TryParse(t.TrimEnd('%').Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pct) ? Clamp01(pct / 100f) : 1f;
@@ -990,7 +973,7 @@ public sealed class KeyViewerStylesheet {
         return float.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out float v) ? Clamp01(v / 100f) : 0f;
     }
 
-    private static float Alpha(string s) {
+    internal static float Alpha(string s) {
         string t = s.Trim();
         if(t.EndsWith("%", StringComparison.Ordinal)) {
             return float.TryParse(t.TrimEnd('%').Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pct) ? Clamp01(pct / 100f) : 1f;

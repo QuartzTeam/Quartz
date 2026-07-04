@@ -1797,10 +1797,10 @@ public static partial class KeyViewerOverlay {
                     string inner = s[(lp + 1)..rp];
                     string[] parts = inner.Split(new[] { ',', '/' }, StringSplitOptions.RemoveEmptyEntries);
                     if(parts.Length >= 3) {
-                        float r = ParseColorComponent(parts[0], 255f);
-                        float g = ParseColorComponent(parts[1], 255f);
-                        float b = ParseColorComponent(parts[2], 255f);
-                        float a = parts.Length >= 4 ? ParseAlphaComponent(parts[3]) : alpha;
+                        float r = KeyViewerStylesheet.Comp(parts[0], 255f);
+                        float g = KeyViewerStylesheet.Comp(parts[1], 255f);
+                        float b = KeyViewerStylesheet.Comp(parts[2], 255f);
+                        float a = parts.Length >= 4 ? KeyViewerStylesheet.Alpha(parts[3]) : alpha;
                         return new Color(r, g, b, a);
                     }
                 }
@@ -1826,30 +1826,6 @@ public static partial class KeyViewerOverlay {
         return new Color(1f, 1f, 1f, alpha);
     }
 
-    private static float ParseColorComponent(string s, float scale) {
-        string t = s.Trim();
-        if(t.EndsWith("%")) {
-            return float.TryParse(t.TrimEnd('%').Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pct)
-                ? Mathf.Clamp01(pct / 100f)
-                : 1f;
-        }
-        return float.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out float v)
-            ? Mathf.Clamp01(v / scale)
-            : 1f;
-    }
-
-    private static float ParseAlphaComponent(string s) {
-        string t = s.Trim();
-        if(t.EndsWith("%")) {
-            return float.TryParse(t.TrimEnd('%').Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pct)
-                ? Mathf.Clamp01(pct / 100f)
-                : 1f;
-        }
-        return float.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out float v)
-            ? Mathf.Clamp01(v <= 1f ? v : v / 255f)
-            : 1f;
-    }
-
     private static string JStr(JObject p, string key, string def) {
         JToken t = p?[key];
         return t == null || t.Type == JTokenType.Null ? def : t.ToString();
@@ -1860,23 +1836,16 @@ public static partial class KeyViewerOverlay {
         return t == null || t.Type == JTokenType.Null ? null : t.ToString();
     }
 
-    private static float JFloat(JObject p, string key, float def) {
+    // Nullable-token-tolerant ToObject<T> behind the typed wrappers below.
+    private static T JVal<T>(JObject p, string key, T def) {
         JToken t = p?[key];
         if(t == null || t.Type == JTokenType.Null) return def;
-        try { return t.ToObject<float>(); } catch { return def; }
+        try { return t.ToObject<T>(); } catch { return def; }
     }
 
-    private static int JInt(JObject p, string key, int def) {
-        JToken t = p?[key];
-        if(t == null || t.Type == JTokenType.Null) return def;
-        try { return t.ToObject<int>(); } catch { return def; }
-    }
-
-    private static bool JBool(JObject p, string key, bool def) {
-        JToken t = p?[key];
-        if(t == null || t.Type == JTokenType.Null) return def;
-        try { return t.ToObject<bool>(); } catch { return def; }
-    }
+    private static float JFloat(JObject p, string key, float def) => JVal(p, key, def);
+    private static int JInt(JObject p, string key, int def) => JVal(p, key, def);
+    private static bool JBool(JObject p, string key, bool def) => JVal(p, key, def);
 
     public static void ResetPosition() {
         KeyViewerSettings def = new();
@@ -1894,46 +1863,33 @@ public static partial class KeyViewerOverlay {
         Save();
     }
 
-    public static bool ImportDmNotePreset(out string error) {
-        error = null;
-        string picked;
-
-        try {
-            picked = UnityFileDialog.FileBrowser.PickFile(
-                "", "JSON Preset", new[] { "json" }, "Select DM Note preset");
-        } catch(Exception ex) {
-            error = "Picker failed: " + ex.Message;
-            MainCore.Log.Msg("[KeyViewer] " + error);
-            return false;
-        }
-
-        if(string.IsNullOrEmpty(picked)) return false;
-
-        try {
-            string text = File.ReadAllText(picked);
-            JObject.Parse(text);
-            Conf.DmPresetJson = text;
-            Rebuild();
-            Save();
-            MainCore.Log.Msg("[KeyViewer] Imported DM Note preset from " + picked);
-            return true;
-        } catch(Exception ex) {
-            error = "Import failed: " + ex.Message;
-            MainCore.Log.Msg("[KeyViewer] " + error);
-            return false;
-        }
-    }
+    public static bool ImportDmNotePreset(out string error) =>
+        ImportDmNoteFile(out error, "JSON Preset", "json", "Select DM Note preset", "preset",
+            (text, _) => {
+                JObject.Parse(text);
+                Conf.DmPresetJson = text;
+            });
 
     // Picks a DM Note custom-CSS file and stores its text on the config (like
     // the preset, the CSS travels with the config so it survives a file move).
-    // Enables the CSS layer on a successful import. Mirrors ImportDmNotePreset.
-    public static bool ImportDmNoteCss(out string error) {
+    // Enables the CSS layer on a successful import.
+    public static bool ImportDmNoteCss(out string error) =>
+        ImportDmNoteFile(out error, "CSS", "css", "Select DM Note custom CSS", "CSS",
+            (text, picked) => {
+                Conf.DmCssText = text;
+                Conf.DmCssPath = picked;
+                Conf.DmCssEnabled = true;
+            });
+
+    // Shared pick-file/read/store/rebuild/log scaffold for the two imports above.
+    private static bool ImportDmNoteFile(out string error, string filterName, string ext,
+        string title, string what, Action<string, string> store) {
         error = null;
         string picked;
 
         try {
             picked = UnityFileDialog.FileBrowser.PickFile(
-                "", "CSS", new[] { "css" }, "Select DM Note custom CSS");
+                "", filterName, new[] { ext }, title);
         } catch(Exception ex) {
             error = "Picker failed: " + ex.Message;
             MainCore.Log.Msg("[KeyViewer] " + error);
@@ -1944,12 +1900,10 @@ public static partial class KeyViewerOverlay {
 
         try {
             string text = File.ReadAllText(picked);
-            Conf.DmCssText = text;
-            Conf.DmCssPath = picked;
-            Conf.DmCssEnabled = true;
+            store(text, picked);
             Rebuild();
             Save();
-            MainCore.Log.Msg("[KeyViewer] Imported DM Note CSS from " + picked);
+            MainCore.Log.Msg("[KeyViewer] Imported DM Note " + what + " from " + picked);
             return true;
         } catch(Exception ex) {
             error = "Import failed: " + ex.Message;
