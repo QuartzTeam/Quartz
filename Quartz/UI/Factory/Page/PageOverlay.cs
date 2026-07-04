@@ -137,6 +137,10 @@ internal static partial class PageOverlay {
         }
     }
 
+    // Soft cap: past this many panels, a warning is shown, but creation is
+    // never blocked (mirrors PageProgressBar's gradient-stop cap style).
+    private const int PANEL_SOFT_CAP = 10;
+
     // Rebuilds the per-panel sections (create/delete change the set).
     private static void RebuildPanelsList() {
         if(panelsList == null) return;
@@ -149,6 +153,13 @@ internal static partial class PageOverlay {
             GenerateUI.AddLocalizedMutedText(
                 GenerateUI.Row(panelsList.transform), "PANEL_NO_PANELS", "No panels. Create one above.", 19f);
             return;
+        }
+
+        if(panels.Count > PANEL_SOFT_CAP) {
+            GenerateUI.AddMutedText(GenerateUI.Row(panelsList.transform), 19f).text = string.Format(
+                GenerateUI.Tr("PANEL_TOO_MANY", "{0} panels — that's a lot; performance may suffer."),
+                panels.Count
+            );
         }
 
         for(int i = 0; i < panels.Count; i++)
