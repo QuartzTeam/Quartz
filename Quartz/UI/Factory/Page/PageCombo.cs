@@ -4,6 +4,7 @@ using Quartz.Features.Interop;
 using Quartz.Resource;
 using Quartz.UI.Generator;
 using Quartz.UI.Objects.Impl;
+using TMPro;
 using UnityEngine;
 
 namespace Quartz.UI.Factory.Page;
@@ -23,31 +24,45 @@ internal static class PageCombo {
         void ApplyCaptionShadow() => ComboOverlay.ApplyCaptionShadow();
         void ApplyCountShadow() => ComboOverlay.ApplyCountShadow();
 
+        TextMeshProUGUI headerLabel = null;
+        void ApplyHeaderCue(bool enabled) {
+            if(headerLabel != null) headerLabel.alpha = enabled ? 1f : 0.5f;
+        }
+
         var sec = GenerateUI.Collapsible(
             content, "Combo", startExpanded: false,
-            v => { conf.Enabled = v; Apply(); Save(); },
+            v => { conf.Enabled = v; Apply(); Save(); ApplyHeaderCue(v); },
             conf.Enabled
         );
 
-        GenerateUI.Toggle(
-            GenerateUI.Row(sec.Body),
+        // Header gives no other indication of whether Combo is enabled without
+        // expanding it, so dim the title when it's off.
+        headerLabel = sec.HeaderObj.transform.Find("Bar/Label")?.GetComponent<TextMeshProUGUI>();
+        ApplyHeaderCue(conf.Enabled);
+
+        GenerateUI.ToggleTip(
+            sec.Body,
             def.CountAuto,
             conf.CountAuto,
             v => { conf.CountAuto = v; Save(); },
             "Combo Counts Auto Hits",
-            "combo_auto"
+            "combo_auto",
+            "Count auto-hit judgements (e.g. holds/repeats) toward the combo, not just manual key presses."
         );
 
-        // Only meaningful when the XPerfect mod is installed: count only its
-        // dead-center X perfects toward the combo (caption becomes "XCombo").
+        // Only meaningful when the XPerfect mod is installed — Quartz reads the
+        // X-perfect count FROM XPerfect, so with it disabled the toggle has no
+        // data and would silently do nothing. Hidden unless installed, matching
+        // the Show XPerfect toggle on PageJudgement.
         if(XPerfectBridge.Installed) {
-            GenerateUI.Toggle(
-                GenerateUI.Row(sec.Body),
+            GenerateUI.ToggleTip(
+                sec.Body,
                 def.XPerfectComboEnabled,
                 conf.XPerfectComboEnabled,
                 v => { conf.XPerfectComboEnabled = v; Apply(); Save(); },
                 "XPerfect Combo (X Only)",
-                "combo_xperfect"
+                "combo_xperfect",
+                "Count only dead-center X perfects toward the combo when the XPerfect mod is active. The caption becomes \"XCombo\"."
             );
         }
 
@@ -190,22 +205,24 @@ internal static class PageCombo {
             def.ColorMax, 1f, 5000f, conf.ColorMax, "0", 1f,
             v => conf.ColorMax = Mathf.RoundToInt(v), null, Save);
 
-        GenerateUI.Toggle(
-            GenerateUI.Row(sec.Body),
+        GenerateUI.ToggleTip(
+            sec.Body,
             def.SolidColor,
             conf.SolidColor,
             v => { conf.SolidColor = v; Save(); },
             "Solid Color",
-            "combo_solidcolor"
+            "combo_solidcolor",
+            "Use a single flat color instead of blending between Low and High Combo Color as the combo grows."
         );
 
-        GenerateUI.Toggle(
-            GenerateUI.Row(sec.Body),
+        GenerateUI.ToggleTip(
+            sec.Body,
             def.PerfectColorEnabled,
             conf.PerfectColorEnabled,
             v => { conf.PerfectColorEnabled = v; Save(); },
             "Perfect Color (at Max)",
-            "combo_perfectcolor_enabled"
+            "combo_perfectcolor_enabled",
+            "Switch to Perfect Color once the combo reaches Color Max Combo, instead of staying on High Combo Color."
         );
 
         GenerateUI.ColorPicker(
