@@ -1,0 +1,23 @@
+Quartz/UI/Factory/Page/PageCombo.cs
+  s_90010d0854592e::t_829ca9cb92640a 7
+  s_90010d0854592e::t_c6a070dbfefc36 208-209,214-215,218-219,224-225
+  s_90010d0854592e::t_81b6928d1925fe 38-39,42
+  s_90010d0854592e::t_d7d94b33ced42c 27-31,34,40-41
+  s_90010d0854592e::t_31f7e9a40a4228 43-44,49-50,53-56,58-59,64-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ea831e29f178f24124c26bedde17c0bb012902e7",
+  "prompts": {},
+  "sessions": {
+    "s_90010d0854592e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1eb3e6ee-7fd4-405a-948e-978db5260610",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
