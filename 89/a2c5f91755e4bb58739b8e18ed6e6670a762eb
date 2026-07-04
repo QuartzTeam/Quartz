@@ -1,0 +1,47 @@
+Quartz/Tween/GTweenExtensions.cs
+  s_e03bf5eb2b3681::t_94669629fed866 58-66
+Quartz/UI/Factory/Page/PageOverlay.cs
+  s_e03bf5eb2b3681::t_3b7efa17e2f2ab 572,576,580
+  s_e03bf5eb2b3681::t_c9bb235abeaed1 824-826
+  s_e03bf5eb2b3681::t_78ae70b62f73d0 1078,1083
+  s_e03bf5eb2b3681::t_fbabdcbe92138a 951
+  s_e03bf5eb2b3681::t_b48fbf6cef9aa8 630-639,641-685,687-692,699,722-724,1299
+  s_e03bf5eb2b3681::t_3689eb7b005317 272-273
+  s_e03bf5eb2b3681::t_64d5212cbc249c 48-49,54
+  s_e03bf5eb2b3681::t_37eaa16d2c1a0e 19
+  s_e03bf5eb2b3681::t_6271811b43491d 6
+  s_e03bf5eb2b3681::t_2d259327e5944d 1307-1309,1312-1313
+  s_e03bf5eb2b3681::t_7a32844be610bb 930
+  s_e03bf5eb2b3681::t_d0319b81f227ea 243,258,1001-1009
+  s_e03bf5eb2b3681::t_a790976e9e2332 1116-1121,1131-1134,1138-1143,1149,1180-1181,1185-1188,1192,1216,1222,1269-1271,1274,1294-1298
+  s_e03bf5eb2b3681::t_a6f5ce08f04942 216-217,224-226
+  s_e03bf5eb2b3681::t_db5c2d538f6f4c 739
+  s_e03bf5eb2b3681::t_fd31a3a6b2f5ea 725-727,736-738
+  s_e03bf5eb2b3681::t_33c6e5c021868f 740-742
+  s_e03bf5eb2b3681::t_d922cfd8e45597 1300
+  s_197ca3ec10f099::t_1b77ce5aae505e 728-735,743-744
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "89a2c5f91755e4bb58739b8e18ed6e6670a762eb",
+  "prompts": {},
+  "sessions": {
+    "s_197ca3ec10f099": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a3c8ac65b242160f2",
+        "model": "unknown"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_e03bf5eb2b3681": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4a35d5-d4c8-48f0-a560-989570ab28d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
