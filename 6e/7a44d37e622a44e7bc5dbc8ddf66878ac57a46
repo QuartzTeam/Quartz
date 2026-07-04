@@ -1,0 +1,31 @@
+Quartz/Features/Judgement/JudgementSettings.cs
+  s_e03bf5eb2b3681::t_1a78c838e19ec3 41-43
+  s_e03bf5eb2b3681::t_5242b0452c02d9 75
+Quartz/Features/ProgressBar/ProgressBarSettings.cs
+  s_e03bf5eb2b3681::t_76f08c9e94e0c2 87-89
+  s_e03bf5eb2b3681::t_cb6c455bcc53b4 43-44,46-47,49-51
+Quartz/Features/SongTitle/SongTitleSettings.cs
+  s_e03bf5eb2b3681::t_9c23e18227af03 66
+  s_e03bf5eb2b3681::t_f48a7f2b79b589 32-33,35-36
+  s_e03bf5eb2b3681::t_5e2b4f0d851057 71
+Quartz/Features/OttoIcon/OttoIconSettings.cs
+  s_e03bf5eb2b3681::t_43d6cfb1ea003d 32-33,35-37
+  s_e03bf5eb2b3681::t_034f8ea1d4b90e 58
+  s_e03bf5eb2b3681::t_5188ddd8120cc0 56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6e7a44d37e622a44e7bc5dbc8ddf66878ac57a46",
+  "prompts": {},
+  "sessions": {
+    "s_e03bf5eb2b3681": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4a35d5-d4c8-48f0-a560-989570ab28d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
