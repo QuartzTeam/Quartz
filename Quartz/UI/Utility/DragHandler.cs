@@ -15,13 +15,8 @@ public class DragHandler : MonoBehaviour {
     private void SetupEvents() {
         var trigger = gameObject.AddComponent<EventTrigger>();
 
-        var downEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-        downEntry.callback.AddListener(_ => OnPointerDownInternal());
-        trigger.triggers.Add(downEntry);
-
-        var dragEntry = new EventTrigger.Entry { eventID = EventTriggerType.Drag };
-        dragEntry.callback.AddListener(_ => OnDragInternal());
-        trigger.triggers.Add(dragEntry);
+        UnityUtils.AddEvent(EventTriggerType.PointerDown, _ => OnPointerDownInternal(), trigger);
+        UnityUtils.AddEvent(EventTriggerType.Drag, _ => OnDragInternal(), trigger);
     }
 
     private void OnPointerDownInternal() {

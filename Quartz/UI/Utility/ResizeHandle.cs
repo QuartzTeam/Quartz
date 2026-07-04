@@ -44,16 +44,9 @@ public class ResizeHandle : MonoBehaviour {
     private void Awake() {
         var trigger = gameObject.AddComponent<EventTrigger>();
 
-        var downEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-        downEntry.callback.AddListener(_ => { dragging = true; OnPointerDownInternal(); });
-        trigger.triggers.Add(downEntry);
-
-        var dragEntry = new EventTrigger.Entry { eventID = EventTriggerType.Drag };
-        dragEntry.callback.AddListener(_ => OnDragInternal());
-        trigger.triggers.Add(dragEntry);
-
-        var upEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
-        upEntry.callback.AddListener(_ => {
+        UnityUtils.AddEvent(EventTriggerType.PointerDown, _ => { dragging = true; OnPointerDownInternal(); }, trigger);
+        UnityUtils.AddEvent(EventTriggerType.Drag, _ => OnDragInternal(), trigger);
+        UnityUtils.AddEvent(EventTriggerType.PointerUp, _ => {
             dragging = false;
             // Persist the new size only when an actual resize happened (not a bare
             // click), so it's restored on the next launch.
@@ -61,19 +54,12 @@ public class ResizeHandle : MonoBehaviour {
                 UICore.SavePanelSize();
             }
             if(!hovered) NativeCursor.Reset();
-        });
-        trigger.triggers.Add(upEntry);
-
-        var enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        enterEntry.callback.AddListener(_ => { hovered = true; NativeCursor.Apply(Shape); });
-        trigger.triggers.Add(enterEntry);
-
-        var exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-        exitEntry.callback.AddListener(_ => {
+        }, trigger);
+        UnityUtils.AddEvent(EventTriggerType.PointerEnter, _ => { hovered = true; NativeCursor.Apply(Shape); }, trigger);
+        UnityUtils.AddEvent(EventTriggerType.PointerExit, _ => {
             hovered = false;
             if(!dragging) NativeCursor.Reset();
-        });
-        trigger.triggers.Add(exitEntry);
+        }, trigger);
     }
 
     // The OS reclaims the cursor on every mouse-move message, so re-assert it
