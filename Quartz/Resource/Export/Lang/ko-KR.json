@@ -852,7 +852,7 @@
     "ADDONS_RELOAD": "애드온 새로고침",
     "DESC_ADDONS_RELOAD": "모든 애드온을 내리고 Addons 폴더를 다시 검색해 다시 불러온 뒤 이 창을 다시 만듭니다.",
     "ADDONS_ADD": "애드온 추가",
-    "DESC_ADDONS_ADD": ".cs, .qaddon 또는 .dll 파일을 골라 Addons 폴더에 복사한 뒤 새로고침합니다.",
+    "DESC_ADDONS_ADD": ".qaddon 또는 .dll 파일을 골라 Addons 폴더에 복사한 뒤 새로고침합니다.",
     "ADDONS_ADD_TITLE": "Quartz 애드온 추가",
     "ADDONS_OPEN_FOLDER": "폴더 열기",
     "DESC_ADDONS_OPEN_FOLDER": "UserData/Quartz/Addons 폴더를 파일 탐색기에서 엽니다.",

@@ -852,7 +852,7 @@
     "ADDONS_RELOAD": "Reload Addons",
     "DESC_ADDONS_RELOAD": "Unloads every addon, re-scans the Addons folder, and reloads and rebuilds this window.",
     "ADDONS_ADD": "Add Addon",
-    "DESC_ADDONS_ADD": "Pick a .cs, .qaddon or .dll file to copy into the Addons folder, then reload.",
+    "DESC_ADDONS_ADD": "Pick a .qaddon or .dll file to copy into the Addons folder, then reload.",
     "ADDONS_ADD_TITLE": "Add Quartz Addon",
     "ADDONS_OPEN_FOLDER": "Open Folder",
     "DESC_ADDONS_OPEN_FOLDER": "Opens UserData/Quartz/Addons in your file browser.",
