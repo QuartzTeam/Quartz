@@ -1,0 +1,61 @@
+Quartz/Resource/Export/Lang/en-US.json
+  s_734b72a7e8faf4::t_303f6c04994243 116
+  s_7981deb5380a5b::t_4b7ea021842a31 398-400
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_734b72a7e8faf4::t_303f6c04994243 116
+  s_7981deb5380a5b::t_5857f1d560a625 398-400
+Quartz/Features/KeyViewer/KeyViewerOverlay.cs
+  s_2fe26f03de2bf1::t_b2d4f649e3a043 1382-1386
+  s_2fe26f03de2bf1::t_01453b8d2f4859 1351-1355
+Quartz/Features/KeyViewer/RainRenderer.cs
+  s_2fe26f03de2bf1::t_7dea4166bf9971 123-152
+  s_2fe26f03de2bf1::t_76deee5898d292 34-38
+  s_2fe26f03de2bf1::t_dea5b62739d8b8 93-97
+  s_2fe26f03de2bf1::t_364a9d76252d84 153-154
+Quartz/Features/KeyViewer/KeyViewerSettings.cs
+  s_2fe26f03de2bf1::t_f2627c36515b7f 450-452
+  s_2fe26f03de2bf1::t_07f11b4bb22fa5 195-200
+  s_2fe26f03de2bf1::t_18eec7f7703db3 581-583
+Quartz/UI/Factory/Page/PageKeyViewer.cs
+  s_e221391b14581b::t_f612f9ca62ce55 751-770
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d34590cc2f87b6d7bb251b1208e0d5ff25016149",
+  "prompts": {},
+  "sessions": {
+    "s_2fe26f03de2bf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34ae53fb-9f23-47d6-b293-24c839306909",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_734b72a7e8faf4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4dd12cc-97c3-4b3c-9634-453d419035a7",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_7981deb5380a5b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be06f58e-68ad-4b57-93b8-dc868ec6a8eb",
+        "model": "unknown"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_e221391b14581b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01d6a637-9641-4c11-b526-174030209144",
+        "model": "unknown"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
