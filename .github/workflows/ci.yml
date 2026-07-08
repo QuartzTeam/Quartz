@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    # The mod itself can't build in CI: it links the game's managed DLLs, which
+    # only exist beside a local game install (see Quartz.csproj / build.sh). The
+    # test project (Quartz.Tests) links only pure-logic source files and builds
+    # standalone on net10.0, so it runs here without the game.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Build
+        run: dotnet build Quartz.Tests/Quartz.Tests.csproj --configuration Debug
+      # Quartz.Tests is a custom console runner (OutputType Exe), not an xUnit/NUnit
+      # project, so `dotnet test` finds nothing. It returns exit code 1 on any
+      # failing test, which fails the step.
+      - name: Run tests
+        run: dotnet run --project Quartz.Tests/Quartz.Tests.csproj --configuration Debug --no-build
