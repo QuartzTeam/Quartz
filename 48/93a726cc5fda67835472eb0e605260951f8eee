@@ -1,0 +1,20 @@
+Quartz/UI/Factory/Page/PageAddons.cs
+  s_ca358292d15837::t_4b5ea248111459 36
+  s_ca358292d15837::t_f1d4e741ec7009 46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4893a726cc5fda67835472eb0e605260951f8eee",
+  "prompts": {},
+  "sessions": {
+    "s_ca358292d15837": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4e4a226c-059e-4d70-9842-7eab59cde34a",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
