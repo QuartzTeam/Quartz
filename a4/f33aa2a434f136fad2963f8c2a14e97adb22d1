@@ -1,0 +1,26 @@
+Quartz/Core/FeatureRegistry.cs
+  s_7dc67007514bbc::t_029f072276c69a 1-3,7,22,25,36-37,39-41,43-44
+  s_7dc67007514bbc::t_1ba27692df8c49 5,8-18,26-31
+  s_7dc67007514bbc::t_86c560101ede90 4,6,19-21,23-24,32-35,38,42
+Quartz/Core/QuartzRuntime.cs
+  s_7dc67007514bbc::t_3ba95363953ea9 333,340,348,351-356,370-371,383,391
+  s_7dc67007514bbc::t_e350d29d8a645a 63-64
+  s_7dc67007514bbc::t_a2743a4970c3d1 334-339,341-347,349-350,357-369
+  s_7dc67007514bbc::t_8edf480759ced2 243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "a4f33aa2a434f136fad2963f8c2a14e97adb22d1",
+  "prompts": {},
+  "sessions": {
+    "s_7dc67007514bbc": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0be96ed9effezgv58mL1RuWtX4",
+        "model": "tencent/hy3:free"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
