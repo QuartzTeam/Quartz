@@ -420,6 +420,25 @@ internal static class PageKeyViewer {
         };
         runner.OnCancelled = CancelCapture;
 
+        // The runner and its selectedSlot/listening/ghostListening closures stay
+        // alive for as long as this page's GameObjects do (pages tween in/out,
+        // they're never SetActive(false)'d) — so without this, leaving the tab
+        // mid-rebind keeps the capture live: the next keypress on an unrelated
+        // tab silently rewrites the previously-selected key's binding and
+        // reopens this page's editor over the docked pane. Drop the armed
+        // state on every tab switch away from Key Viewer, and unhook when the
+        // runner's GameObject is destroyed (full settings rebuild) so this
+        // doesn't pile up a duplicate subscriber per rebuild.
+        void OnTabChanged(int state) {
+            if(state == (int)OriginalMenuState.KeyViewer) return;
+            selectedSlot = -1;
+            listening = false;
+            ghostListening = false;
+            RefreshPreviewVisuals();
+        }
+        MenuFactory.OnStateChanged += OnTabChanged;
+        runner.OnDestroyed = () => MenuFactory.OnStateChanged -= OnTabChanged;
+
         float SnapFont(float v) => Mathf.Clamp(Mathf.Round(v / 0.05f) * 0.05f, 0.1f, 3f);
 
         // === Per-key editor (context pane) ===
@@ -1173,6 +1192,7 @@ internal static class PageKeyViewer {
         public Func<bool> ShouldCancel;
         public Action<KeyCode> OnCaptured;
         public Action OnCancelled;
+        public Action OnDestroyed;
 
         private static readonly KeyCode[] allKeys = (KeyCode[])Enum.GetValues(typeof(KeyCode));
 
@@ -1231,5 +1251,7 @@ internal static class PageKeyViewer {
                 }
             }
         }
+
+        private void OnDestroy() => OnDestroyed?.Invoke();
     }
 }
