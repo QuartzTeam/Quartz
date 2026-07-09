@@ -1,0 +1,83 @@
+Quartz/UI/Factory/Page/PageCalibration.cs
+  s_ba124b2f73015e::t_d1aeac16cd1994 1-95
+Quartz/Resource/Export/Lang/en-US.json
+  s_ba124b2f73015e::t_e8198809aec9de 88-91
+  s_ba124b2f73015e::t_20024a5cb95612 575-576
+  s_ba124b2f73015e::t_08ded44d0c6ded 35-49
+  s_ba124b2f73015e::t_52bc351251f716 247
+Quartz/Features/Calibration/CalibrationSettings.cs
+  s_ba124b2f73015e::t_9e514cdc6c0d16 1-66
+Quartz/UI/UICore.cs
+  s_ba124b2f73015e::t_d75ac18db23054 49
+Quartz/Core/QuartzRuntime.cs
+  s_ba124b2f73015e::t_d5485365e3f7c3 26
+  s_ba124b2f73015e::t_3ffa764ea828e2 6
+  s_ba124b2f73015e::t_cba2675bbba97b 350
+  s_ba124b2f73015e::t_184265946f6e7c 368
+Quartz/Features/Calibration/CalibrationTimingLogger.cs
+  s_ba124b2f73015e::t_2fe9867d2c6b20 1,3-114
+  s_ba124b2f73015e::t_59b4b4cb656549 2
+Quartz/UI/CalibrationPopupUI.cs
+  s_ba124b2f73015e::t_24899b937c704c 1-9,11-13,15-41,55-59,61-99,102,104-163,165-185,188-192,209-228,250,252,255-259,261-278,280-291,293-294
+  s_ba124b2f73015e::t_0c12a5da8bb699 42-45
+  s_ba124b2f73015e::t_197a414e5ad075 260
+  s_ba124b2f73015e::t_79a1144b2ebc49 292
+  s_ba124b2f73015e::t_7c2524d1c70d61 251
+  s_ba124b2f73015e::t_22d08b2349b03e 229-249,253-254
+  s_ba124b2f73015e::t_673f9efc9ca2f4 14
+  s_ba124b2f73015e::t_6ac075cbac05e0 60
+  s_ba124b2f73015e::t_61c0466925b728 100-101,103
+  s_ba124b2f73015e::t_d4d2ba52b75d91 10
+  s_ba124b2f73015e::t_6771b509ef0b6b 46-54
+  s_ba124b2f73015e::t_d0b5eec6680e19 164
+  s_ba124b2f73015e::t_a3ca2ec43c5887 186-187,193-208
+  s_ba124b2f73015e::t_676ceef30c5db6 279
+Quartz/UI/Factory/MenuFactory.cs
+  s_ba124b2f73015e::t_409999ab2d5e2e 66
+Quartz/Features/Calibration/CalibrationDetail.cs
+  s_ba124b2f73015e::t_f0230ecf71a185 5,21-34
+  s_ba124b2f73015e::t_d1450f406cd29c 1-3,6-20,35-71
+  s_ba124b2f73015e::t_87a37826469358 4
+Quartz/Features/Calibration/CalibrationSong.cs
+  s_ba124b2f73015e::t_c2e42fd18114d7 1-87
+Quartz/Features/Calibration/CalibrationFloatOffset.cs
+  s_ba124b2f73015e::t_9c22cc2020b5e1 58-60,63
+  s_ba124b2f73015e::t_0013e94aa3d579 1-57,61-62,64-73
+Quartz/Features/Calibration/Calibration.cs
+  s_ba124b2f73015e::t_a4303d775e959d 1-29,39-71,77
+  s_ba124b2f73015e::t_520016b354e042 30-38
+  s_ba124b2f73015e::t_e9ea0270eed058 72-76
+Quartz/UI/Factory/PageFactory.cs
+  s_ba124b2f73015e::t_61776c1f0ea8d0 78
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_ba124b2f73015e::t_69b08436c19c7b 35-49
+  s_ba124b2f73015e::t_33348eb0470f5e 88-91
+  s_ba124b2f73015e::t_d3f1e7bdc2daaf 575-576
+  s_ba124b2f73015e::t_4db88ef549e780 247
+Quartz/Features/PlayCount/PlayCount.cs
+  s_ba124b2f73015e::t_0a097e153ec58e 211-215
+Quartz/Features/Calibration/CalibrationPopup.cs
+  s_ba124b2f73015e::t_5d17d5ffa935db 3
+  s_ba124b2f73015e::t_b31cb21cf22fea 21
+  s_ba124b2f73015e::t_c5690259c228b5 1-2,4-20,22-37
+Quartz/Features/Calibration/CalibrationTiming.cs
+  s_ba124b2f73015e::t_932a845f951ce1 1-3,5-17,22-95
+  s_ba124b2f73015e::t_b5a69020031cda 4
+  s_ba124b2f73015e::t_f905735b4fd345 18-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "61148d36fc559ca70dc15df82bf83efbae3b1408",
+  "prompts": {},
+  "sessions": {
+    "s_ba124b2f73015e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f982e6c-f135-4016-ae9c-3e1f75ffa1c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
