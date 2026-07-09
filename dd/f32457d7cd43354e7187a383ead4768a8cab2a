@@ -1,0 +1,46 @@
+Quartz/Features/KeyViewer/KeyViewerOverlay.Events.cs
+  s_ac7b7f4411ac05::t_fe98b9eb50743f 1-68
+Quartz/Features/KeyViewer/KeyViewerOverlay.Rain.cs
+  s_ac7b7f4411ac05::t_751cc19f2f3183 1-84
+Quartz/Features/KeyViewer/KeyViewerOverlay.Update.cs
+  s_ac7b7f4411ac05::t_29203c958ea0d5 1,3-4,6-201
+  s_ac7b7f4411ac05::t_b1d8480b5c1a59 2,5
+Quartz/Features/KeyViewer/KeyViewerOverlay.DmNote.cs
+  s_ac7b7f4411ac05::t_9362419ad008fc 1
+  s_ac7b7f4411ac05::t_9d2226045e76bb 172
+  s_ac7b7f4411ac05::t_5ca477a867afe2 2-171,173-232
+Quartz/Features/KeyViewer/KeyViewerOverlay.cs
+  s_ac7b7f4411ac05::t_3b334713a50041 25-40,349
+Quartz/Features/KeyViewer/KeyViewerOverlay.Boxes.cs
+  s_ac7b7f4411ac05::t_eeeed1cf0bb1df 2-323
+  s_ac7b7f4411ac05::t_08bab7f5e41861 1
+Quartz/Features/KeyViewer/KeyViewerOverlay.Lifecycle.cs
+  s_ac7b7f4411ac05::t_77fb15f5ee58c8 2
+  s_ac7b7f4411ac05::t_ccb6b683546538 1,3-354
+Quartz/Features/KeyViewer/KeyViewerOverlay.Layout.cs
+  s_ac7b7f4411ac05::t_a763b8ff58763a 1-143
+Quartz/Features/KeyViewer/KeyViewerOverlay.Counts.cs
+  s_ac7b7f4411ac05::t_30b51424dbca66 1-75
+Quartz/Features/KeyViewer/KeyViewerOverlay.Input.cs
+  s_ac7b7f4411ac05::t_78c9b32f918fb1 3-38,40-111,113-159
+  s_ac7b7f4411ac05::t_de7659d80161ce 112
+  s_ac7b7f4411ac05::t_138ccb6b093d9e 39
+  s_ac7b7f4411ac05::t_85ecc83833ee77 2
+  s_ac7b7f4411ac05::t_2ed48eabe3ff67 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ddf32457d7cd43354e7187a383ead4768a8cab2a",
+  "prompts": {},
+  "sessions": {
+    "s_ac7b7f4411ac05": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0be1f2f37ffe6D8Jnjd0wIslFp",
+        "model": "minimax/minimax-m3:thinking"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
