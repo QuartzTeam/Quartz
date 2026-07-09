@@ -1,0 +1,26 @@
+Quartz/UI/Factory/Page/PagePanels.Drag.cs
+  s_ac7b7f4411ac05::t_250e9b59bc4c35 2-22
+  s_ac7b7f4411ac05::t_656bb615d69ba7 1
+  s_ac7b7f4411ac05::t_dc426c31fee955 23-225
+  s_ac7b7f4411ac05::t_e9cca2bb5bded4 226
+Quartz/UI/Factory/Page/PagePanels.Helpers.cs
+  s_ac7b7f4411ac05::t_250e9b59bc4c35 1,3,6,10,16-20,22-45,47-60,123-129,171-173
+  s_ac7b7f4411ac05::t_8b4c636d5e5d0a 2,5,7,9,11-15,21,46,61-122,130-170
+  s_ac7b7f4411ac05::t_87e01f9ef4955f 4,8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "39316f70466d7c89d058e954d603b82a0ecbd6c5",
+  "prompts": {},
+  "sessions": {
+    "s_ac7b7f4411ac05": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0be1f2f37ffe6D8Jnjd0wIslFp",
+        "model": "minimax/minimax-m3:thinking"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
