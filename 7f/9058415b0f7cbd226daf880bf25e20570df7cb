@@ -1,0 +1,21 @@
+Quartz/UI/Factory/Page/PageVisuals.PageBuilders.cs
+  s_ac7b7f4411ac05::t_d4a54acd6faee0 1-742
+Quartz/UI/Factory/Page/PageVisuals.cs
+  s_ac7b7f4411ac05::t_d4a54acd6faee0 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7f9058415b0f7cbd226daf880bf25e20570df7cb",
+  "prompts": {},
+  "sessions": {
+    "s_ac7b7f4411ac05": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0be1f2f37ffe6D8Jnjd0wIslFp",
+        "model": "minimax/minimax-m3:thinking"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
