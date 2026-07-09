@@ -1,0 +1,22 @@
+Quartz/UI/Factory/Page/PageKeyViewer.cs
+  s_ac7b7f4411ac05::t_496aadad436fbd 16
+Quartz/UI/Factory/Page/PageKeyViewer.Helpers.cs
+  s_ac7b7f4411ac05::t_be0e657aabf062 1-15,17,21-59,146
+  s_ac7b7f4411ac05::t_496aadad436fbd 16,18-20,60-145,147-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "674250f127a60edf235789e5920cc4d45a2bb237",
+  "prompts": {},
+  "sessions": {
+    "s_ac7b7f4411ac05": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0be1f2f37ffe6D8Jnjd0wIslFp",
+        "model": "minimax/minimax-m3:thinking"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
