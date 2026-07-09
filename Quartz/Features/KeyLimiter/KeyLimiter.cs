@@ -7,17 +7,7 @@ using UnityEngine;
 
 namespace Quartz.Features.KeyLimiter;
 
-// Only counts the allowed keys as gameplay hits, ported from the original
-// KorenResourcePack's KeyLimiter (itself modeled on fangshenghan's
-// KeyboardChatterBlocker mod, which bundles a key limiter with the chatter
-// blocker). Mouse buttons are always allowed. Enforcement only happens during
-// PlayerControl, so menus/editor typing are untouched.
-//
-// The actual blocking lives in ChatterBlocker's patches (one shared
-// CountValidKeysPressed prefix and one SkyHook prefix handle both features,
-// like v1): this class owns the allowed set, the player-control check and the
-// add/remove key capture mode.
-public static class KeyLimiter {
+internal static partial class KeyLimiter {
     public static SettingsFile<KeyLimiterSettings> ConfMgr { get; private set; }
     public static KeyLimiterSettings Conf => ConfMgr?.Data;
 
@@ -640,50 +630,4 @@ public static class KeyLimiter {
     // this from Main.Update) and runs capture-mode key polling. Held-state
     // edge detection instead of GetKeyDown: macOS doesn't deliver down-edges
     // for modifier keys, but held state reads fine.
-    private sealed class Ticker : MonoBehaviour {
-        private readonly HashSet<KeyCode> prevHeld = [];
-        private bool wasCapturing;
-
-        private void Update() {
-            InPlayerControl();
-
-            if(!IsCapturing) {
-                wasCapturing = false;
-                if(prevHeld.Count > 0) prevHeld.Clear();
-                return;
-            }
-
-            // First frame of a capture: remember what's already held so a
-            // key the user hadn't released yet isn't captured instantly.
-            bool priming = !wasCapturing;
-            wasCapturing = true;
-
-            KeyCode[] candidates = CaptureCandidates;
-            for(int i = 0; i < candidates.Length; i++) {
-                KeyCode key = candidates[i];
-                bool held;
-                try { held = UnityEngine.Input.GetKey(key); }
-                catch { continue; }
-
-                // Unity's legacy Input is blind to the Korean Hangul/Hanja keys,
-                // which surface as RightAlt/RightControl — on a Korean layout the
-                // right-Ctrl/Alt position IS the Hanja/Hangul key. Without this the
-                // capture loop never sees them, so they can't be added to the
-                // allowed list. Fall back to the SkyHook-fed held state (the only
-                // path that sees them, still forwarded during capture), mirroring
-                // the KeyViewer's KeyHeld. Scoped to those modifiers so normal keys
-                // and the NumLock-off numpad keep using Input alone.
-                if(!held && IsHookOnlyModifier(key)) held = HookKeyHeld(key);
-
-                if(held && !priming && !prevHeld.Contains(key)) {
-                    prevHeld.Add(key);
-                    EndCapture(key);
-                    return;
-                }
-
-                if(held) prevHeld.Add(key);
-                else prevHeld.Remove(key);
-            }
-        }
-    }
 }
