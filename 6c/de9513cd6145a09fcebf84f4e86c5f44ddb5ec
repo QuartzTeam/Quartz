@@ -1,0 +1,22 @@
+Quartz/Features/KeyViewer/KeyViewerSettings.Serialization.cs
+  s_ac7b7f4411ac05::t_6298909874db9e 9
+  s_ac7b7f4411ac05::t_2bf42fca8f72d5 1-8,10-323
+Quartz/Features/KeyViewer/KeyViewerSettings.cs
+  s_ac7b7f4411ac05::t_3ff09568ad13cb 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6cde9513cd6145a09fcebf84f4e86c5f44ddb5ec",
+  "prompts": {},
+  "sessions": {
+    "s_ac7b7f4411ac05": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0be1f2f37ffe6D8Jnjd0wIslFp",
+        "model": "minimax/minimax-m3:thinking"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
