@@ -1,0 +1,22 @@
+Quartz/UI/Factory/Page/PageSearch.cs
+  s_02627f4e5c150a::t_b40ef2f2bdf1ec 155-165
+  s_02627f4e5c150a::t_efb2d9c99fe981 19,25-32,36
+  s_02627f4e5c150a::t_26e4ed277c1d8e 120-121,123-124
+  s_02627f4e5c150a::t_e5b6a11e075b1a 166
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "8e5d253fd47cfe9fa3bdfbb3c3690e1b690508f9",
+  "prompts": {},
+  "sessions": {
+    "s_02627f4e5c150a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cde2b547-f43b-49a9-a8d8-ab25ccae4768",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
