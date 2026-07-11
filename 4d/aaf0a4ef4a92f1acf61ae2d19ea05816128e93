@@ -1,0 +1,22 @@
+Quartz/Features/AutoDeafen/AutoDeafen.cs
+  s_acbf9153b922b4::t_faf1baeb34afa0 21-22,26,167-173,197-198,201-206,209-232
+  s_acbf9153b922b4::t_f370ed796c1433 233
+Quartz/Features/AutoDeafen/AutoDeafenSettings.cs
+  s_acbf9153b922b4::t_faf1baeb34afa0 21-22,24,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "4daaf0a4ef4a92f1acf61ae2d19ea05816128e93",
+  "prompts": {},
+  "sessions": {
+    "s_acbf9153b922b4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f48fa-5263-7911-9473-135c01e227fe",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
