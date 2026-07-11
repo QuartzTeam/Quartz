@@ -1,0 +1,19 @@
+Quartz/Features/Status/GameStats.cs
+  s_007b59f2e1956a::t_93ad77f786a7f6 182-185,188-189,191,198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "f03ef891bd95e68c5ae0d9c3e23603630c0fcb7c",
+  "prompts": {},
+  "sessions": {
+    "s_007b59f2e1956a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7642cdfa-1505-492e-a51d-810edeb71ba5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
