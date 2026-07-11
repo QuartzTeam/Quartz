@@ -1,0 +1,30 @@
+Quartz/IO/CoreSettings.cs
+  s_007b59f2e1956a::t_f6e56c4e49ae3c 23
+  s_007b59f2e1956a::t_4814dcdd5d94f9 106
+  s_007b59f2e1956a::t_cc4e1a35bff75e 71
+Quartz/Resource/Export/Lang/en-US.json
+  s_007b59f2e1956a::t_df43619425f956 448-449
+Quartz/Features/Status/GameStats.cs
+  s_007b59f2e1956a::t_f81f38e92d9f03 167-190,195-196
+  s_007b59f2e1956a::t_4dd418f54a4a8f 2
+Quartz/UI/Factory/Page/PageOverlayGeneral.cs
+  s_007b59f2e1956a::t_c2f4a6fcbd9a33 33-42
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_007b59f2e1956a::t_11767b3635a854 448-449
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "7c8e20161b5d863e4b6d7c6be24e93424ba1002d",
+  "prompts": {},
+  "sessions": {
+    "s_007b59f2e1956a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7642cdfa-1505-492e-a51d-810edeb71ba5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
