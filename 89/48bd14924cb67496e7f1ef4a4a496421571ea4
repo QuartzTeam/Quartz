@@ -1,0 +1,49 @@
+Quartz/Features/Optimizer/Optimizer.cs
+  s_5c9aafd31bfc34::t_66cd32ca958b2e 66-71
+  s_5c9aafd31bfc34::t_dc2c860e0fa4b3 92-94
+Quartz/Features/Optimizer/LeakGuardPatches.cs
+  s_5c9aafd31bfc34::t_ca644fb19bb09c 1-130
+Quartz/UI/Factory/Page/PageTweaks.cs
+  s_5c9aafd31bfc34::t_21f3b59f75b6a7 52-58
+  s_2cfd6b57543564::t_401a9f748409e2 50-51
+Quartz/Resource/Export/Lang/en-US.json
+  s_1c216ae4a50c19::t_dd026c63d7bc64 437-438
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_1c216ae4a50c19::t_dd026c63d7bc64 437-438
+Quartz/Features/Optimizer/OptimizerSettings.cs
+  s_5c9aafd31bfc34::t_d8f483c7345f68 7
+  s_5c9aafd31bfc34::t_46709c26eacca3 30
+  s_5c9aafd31bfc34::t_aa1afea7bd6718 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "8948bd14924cb67496e7f1ef4a4a496421571ea4",
+  "prompts": {},
+  "sessions": {
+    "s_1c216ae4a50c19": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db932714-25db-4d0b-8aa8-6b43cd020f56",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_2cfd6b57543564": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f505b-586a-7e81-8aab-9f8d8cbce2fe",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_5c9aafd31bfc34": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "05381842-81c8-40d4-9153-eeee1e4d5cfa",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    }
+  }
+}
