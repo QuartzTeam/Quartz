@@ -58,6 +58,70 @@ internal static class DiscordOAuthServer {
             "&scope=identify+rpc+rpc.voice.write" +
             "&state=" + state;
     }
+    internal static void CopyAuthorizeUrl() {
+        string url = AuthorizeUrl();
+        if(!IsDiscordAuthorizeUrl(url)) {
+            if(!string.IsNullOrEmpty(url)) status = "invalid authorize url";
+            return;
+        }
+        string[][] commands = ClipboardCommands(Application.platform);
+        if(commands.Length == 0) {
+            status = "clipboard unsupported";
+            return;
+        }
+        Thread worker = new(() => CopyToClipboard(commands, url)) {
+            IsBackground = true,
+            Name = "Quartz-Clipboard",
+        };
+        worker.Start();
+    }
+    private static bool IsDiscordAuthorizeUrl(string value) =>
+        !string.IsNullOrEmpty(value)
+        && value.Length <= 4096
+        && Uri.TryCreate(value, UriKind.Absolute, out Uri uri)
+        && string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)
+        && string.Equals(uri.Host, "discord.com", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(uri.AbsolutePath, "/oauth2/authorize", StringComparison.Ordinal);
+    private static string[][] ClipboardCommands(RuntimePlatform platform) => platform switch {
+        RuntimePlatform.WindowsPlayer or RuntimePlatform.WindowsEditor => [["clip.exe", ""]],
+        RuntimePlatform.OSXPlayer or RuntimePlatform.OSXEditor => [["/usr/bin/pbcopy", ""]],
+        RuntimePlatform.LinuxPlayer or RuntimePlatform.LinuxEditor => [
+            ["wl-copy", ""],
+            ["xclip", "-selection clipboard"],
+            ["xsel", "--clipboard --input"],
+        ],
+        _ => [],
+    };
+    private static void CopyToClipboard(string[][] commands, string text) {
+        for(int i = 0; i < commands.Length; i++) {
+            if(!TryWriteClipboard(commands[i][0], commands[i][1], text)) continue;
+            status = "authorize url copied";
+            return;
+        }
+        status = "clipboard unavailable";
+        MainCore.Log.Wrn("[AutoDeafen] no supported clipboard command was available");
+    }
+    private static bool TryWriteClipboard(string fileName, string arguments, string text) {
+        try {
+            using Process process = new() {
+                StartInfo = new ProcessStartInfo {
+                    FileName = fileName,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    CreateNoWindow = true,
+                },
+            };
+            if(!process.Start()) return false;
+            process.StandardInput.Write(text);
+            process.StandardInput.Close();
+            if(process.WaitForExit(2000)) return process.ExitCode == 0;
+            try { process.Kill(); } catch { }
+            return false;
+        } catch {
+            return false;
+        }
+    }
     private static bool StartLocked() {
         try {
             Uri uri = new(RedirectUri);

@@ -160,6 +160,10 @@ public static class AutoDeafen {
         EnsureConf();
         return DiscordOAuthServer.AuthorizeUrl();
     }
+    public static void CopyAuthorizeUrl() {
+        EnsureConf();
+        DiscordOAuthServer.CopyAuthorizeUrl();
+    }
     public static void Unlink() {
         Stop();
         EnsureConf();
