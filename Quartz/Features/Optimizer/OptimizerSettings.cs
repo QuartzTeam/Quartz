@@ -4,6 +4,7 @@ using Quartz.IO.Interface;
 namespace Quartz.Features.Optimizer;
 public sealed class OptimizerSettings : ISettingsFile {
     public bool SmoothGC = true;
+    public bool LeakGuard = true;
     public bool CollectOnLevelLoad = true;
     public bool BoostProcessPriority = true;
     public bool RunInBackground = true;
@@ -14,6 +15,7 @@ public sealed class OptimizerSettings : ISettingsFile {
     public float ShadowUnderlayOffsetScale = 6f;
     public JToken Serialize() => new JObject {
         [nameof(SmoothGC)] = SmoothGC,
+        [nameof(LeakGuard)] = LeakGuard,
         [nameof(CollectOnLevelLoad)] = CollectOnLevelLoad,
         [nameof(BoostProcessPriority)] = BoostProcessPriority,
         [nameof(RunInBackground)] = RunInBackground,
@@ -25,6 +27,7 @@ public sealed class OptimizerSettings : ISettingsFile {
     };
     public void Deserialize(JToken token) {
         SmoothGC = IOUtils.Read(token, nameof(SmoothGC), SmoothGC);
+        LeakGuard = IOUtils.Read(token, nameof(LeakGuard), LeakGuard);
         CollectOnLevelLoad = IOUtils.Read(token, nameof(CollectOnLevelLoad), CollectOnLevelLoad);
         BoostProcessPriority = IOUtils.Read(token, nameof(BoostProcessPriority), BoostProcessPriority);
         RunInBackground = IOUtils.Read(token, nameof(RunInBackground), RunInBackground);

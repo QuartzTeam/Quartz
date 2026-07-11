@@ -49,6 +49,15 @@ internal static class PageTweaks {
         );
         GenerateUI.ToggleTip(
             optimizerSec.Body,
+            optDef.LeakGuard,
+            opt.LeakGuard,
+            v => { opt.LeakGuard = v; Optimizer.Apply(); Optimizer.Save(); },
+            "Fix Game Memory Leaks",
+            "opt_leakguard",
+            "Patches known memory leaks in the game itself: decoration render textures and materials that survive level unloads, frame-rate-effect screen buffers, workshop thumbnails, practice-mode waveforms, and internal caches that only ever grow. Reduces RAM creep during long sessions."
+        );
+        GenerateUI.ToggleTip(
+            optimizerSec.Body,
             optDef.CollectOnLevelLoad,
             opt.CollectOnLevelLoad,
             v => { opt.CollectOnLevelLoad = v; Optimizer.Apply(); Optimizer.Save(); },

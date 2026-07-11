@@ -63,6 +63,12 @@ public static class Optimizer {
         Application.runInBackground = defaultRunInBackground;
         SetPriority(defaultPriority);
     }
+    internal static bool LeakGuardActive {
+        get {
+            EnsureConf();
+            return MainCore.IsModEnabled && Conf != null && Conf.LeakGuard;
+        }
+    }
     internal static bool FastBloomActive {
         get {
             EnsureConf();
@@ -83,7 +89,9 @@ public static class Optimizer {
         }
     }
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        if(Active && Conf.CollectOnLevelLoad) GC.Collect();
+        if(!Active) return;
+        if(Conf.LeakGuard) LeakGuardPatches.SweepStaticCaches();
+        if(Conf.CollectOnLevelLoad) GC.Collect();
     }
     public static void Unhook() => SceneManager.sceneLoaded -= OnSceneLoaded;
     private static void Tick() {

@@ -434,6 +434,8 @@
     "OTTO_OFFSET_Y": "Offset Y",
     "OPT_SMOOTHGC": "Smooth GC",
     "DESC_OPT_SMOOTHGC": "Holds off garbage collection while a level is playing and runs it when the run ends, so a GC pause can't land mid-run and nudge your timing. The heap grows during the run (a safety collect kicks in on very long levels). Best paired with Clean Heap On Load.",
+    "OPT_LEAKGUARD": "Fix Game Memory Leaks",
+    "DESC_OPT_LEAKGUARD": "Patches known memory leaks in the game itself: decoration render textures and materials that survive level unloads, frame-rate-effect screen buffers, workshop thumbnails, practice-mode waveforms, and internal caches that only ever grow. Reduces RAM creep during long sessions.",
     "OPT_COLLECTONLOAD": "Clean Heap On Load",
     "DESC_OPT_COLLECTONLOAD": "Runs a garbage collection every time a scene loads, so each run starts from a clean heap. The load screen already hitches, so the collection is free here.",
     "OPT_PRIORITY": "Boost Process Priority",
