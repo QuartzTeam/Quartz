@@ -1,0 +1,24 @@
+Quartz/Features/AutoDeafen/DiscordOAuthServer.cs
+  s_51651b89809652::t_6e8bceacd8dd88 61-78,82-124
+  s_51651b89809652::t_556b289b56ae5b 79-81
+Quartz/Features/AutoDeafen/AutoDeafen.cs
+  s_51651b89809652::t_6e8bceacd8dd88 163-166
+Quartz/UI/Factory/Page/PageGameplay.AutoDeafen.cs
+  s_51651b89809652::t_377a1d7ce0cc3a 1-217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "66b433c6ed5a470aba051fe2db87495f97f91ccb",
+  "prompts": {},
+  "sessions": {
+    "s_51651b89809652": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f5381-1f01-7293-b3c7-b2aa095bfe45",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
