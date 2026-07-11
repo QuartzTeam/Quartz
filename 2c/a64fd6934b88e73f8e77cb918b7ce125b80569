@@ -1,0 +1,48 @@
+Quartz/Features/Tuf/TufDownloadService.cs
+  s_74158e5d7cc8de::t_4f5f5da26d0dcb 89-91,94
+  s_74158e5d7cc8de::t_a96163ff649c35 119
+  s_74158e5d7cc8de::t_3e24b27589a72a 9,18-22,24
+  s_74158e5d7cc8de::t_5273211f925417 51-53,57-73,79-81
+Quartz/Features/Tuf/TufHelperLiteLink.cs
+  s_74158e5d7cc8de::t_fe85e3619cabc7 1-56
+Quartz/UI/Factory/Page/TufSettingsUI.cs
+  s_74158e5d7cc8de::t_b857e0184594f6 1-39
+Quartz/Resource/Export/Lang/en-US.json
+  s_74158e5d7cc8de::t_b74f07a398a5bc 806-809
+Quartz/UI/Factory/MenuFactory.cs
+  s_74158e5d7cc8de::t_a21e2f9847535b 75
+Quartz/Features/Tuf/TufLevelLauncher.cs
+  s_74158e5d7cc8de::t_288ca937c76480 15,20-33
+  s_74158e5d7cc8de::t_8449ca76a70132 39
+Quartz/UI/UICore.cs
+  s_74158e5d7cc8de::t_0f382d52a4d266 56
+Quartz/Features/Tuf/TufService.cs
+  s_74158e5d7cc8de::t_8f9076f276f63d 58,60
+  s_74158e5d7cc8de::t_004441e24bc3d4 136-149
+Quartz/Features/Tuf/TufSettings.cs
+  s_74158e5d7cc8de::t_71e2f2c71fc36a 16
+  s_74158e5d7cc8de::t_a065b5de68276a 47-48
+  s_74158e5d7cc8de::t_4c80608d15852f 60
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_74158e5d7cc8de::t_0bf5e40943cfc9 806-809
+Quartz/UI/Factory/PageFactory.cs
+  s_74158e5d7cc8de::t_696a1bf832c760 72
+Quartz/UI/Factory/Page/PageSearch.cs
+  s_74158e5d7cc8de::t_146b574c49e385 92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "2ca64fd6934b88e73f8e77cb918b7ce125b80569",
+  "prompts": {},
+  "sessions": {
+    "s_74158e5d7cc8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "679dfa4b-c5cb-4b92-86f3-10540083ecf7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
