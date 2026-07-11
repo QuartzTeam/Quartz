@@ -88,6 +88,7 @@ internal static class PageSearch {
         OriginalMenuState.NostalgiaGameplay or OriginalMenuState.NostalgiaVisuals
             or OriginalMenuState.NostalgiaTweaks or OriginalMenuState.NostalgiaEditor
             => GenerateUI.Tr("NOSTALGIA", "Nostalgia"),
+        OriginalMenuState.NostalgiaTuf => GenerateUI.Tr("TUF", "TUF"),
         OriginalMenuState.Profiles => GenerateUI.Tr("PROFILES", "Profiles"),
         OriginalMenuState.Import => GenerateUI.Tr("IMPORT", "Import"),
         OriginalMenuState.Addons => GenerateUI.Tr("ADDONS", "Addons"),

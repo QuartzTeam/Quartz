@@ -20,6 +20,7 @@ using Quartz.Features.ProgressBar;
 using Quartz.Features.SongTitle;
 using Quartz.Features.Status;
 using Quartz.Features.Tweaks;
+using Quartz.Features.Tuf;
 using Quartz.Features.UiHider;
 using Quartz.IO;
 using Quartz.Resource;
@@ -50,6 +51,7 @@ public sealed class QuartzRuntime {
     private TweenService tweenService;
     private HarmonyService harmonyService;
     private PlayCount playCount;
+    private TufService tufService;
     private UnityEngine.Events.UnityAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.LoadSceneMode> xperfectGuardHandler;
     public QuartzRuntime(IQuartzHost host) {
         Host = host;
@@ -135,8 +137,10 @@ public sealed class QuartzRuntime {
         tweenService = new TweenService(TweensContext);
         harmonyService = new HarmonyService();
         playCount = new PlayCount();
+        tufService = new TufService();
         services.Add(Localization);
         services.Add(Quartz.Addons.AddonService.Service);
+        services.Add(tufService);
         services.Add(uiService);
         services.Add(tweenService);
         services.Add(playCount);

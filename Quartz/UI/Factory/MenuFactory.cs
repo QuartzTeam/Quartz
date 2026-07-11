@@ -106,6 +106,7 @@ public static class MenuFactory {
         CreateItem(parent, "Tweaks", MainCore.Spr.Get(UISprite.AdjustmentsHorizontal128, iconUnits), (int)OriginalMenuState.TweaksGeneral);
         CreateItem(parent, "Editor", MainCore.Spr.Get(UISprite.Wrench128, iconUnits), (int)OriginalMenuState.EditorInspector);
         CreateItem(parent, "Nostalgia", MainCore.Spr.Get(UISprite.ClockRewind128, iconUnits), (int)OriginalMenuState.NostalgiaGameplay);
+        CreateItem(parent, "TUF", MainCore.Spr.Get(UISprite.TufLogo, iconUnits), (int)OriginalMenuState.NostalgiaTuf);
         CreateItem(parent, "Search", MainCore.Spr.Get(UISprite.MagnifyingGlass128, iconUnits), (int)OriginalMenuState.Search);
         CreateItem(parent, "Profiles", MainCore.Spr.Get(UISprite.Users128, iconUnits), (int)OriginalMenuState.Profiles);
         CreateItem(parent, "Import", MainCore.Spr.Get(UISprite.Book128, iconUnits), (int)OriginalMenuState.Import);

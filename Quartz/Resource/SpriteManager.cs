@@ -23,6 +23,8 @@ public enum UISprite {
     AdjustmentsHorizontal128,
     Users128,
     ClockRewind128,
+    QuantumQ,
+    TufLogo,
 }
 public enum UISliceSprite {
     Circle256P1024,
@@ -169,6 +171,14 @@ public sealed class SpriteManager(ResourceManager resource) : IDisposable {
     private static bool loggedScale;
     private static int CornerPixels(float units)
         => Mathf.Max(2, Mathf.RoundToInt(units * UIPixelScale()));
+    public Sprite GetFilled(float cornerUnits) {
+        object key = (UISliceSprite.Circle256P2048, cornerUnits);
+        if(cache.TryGetValue(key, out Sprite cached)) return cached;
+        int radius = CornerPixels(cornerUnits);
+        Sprite created = SlicedShape(ProceduralTexture.Circle(radius), radius, cornerUnits);
+        cache[key] = created;
+        return created;
+    }
     public Sprite GetRing(float cornerUnits, float strokeUnits) {
         object key = (cornerUnits, strokeUnits);
         if(cache.TryGetValue(key, out Sprite cached)) return cached;
@@ -208,6 +218,8 @@ public sealed class SpriteManager(ResourceManager resource) : IDisposable {
         [UISprite.Wrench128] = Asset.Wrench128,
         [UISprite.AdjustmentsHorizontal128] = Asset.AdjustmentsHorizontal128,
         [UISprite.Users128] = Asset.Users128,
-        [UISprite.ClockRewind128] = Asset.ClockRewind128
+        [UISprite.ClockRewind128] = Asset.ClockRewind128,
+        [UISprite.QuantumQ] = Asset.QuantumQ,
+        [UISprite.TufLogo] = Asset.TufLogo
     };
 }
