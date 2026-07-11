@@ -16,14 +16,24 @@ internal static class PageSearch {
     private sealed class Entry {
         public int State;
         public string Text;
+        public string NormText;
         public string Section;
         public RectTransform Target;
         public bool IsCategory;
     }
     private const int MAX_RESULTS = 40;
+    // Walking every page's full hierarchy on each keystroke is the expensive part of
+    // a search; cache the index (with pre-normalized text) for a typing burst. The
+    // short TTL self-heals rows that appear/disappear at runtime, and destroyed
+    // targets are already null-guarded in Navigate.
+    private const float INDEX_TTL_SECONDS = 10f;
+    private static List<Entry> cachedIndex;
+    private static float cachedIndexTime;
+    private static string cachedIndexLang;
     private static RectTransform resultsContainer;
     private static TextMeshProUGUI statusText;
     public static void Create(RectTransform parent) {
+        cachedIndex = null;
         RectTransform content = Quartz.UI.Factory.PageFactory.CreateScrollablePage(parent);
         var inputRow = GenerateUI.Row(content.transform);
         var input = GenerateUI.Input(
@@ -107,11 +117,11 @@ internal static class PageSearch {
             return;
         }
         List<Entry> matches = [];
-        foreach(Entry e in BuildIndex())
-            if(Norm(e.Text).Contains(q)) matches.Add(e);
+        foreach(Entry e in Index())
+            if(e.NormText.Contains(q)) matches.Add(e);
         matches.Sort((a, b) => {
-            bool ap = Norm(a.Text).StartsWith(q);
-            bool bp = Norm(b.Text).StartsWith(q);
+            bool ap = a.NormText.StartsWith(q);
+            bool bp = b.NormText.StartsWith(q);
             if(ap != bp) return ap ? -1 : 1;
             if(a.IsCategory != b.IsCategory) return a.IsCategory ? -1 : 1;
             return string.Compare(a.Text, b.Text, StringComparison.OrdinalIgnoreCase);
@@ -141,6 +151,18 @@ internal static class PageSearch {
         ).SetSecondary();
         btn.Label.overflowMode = TextOverflowModes.Ellipsis;
         btn.Label.fontSize = 19f;
+    }
+    private static List<Entry> Index() {
+        if(cachedIndex != null
+            && cachedIndexLang == MainCore.Conf.Language
+            && Time.unscaledTime - cachedIndexTime < INDEX_TTL_SECONDS) {
+            return cachedIndex;
+        }
+        cachedIndex = BuildIndex();
+        foreach(Entry e in cachedIndex) e.NormText = Norm(e.Text);
+        cachedIndexTime = Time.unscaledTime;
+        cachedIndexLang = MainCore.Conf.Language;
+        return cachedIndex;
     }
     private static List<Entry> BuildIndex() {
         List<Entry> list = [];
