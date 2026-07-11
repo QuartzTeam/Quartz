@@ -778,17 +778,35 @@ public static class UICore {
         menuCanvasGroup.blocksRaycasts = isMenuOpen;
         subMenuCanvasGroup.interactable = isMenuOpen && subMenuHasChildren;
         subMenuCanvasGroup.blocksRaycasts = isMenuOpen && subMenuHasChildren;
+        float pageBaseX = PrepareSlide(Page, leftInset, bandShown);
+        float bandBaseX = PrepareSlide(BottomBand, leftInset, 0f);
         shellSeq = GTweenSequenceBuilder.New()
             .Join(Menu.GTAnchorPos(menuTarget, duration).SetEasing(Easing.OutExpo))
             .Join(SubMenu.GTAnchorPosX(subMenuX, duration).SetEasing(Easing.OutExpo))
             .Join(SubMenu.GTSizeDelta(new Vector2(subMenuW, SubMenu.sizeDelta.y), duration).SetEasing(Easing.OutExpo))
-            .Join(Page.GTOffsetMin(new Vector2(leftInset, bandShown), duration).SetEasing(Easing.OutExpo))
-            .Join(BottomBand.GTOffsetMin(new Vector2(leftInset, 0f), duration).SetEasing(Easing.OutExpo))
+            .Join(Page.GTAnchorPosX(pageBaseX, duration).SetEasing(Easing.OutExpo))
+            .Join(BottomBand.GTAnchorPosX(bandBaseX, duration).SetEasing(Easing.OutExpo))
             .Join(menuCanvasGroup.GTFade(menuAlpha, Mathf.Min(duration, 0.3f)).SetEasing(Easing.OutSine))
             .Join(subMenuCanvasGroup.GTFade(subMenuAlpha, Mathf.Min(duration, 0.3f)).SetEasing(Easing.OutSine))
             .AppendCallback(SnapShellLayout)
             .Build();
         MainCore.TC.Play(shellSeq);
+    }
+    // Sets the rect's final horizontal geometry up front, then shifts it back so it
+    // still sits at its current visual position; the tween slides anchoredPosition.x
+    // home. A pure translation never changes the rect's size, so the page content
+    // does zero layout/text-wrap work per frame (tweening offsetMin resized every
+    // page each frame — the old sub-tab ↔ no-sub-tab switch lag). Width during the
+    // slide stays at max(old, new); any excess hangs past the panel's right edge
+    // where the panel mask clips it, and SnapShellLayout squares offsets up at the
+    // end (the single layout pass for the shrink case).
+    private static float PrepareSlide(RectTransform rect, float targetLeft, float minY) {
+        float shift = rect.offsetMin.x - targetLeft;
+        rect.offsetMin = new Vector2(targetLeft, minY);
+        rect.offsetMax = new Vector2(Mathf.Max(0f, -shift), rect.offsetMax.y);
+        float baseX = rect.anchoredPosition.x;
+        rect.anchoredPosition = new Vector2(baseX + shift, rect.anchoredPosition.y);
+        return baseX;
     }
     private static void SnapShellLayout() {
         Vector2 menuTarget = isMenuOpen ? MenuOpenPosition : MenuClosedPosition;
@@ -798,8 +816,11 @@ public static class UICore {
         Menu.anchoredPosition = menuTarget;
         SubMenu.anchoredPosition = new Vector2(subMenuX, SubMenu.anchoredPosition.y);
         SubMenu.sizeDelta = new Vector2(subMenuW, SubMenu.sizeDelta.y);
+        // Set both offsets: clears any slide shift/right-overflow left by PrepareSlide.
         Page.offsetMin = new Vector2(leftInset, bandShown);
+        Page.offsetMax = new Vector2(0f, Page.offsetMax.y);
         BottomBand.offsetMin = new Vector2(leftInset, 0f);
+        BottomBand.offsetMax = new Vector2(0f, BottomBand.offsetMax.y);
         menuCanvasGroup.alpha = isMenuOpen ? 1f : 0f;
         subMenuCanvasGroup.alpha = isMenuOpen && subMenuHasChildren ? 1f : 0f;
         menuCanvasGroup.interactable = isMenuOpen;
