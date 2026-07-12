@@ -804,6 +804,8 @@
     "TUF_PACK_LEVEL_COUNT": "{0} levels",
     "TUF_PACK_SORT_ORDER": "Pack Order",
     "TUF_SETTINGS": "Settings",
+    "TUF_OPEN_FOLDER": "Open Levels Folder",
+    "DESC_TUF_OPEN_FOLDER": "Opens the folder where downloaded TUF levels are saved.",
     "TUF_LINK_HELPER": "Link to TUFHelperLite Directories",
     "DESC_TUF_LINK_HELPER": "Saves downloaded levels into TUFHelperLite's Downloads folder (as tuf-<id>) so both mods share one level library. Inside the game folder, UMMMods is checked first, then Mods.",
     "TUF_LINK_HELPER_MISSING": "TUFHelperLite was not found in the game's Mods or UMMMods folder — without that mod this setting isn't necessary.",
