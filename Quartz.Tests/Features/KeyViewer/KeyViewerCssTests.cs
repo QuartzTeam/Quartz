@@ -140,6 +140,36 @@ static class KeyViewerCssTests {
         Assert(ColorEq(g.Color, 0x7d, 0xd3, 0xfc), "--graph-color parsed");
         Assert(!gsheet.ResolveGraph("other").Any, "graph class is scoped");
     }
+    public static void TestKeyViewerPersistence() {
+        float firstDeadline = KeyViewerPersistence.CountSaveDeadline(10f);
+        float secondDeadline = KeyViewerPersistence.CountSaveDeadline(11f);
+        Assert(firstDeadline == 12f && secondDeadline == 13f, "new presses extend count-save debounce");
+        Assert(!KeyViewerPersistence.ShouldFlushCounts(true, true, 20f, secondDeadline), "counts never flush during gameplay");
+        Assert(!KeyViewerPersistence.ShouldFlushCounts(true, false, 12.9f, secondDeadline), "counts wait for idle deadline");
+        Assert(KeyViewerPersistence.ShouldFlushCounts(true, false, 13f, secondDeadline), "idle counts flush outside gameplay");
+        Assert(KeyViewerPersistence.ShouldPersistBoxCount(false, false), "main key counts persist");
+        Assert(!KeyViewerPersistence.ShouldPersistBoxCount(false, true), "foot bindings cannot overwrite main key counts");
+        const string preset = """
+            {
+              "selectedKeyType": "4key",
+              "keys": { "4key": ["A"] },
+              "keyPositions": { "4key": [{ "dx": 1, "inactiveImage": "data:image/png;base64,kept" }] },
+              "statPositions": { "4key": [] },
+              "graphPositions": { "4key": [] },
+              "embeddedLocalFonts": { "huge": "discard" },
+              "embeddedLocalSounds": { "huge": "discard" },
+              "customJS": "discard"
+            }
+            """;
+        string sanitized = KeyViewerPersistence.SanitizeDmPreset(preset);
+        Assert(sanitized.Contains("selectedKeyType") && sanitized.Contains("inactiveImage"), "runtime preset fields survive sanitization");
+        Assert(!sanitized.Contains("embeddedLocalFonts") && !sanitized.Contains("embeddedLocalSounds") && !sanitized.Contains("customJS"),
+            "unused embedded preset payloads are discarded");
+        bool invalidRejected = false;
+        try { KeyViewerPersistence.SanitizeDmPreset("{\"embeddedLocalFonts\":{}}"); }
+        catch(FormatException) { invalidRejected = true; }
+        Assert(invalidRejected, "preset import validates required runtime tables");
+    }
     static bool ColorEq(CssColor c, int r, int g, int b) =>
         c.Has
         && Math.Abs(c.R - r / 255f) < 0.02f

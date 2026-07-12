@@ -6,6 +6,7 @@ List<(string Name, Action Run)> tests = [
     ("Localization keys stay in parity", LocalizationParityTests.TestLocalizationParity),
     ("KeyViewer CSS parses the DM Note contract", KeyViewerCssTests.TestKeyViewerCss),
     ("KeyViewer CSS parses the extended web effects", KeyViewerCssTests.TestKeyViewerCssExtended),
+    ("KeyViewer persistence avoids gameplay saves and strips unused preset data", KeyViewerCssTests.TestKeyViewerPersistence),
     ("TUF inputs and download URLs are validated", TufSecurityTests.TestInputAndNetworkPolicy),
     ("TUF archives reject unsafe entries and select charts", TufSecurityTests.TestArchiveSafetyAndSelection),
     ("TUF difficulty filters clamp, select, and reset", TufFilterTests.TestDifficultyFilterContract),
