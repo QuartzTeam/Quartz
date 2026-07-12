@@ -140,7 +140,12 @@ public sealed partial class KeyViewerSettings : ISettingsFile {
         Rain3G = IOUtils.Read(token, nameof(Rain3G), Rain3G);
         Rain3B = IOUtils.Read(token, nameof(Rain3B), Rain3B);
         Rain3A = IOUtils.Read(token, nameof(Rain3A), Rain3A);
-        DmPresetJson = IOUtils.Read(token, nameof(DmPresetJson), DmPresetJson) ?? "";
+        string dmPreset = IOUtils.Read(token, nameof(DmPresetJson), DmPresetJson) ?? "";
+        try {
+            DmPresetJson = KeyViewerPersistence.SanitizeDmPreset(dmPreset);
+        } catch {
+            DmPresetJson = dmPreset;
+        }
         DmSelectedTab = IOUtils.Read(token, nameof(DmSelectedTab), DmSelectedTab) ?? "4key";
         DmOffsetX = IOUtils.Read(token, nameof(DmOffsetX), DmOffsetX);
         DmOffsetY = IOUtils.Read(token, nameof(DmOffsetY), DmOffsetY);

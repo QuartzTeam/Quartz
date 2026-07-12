@@ -187,8 +187,7 @@ public static partial class KeyViewerOverlay {
     public static bool ImportDmNotePreset(out string error) =>
         ImportDmNoteFile(out error, "JSON Preset", "json", "Select DM Note preset", "preset",
             (text, _) => {
-                JObject.Parse(text);
-                Conf.DmPresetJson = text;
+                Conf.DmPresetJson = KeyViewerPersistence.SanitizeDmPreset(text);
             });
     public static bool ImportDmNoteCss(out string error) =>
         ImportDmNoteFile(out error, "CSS", "css", "Select DM Note custom CSS", "CSS",
