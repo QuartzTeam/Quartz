@@ -148,8 +148,13 @@ public static class ChatterBlocker {
                 injectedKeyHeldPrev.Add(key);
                 continue;
             }
-            if(asyncActive && !KeyLimiter.KeyLimiter.IsHookOnlyModifierKey(key)
-                && KeyLimiter.KeyLimiter.HookEverSaw(key)) {
+            // When the async keyboard is live it reports every KeyLabel (AllAsyncKeys),
+            // so any key the hook has ever seen — hook-only modifiers included — is already
+            // counted by the game-visible async path above. Injecting it too double-counts it;
+            // the reportedKeysThisFrame guard can't catch that because the async main-loop add
+            // and this injected pass land in different per-tick / per-frame batches. Hook-only
+            // modifiers must NOT be excluded here (that was the RShift/RControl double-count).
+            if(asyncActive && KeyLimiter.KeyLimiter.HookEverSaw(key)) {
                 injectedKeyHeldPrev.Remove(key);
                 continue;
             }

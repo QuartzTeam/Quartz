@@ -413,7 +413,6 @@ internal static partial class KeyLimiter {
         Conf.AllowedKeys = [.. keys];
         PersistChange();
     }
-    public static bool IsHookOnlyModifierKey(KeyCode key) => IsHookOnlyKey(key);
     private static void PersistChange() {
         Save();
         Changed?.Invoke();
