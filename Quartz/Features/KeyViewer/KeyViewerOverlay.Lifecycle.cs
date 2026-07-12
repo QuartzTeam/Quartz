@@ -44,6 +44,7 @@ public static partial class KeyViewerOverlay {
     }
     public static void Rebuild() {
         if(root == null) return;
+        CaptureCounts();
         rainManager?.Clear();
         Quartz.UI.Generator.GenerateUI.ClearChildren(root);
         if(footRoot != null) {
@@ -223,6 +224,8 @@ public static partial class KeyViewerOverlay {
         }
     }
     public static void ResetCounts() {
+        countsDirty = false;
+        nextCountsSave = 0f;
         Conf.Counts.Clear();
         pressLog.Clear();
         kpsMax = 0;
@@ -235,17 +238,28 @@ public static partial class KeyViewerOverlay {
         }
         Save();
     }
-    private static void FlushCounts() {
+    private static void MarkCountsDirty(float now) {
+        countsDirty = true;
+        nextCountsSave = KeyViewerPersistence.CountSaveDeadline(now);
+    }
+    private static void TryFlushCounts(float now, bool inGame) {
+        if(KeyViewerPersistence.ShouldFlushCounts(countsDirty, inGame, now, nextCountsSave)) FlushCounts();
+    }
+    private static void CaptureCounts() {
         if(!countsDirty) return;
-        countsDirty = false;
         foreach(Box box in boxes)
-            if(!box.IsStat) Conf.SetCount(box.Name, box.Count);
-        Save();
+            if(KeyViewerPersistence.ShouldPersistBoxCount(box.IsStat, box.IsFoot)) Conf.SetCount(box.Name, box.Count);
+    }
+    private static bool FlushCounts() {
+        if(!countsDirty) return false;
+        CaptureCounts();
+        countsDirty = false;
+        ConfMgr?.Save();
+        return true;
     }
     public static void Dispose() {
         if(canvasObj == null) return;
-        FlushCounts();
-        ConfMgr?.Save();
+        if(!FlushCounts()) ConfMgr?.Save();
         Object.Destroy(canvasObj);
         canvasObj = null;
         raycaster = null;
@@ -259,6 +273,10 @@ public static partial class KeyViewerOverlay {
         kpsMax = 0;
         kpsSum = 0;
         kpsSamples = 0;
+        countsDirty = false;
+        nextCountsSave = 0f;
+        gameStateKnown = false;
+        wasInGame = false;
         builtStyle = -1;
         DisposeCssRenderCaches();
         DisposeCssImageCache();

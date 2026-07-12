@@ -21,8 +21,13 @@ public static partial class KeyViewerOverlay {
         }
         private void Update() {
             if(root == null) return;
+            float now = Time.unscaledTime;
+            bool inGame = GameStats.InGame;
+            if(gameStateKnown && wasInGame && !inGame) FlushCounts();
+            wasInGame = inGame;
+            gameStateKnown = true;
             bool isReorganizing = UICore.IsReorganizing;
-            bool overlayVisible = (Panels.PanelsOverlay.IsEnabled && Conf.Enabled && (Conf.ShowOutsideGame || GameStats.InGame)) || isReorganizing;
+            bool overlayVisible = (Panels.PanelsOverlay.IsEnabled && Conf.Enabled && (Conf.ShowOutsideGame || inGame)) || isReorganizing;
             bool show = (Conf.IsSimpleMode || Conf.IsDmNoteMode) && overlayVisible;
             if(raycaster != null && raycaster.enabled != isReorganizing) raycaster.enabled = isReorganizing;
             if(root.gameObject.activeSelf != show) root.gameObject.SetActive(show);
@@ -33,9 +38,9 @@ public static partial class KeyViewerOverlay {
                 bool footDragActive = isReorganizing && footShow;
                 if(footDragObj.activeSelf != footDragActive) footDragObj.SetActive(footDragActive);
             }
-            float now = Time.unscaledTime;
             if(!show || !Application.isFocused) {
                 MarkInputInactive(now, clearTransientStats: !show);
+                TryFlushCounts(now, inGame);
                 return;
             }
             if(Conf.IsDmNoteMode) {
@@ -44,8 +49,12 @@ public static partial class KeyViewerOverlay {
                     Conf.DmOffsetX = stored.x;
                     Conf.DmOffsetY = stored.y;
                 }
-                if(!InputReady(now)) return;
+                if(!InputReady(now)) {
+                    TryFlushCounts(now, inGame);
+                    return;
+                }
                 UpdateDmNote(now);
+                TryFlushCounts(now, inGame);
                 return;
             }
             if(isReorganizing && footRoot != null) {
@@ -58,7 +67,10 @@ public static partial class KeyViewerOverlay {
                 Conf.OffsetX = stored.x;
                 Conf.OffsetY = stored.y;
             }
-            if(!InputReady(now)) return;
+            if(!InputReady(now)) {
+                TryFlushCounts(now, inGame);
+                return;
+            }
             while(pressLog.Count > 0 && now - pressLog.Peek() > 1f) pressLog.Dequeue();
             TMP_FontAsset font = FontManager.Current;
             foreach(Box box in boxes) {
@@ -86,7 +98,7 @@ public static partial class KeyViewerOverlay {
                         totalCount++;
                         pressLog.Enqueue(now);
                         if(Conf.PerKeyKps) box.KpsLog.Enqueue(now);
-                        countsDirty = true;
+                        MarkCountsDirty(now);
                     }
                     if(Conf.RainEnabled && box.RainGroup != 0 && rainManager != null) box.LastRain = SpawnRain(box, now);
                 } else if(!pressed && box.Pressed && box.LastRain != null) {
@@ -131,10 +143,7 @@ public static partial class KeyViewerOverlay {
                     SetCount(box.Value, box.Count);
                 }
             }
-            if(countsDirty && now >= nextCountsSave) {
-                nextCountsSave = now + 2f;
-                FlushCounts();
-            }
+            TryFlushCounts(now, inGame);
         }
     }
 }

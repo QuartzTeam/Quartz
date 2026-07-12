@@ -35,7 +35,7 @@ public static partial class KeyViewerOverlay {
         box.Count++;
         totalCount++;
         pressLog.Enqueue(now);
-        countsDirty = true;
+        MarkCountsDirty(now);
     }
     private static void BeginDmNoteRain(Box box, float now) {
         DmNoteSpec spec = box.Dm;
@@ -167,10 +167,6 @@ public static partial class KeyViewerOverlay {
                 SetCount(box.Value, box.Count, thousands: false);
                 box.GradValueText = null;
             }
-        }
-        if(countsDirty && now >= nextCountsSave) {
-            nextCountsSave = now + 2f;
-            FlushCounts();
         }
     }
 }

@@ -59,6 +59,8 @@ public static partial class KeyViewerOverlay {
     private static int totalCount;
     private static bool countsDirty;
     private static float nextCountsSave;
+    private static bool gameStateKnown;
+    private static bool wasInGame;
     private static bool inputWasActive;
     private static bool inputPrimed;
     private sealed class Box {
