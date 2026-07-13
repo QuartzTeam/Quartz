@@ -1,0 +1,22 @@
+Quartz/UI/Utility/TMPTextShadow.cs
+  s_fde26b07faaee8::t_27917d11cca058 259
+  s_fde26b07faaee8::t_a0841d5071a371 122-124
+  s_fde26b07faaee8::t_2af2a8f36d541a 33-43
+  s_fde26b07faaee8::t_e733076d6c52cd 155-156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "631418a7344cf41feea0fd93e50e8fb4dd013c64",
+  "prompts": {},
+  "sessions": {
+    "s_fde26b07faaee8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "52ed32b9-7837-43ff-bb8e-77220b9c0784",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
