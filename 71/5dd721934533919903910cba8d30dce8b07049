@@ -1,0 +1,22 @@
+Quartz/Features/Judgement/JudgementPopupHider.cs
+  s_5df3281e515211::t_49f784d0b72084 14
+  s_5df3281e515211::t_47c8edb956f348 26-43
+Quartz/UI/Factory/Page/PageVisuals.PageBuilders.cs
+  s_5df3281e515211::t_c8e27c41e6e2bc 655-659
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "715dd721934533919903910cba8d30dce8b07049",
+  "prompts": {},
+  "sessions": {
+    "s_5df3281e515211": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce1c0dad-2c79-49ff-ae3e-6da4a55a07ae",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
