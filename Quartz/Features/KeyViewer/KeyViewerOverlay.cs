@@ -79,6 +79,8 @@ public static partial class KeyViewerOverlay {
         public RawImage BeforeLayer;
         public RawImage AfterLayer;
         public RawImage KeyImage;
+        public Texture2D LastImageTex;
+        public string LastImageFit;
         public string GradLabelText;
         public string GradValueText;
         public CssAnimGradient GradLabelApplied;

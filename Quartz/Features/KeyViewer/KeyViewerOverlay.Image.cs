@@ -104,7 +104,13 @@ public static partial class KeyViewerOverlay {
         string fit = usingActive
             ? Pick(spec.ActiveImageFit, spec.ImageFitDefault)
             : Pick(spec.IdleImageFit, spec.ImageFitDefault);
-        ApplyImageFit(box.KeyImage, tex, fit, spec.W, spec.H);
+        // Re-fitting rewrites the RectTransform + uvRect; only do it when the
+        // texture or fit actually changed since the last press edge.
+        if(!ReferenceEquals(tex, box.LastImageTex) || !string.Equals(fit, box.LastImageFit, StringComparison.Ordinal)) {
+            ApplyImageFit(box.KeyImage, tex, fit, spec.W, spec.H);
+            box.LastImageTex = tex;
+            box.LastImageFit = fit;
+        }
         bool dimmed = pressed && spec.ActiveTex == null && spec.IdleTex != null;
         box.KeyImage.color = dimmed ? new Color(0.62f, 0.62f, 0.62f, 1f) : Color.white;
     }
