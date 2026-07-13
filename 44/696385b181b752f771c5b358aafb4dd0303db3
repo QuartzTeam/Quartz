@@ -1,0 +1,19 @@
+agents/docs.md
+  s_fde26b07faaee8::t_e30985c4af6781 15,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "44696385b181b752f771c5b358aafb4dd0303db3",
+  "prompts": {},
+  "sessions": {
+    "s_fde26b07faaee8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "52ed32b9-7837-43ff-bb8e-77220b9c0784",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
