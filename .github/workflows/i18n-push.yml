@@ -12,10 +12,7 @@ on:
   push:
     branches: [main]
     paths:
-      # Fire on any lang-file change. The job still copies only en-US out (that is
-      # the file this repo owns); a translation-only commit therefore triggers a
-      # harmless no-op run that pushes nothing.
-      - "Quartz/Resource/Export/Lang/**"
+      - "Quartz/Resource/Export/Lang/en-US.json"
   workflow_dispatch:
 
 jobs:
