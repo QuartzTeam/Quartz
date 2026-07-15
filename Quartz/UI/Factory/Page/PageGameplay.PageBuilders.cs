@@ -73,6 +73,15 @@ internal static partial class PageGameplay {
         KeyLimiter.EnsureConf();
         KeyLimiterSettings conf = KeyLimiter.Conf;
         KeyLimiterSettings def = new();
+        GenerateUI.FlatSection(
+            content, "Menu",
+            v => {
+                conf.BlockInputsWhileMenuOpen = v;
+                KeyLimiter.Save();
+            },
+            conf.BlockInputsWhileMenuOpen,
+            "Block game inputs while menu is open", "keylimiter_block_while_menu_open"
+        );
         var sec = GenerateUI.FlatSection(
             content, "Key Limiter",
             v => {

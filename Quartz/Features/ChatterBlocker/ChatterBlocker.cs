@@ -15,7 +15,8 @@ public static class ChatterBlocker {
         return MainCore.IsModEnabled && Conf.Enabled;
     }
     private static bool HasAnyFilter() =>
-        IsActive() || KeyLimiter.KeyLimiter.IsEnabled() || AutoDeafen.AutoDeafen.InjectGuardActive;
+        IsActive() || KeyLimiter.KeyLimiter.IsEnabled() || KeyLimiter.KeyLimiter.IsMenuBlockEnabled()
+        || AutoDeafen.AutoDeafen.InjectGuardActive;
     private static long ThresholdMs() => Math.Max(0L, (long)Math.Round(Conf?.ThresholdMs ?? 0f));
     private static readonly Stopwatch clock = Stopwatch.StartNew();
     private static long NowMs() => clock.ElapsedMilliseconds;
@@ -70,6 +71,9 @@ public static class ChatterBlocker {
         scrController controller = scrController.instance;
         if(controller == null) return 0;
         ResetKeyLimiterOverCounter(controller);
+        // Same gate as the RDInput blocks in KeyLimiterPatches — while the Quartz menu is
+        // open, no hits register at all (mouse included), same as those other reads.
+        if(KeyLimiter.KeyLimiter.IsMenuBlockActive()) return 0;
         bool chatterActive = IsActive();
         long now = NowMs();
         long threshold = ThresholdMs();

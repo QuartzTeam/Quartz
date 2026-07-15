@@ -8,6 +8,7 @@ public sealed class KeyLimiterProfile {
 }
 public sealed class KeyLimiterSettings : ISettingsFile {
     public bool Enabled = true;
+    public bool BlockInputsWhileMenuOpen = true;
     public List<KeyLimiterProfile> Profiles = [
         new KeyLimiterProfile {
             Name = "Profile 1",
@@ -37,12 +38,14 @@ public sealed class KeyLimiterSettings : ISettingsFile {
         }
         return new JObject {
             [nameof(Enabled)] = Enabled,
+            [nameof(BlockInputsWhileMenuOpen)] = BlockInputsWhileMenuOpen,
             [nameof(Profiles)] = profiles,
             [nameof(ActiveProfile)] = ActiveProfile,
         };
     }
     public void Deserialize(JToken token) {
         Enabled = IOUtils.Read(token, nameof(Enabled), Enabled);
+        BlockInputsWhileMenuOpen = IOUtils.Read(token, nameof(BlockInputsWhileMenuOpen), BlockInputsWhileMenuOpen);
         if(token?[nameof(Profiles)] is JArray profArr) {
             List<KeyLimiterProfile> list = [];
             int index = 1;

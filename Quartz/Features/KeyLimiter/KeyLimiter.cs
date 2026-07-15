@@ -20,6 +20,18 @@ internal static partial class KeyLimiter {
         return MainCore.IsModEnabled && Conf.Enabled;
     }
     public static bool IsActive() => IsEnabled() && !IsCapturing;
+    public static bool IsMenuBlockEnabled() {
+        EnsureConf();
+        return MainCore.IsModEnabled && Conf.BlockInputsWhileMenuOpen;
+    }
+    // While the Quartz menu is open the underlying game must not react to keyboard/
+    // controller input (restart, pause, menu navigation, planet hits, ...). Autoplay is
+    // exempt — it drives hits through the same input pipeline, so blocking it would starve
+    // an autoplay run left showcasing behind the open panel.
+    public static bool IsMenuBlockActive() => IsMenuBlockEnabled() && Quartz.UI.UICore.IsOpen && !Autoplaying;
+    private static bool Autoplaying {
+        get { try { return RDC.auto; } catch { return false; } }
+    }
     private static int cachedPlayerControlFrame = -1;
     private static bool cachedPlayerControl;
     private static int cachedPlayerControlForHooks;
