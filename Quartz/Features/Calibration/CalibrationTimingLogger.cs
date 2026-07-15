@@ -2,6 +2,7 @@ using HarmonyLib;
 using MonsterLove.StateMachine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Quartz.Compat.Interface;
 using Quartz.Core;
 using Quartz.IO;
 namespace Quartz.Features.Calibration;
@@ -10,6 +11,26 @@ internal static class CalibrationTimingLogger {
     private static readonly Dictionary<string, List<float>> maps = [];
     private static bool loaded;
     private static bool loggedThisRun;
+    private static bool dirty;
+    private static bool wasInGame;
+    private static bool gameStateKnown;
+    internal static readonly IRuntimeTick Ticker = new TickImpl();
+    private sealed class TickImpl : IRuntimeTick {
+        public void Tick() {
+            if(!Calibration.Enabled) return;
+            bool inGame = Status.GameStats.InGame;
+            // Timings are a rolling in-memory cache; write them once gameplay ends rather than on
+            // the death frame, so the fsync never lands on a rendered frame.
+            if(gameStateKnown && wasInGame && !inGame) FlushIfDirty();
+            wasInGame = inGame;
+            gameStateKnown = true;
+        }
+    }
+    internal static void FlushIfDirty() {
+        if(!dirty) return;
+        dirty = false;
+        Save();
+    }
     internal static IReadOnlyList<float> RecentAll() {
         EnsureLoaded();
         return all;
@@ -43,7 +64,7 @@ internal static class CalibrationTimingLogger {
         if(!maps.TryGetValue(mapKey, out List<float> list)) maps[mapKey] = list = [];
         AddCapped(list, offset, Calibration.Conf.MaxTimingsPerMap);
         loggedThisRun = true;
-        Save();
+        dirty = true;
     }
     private static void AddCapped(List<float> list, float value, int cap) {
         list.Add(value);

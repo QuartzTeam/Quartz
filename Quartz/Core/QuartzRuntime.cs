@@ -156,6 +156,7 @@ public sealed class QuartzRuntime {
         ticks.Add(Optimizer.Ticker);
         ticks.Add(Quartz.Addons.AddonService.Ticker);
         ticks.Add(EditorFeature.Ticker);
+        ticks.Add(CalibrationTimingLogger.Ticker);
         services.Initialize(Logger);
         Quartz.Features.Interop.XPerfectRecursionGuard.TryApply(harmonyService.Harmony);
         xperfectGuardHandler = (_, _) => Quartz.Features.Interop.XPerfectRecursionGuard.TryApply(harmonyService.Harmony);
@@ -192,6 +193,7 @@ public sealed class QuartzRuntime {
             }
         });
         Safe(() => Config.Save());
+        Safe(CalibrationTimingLogger.FlushIfDirty);
         Safe(() => ProfileManager.CaptureActive());
         Safe(() => services.Dispose());
         Safe(() => Sprite.Dispose());

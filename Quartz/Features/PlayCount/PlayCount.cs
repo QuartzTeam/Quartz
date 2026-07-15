@@ -18,10 +18,19 @@ public sealed class PlayCount : IRuntimeService, IRuntimeTick {
     private static float bestObservedThisRun;
     private static bool runHadFail;
     private static bool dirty;
+    private static bool wasInGame;
+    private static bool gameStateKnown;
     public void Initialize() => Load();
-    public void Dispose() => Save();
+    public void Dispose() => FlushIfDirty();
     public void Tick() {
-        if(!MainCore.IsModEnabled || !Status.GameStats.InGame) return;
+        if(!MainCore.IsModEnabled) return;
+        bool inGame = Status.GameStats.InGame;
+        // Attempts and best-progress are accumulated in memory across the die-retry loop and only
+        // written once gameplay ends, so the fsync never lands on a rendered frame.
+        if(gameStateKnown && wasInGame && !inGame) FlushIfDirty();
+        wasInGame = inGame;
+        gameStateKnown = true;
+        if(!inGame) return;
         ObserveProgress(Status.GameStats.Progress);
     }
     public static PlayData For(string key) {
@@ -94,7 +103,6 @@ public sealed class PlayCount : IRuntimeService, IRuntimeTick {
             d.BestStartProgress = runStart;
             dirty = true;
         }
-        FlushIfDirty();
     }
     private static void OnRunClear() {
         if(string.IsNullOrEmpty(currentMapKey)) return;
@@ -114,7 +122,6 @@ public sealed class PlayCount : IRuntimeService, IRuntimeTick {
                 dirty = true;
             }
         }
-        FlushIfDirty();
     }
     private static float CurrentProgress() {
         try {
