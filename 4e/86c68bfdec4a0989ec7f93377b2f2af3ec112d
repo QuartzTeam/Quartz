@@ -1,0 +1,19 @@
+Quartz/Features/Tuf/TufHelperLiteLink.cs
+  s_352f08faf203b1::t_472ef87bcec16d 10-16,19-21,23-29,34-35,40,51-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4e86c68bfdec4a0989ec7f93377b2f2af3ec112d",
+  "prompts": {},
+  "sessions": {
+    "s_352f08faf203b1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "60843700-e4bf-4bc7-832b-c5dec001ccd9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
