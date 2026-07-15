@@ -48,6 +48,8 @@ internal sealed class TufBrowserView : MonoBehaviour {
     private float quantumLayout;
     private float specialChecksScale = 0.82f;
     private const float ArmSeconds = 4f;
+    // Space between the id, difficulty and Installed badge on a card's top row.
+    private const float MetaGap = 12f;
     private readonly Dictionary<int, TMP_Text> cardLabels = [];
     private readonly Dictionary<int, TMP_Text> deleteLabels = [];
     private readonly Dictionary<int, Image> deleteChips = [];
@@ -472,15 +474,20 @@ internal sealed class TufBrowserView : MonoBehaviour {
         railImage.type = Image.Type.Sliced;
         railImage.color = ColorUtility.TryParseHtmlString(level.DifficultyColor, out Color color) ? color : Color.white;
 
-        RectTransform idRect = Rect("Id", card, new(0f, 1f), new(0f, 1f), new(22f, -35f), new(108f, -8f));
-        TMP_Text id = Text(idRect, $"#{level.Id}", 16f, TextAlignmentOptions.Left);
+        // Fixed columns sized for the longest possible value left short ones (#3042,
+        // P13) marooned in whitespace, so each label is measured and the next starts
+        // just past it.
+        float x = 22f;
+        TMP_Text id = MetaLabel(card, "Id", $"#{level.Id}", ref x, 90f);
         id.color = new(1f, 1f, 1f, 0.48f);
-        RectTransform diffRect = Rect("Difficulty", card, new(0f, 1f), new(0f, 1f), new(104f, -35f), new(235f, -8f));
-        TMP_Text diff = Text(diffRect, level.Difficulty, 16f, TextAlignmentOptions.Left);
+        x += MetaGap;
+        // TUF allows a 40-character difficulty name; capped so a wordy one ellipsizes
+        // instead of pushing the badge under the buttons.
+        TMP_Text diff = MetaLabel(card, "Difficulty", level.Difficulty, ref x, 150f);
         diff.color = railImage.color;
 
         bool installed = IsInstalled(level);
-        if(installed) AddInstalledBadge(card);
+        if(installed) AddInstalledBadge(card, x + MetaGap);
         // Make room for the Delete button beside the action when there is one.
         float textRight = installed ? -244f : -150f;
 
@@ -513,16 +520,32 @@ internal sealed class TufBrowserView : MonoBehaviour {
         && level.State is not TufItemState.Downloading and not TufItemState.Extracting
             and not TufItemState.Loading;
 
-    private void AddInstalledBadge(RectTransform card) {
-        RectTransform badge = Rect("Installed Badge", card, new(0f, 1f), new(0f, 1f), new(239f, -33f), new(337f, -10f));
+    // A label sized to its own text, starting at x. Advances x to its right edge.
+    private static TMP_Text MetaLabel(RectTransform card, string name, string value, ref float x, float maxWidth) {
+        RectTransform rect = Rect(name, card, new(0f, 1f), new(0f, 1f), new(x, -35f), new(x, -8f));
+        TMP_Text text = Text(rect, value, 16f, TextAlignmentOptions.Left);
+        text.overflowMode = TextOverflowModes.Ellipsis;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
+        // The string overload measures against unbounded space, so the rect being
+        // zero-wide until it is sized here does not fold the text.
+        float width = Mathf.Min(Mathf.Ceil(text.GetPreferredValues(value).x), maxWidth);
+        rect.offsetMax = new(x + width, -8f);
+        x += width;
+        return text;
+    }
+
+    private void AddInstalledBadge(RectTransform card, float x) {
+        string value = Tr("TUF_INSTALLED", "Installed");
+        RectTransform badge = Rect("Installed Badge", card, new(0f, 1f), new(0f, 1f), new(x, -33f), new(x, -10f));
         Image image = badge.gameObject.AddComponent<Image>();
         image.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
         image.type = Image.Type.Sliced;
         image.color = new(0.38f, 0.78f, 0.52f, 0.22f);
         image.raycastTarget = false;
-        TMP_Text label = Text(badge, Tr("TUF_INSTALLED", "Installed"), 13f, TextAlignmentOptions.Center);
+        TMP_Text label = Text(badge, value, 13f, TextAlignmentOptions.Center);
         label.color = new(0.62f, 0.92f, 0.72f, 0.95f);
         label.raycastTarget = false;
+        badge.offsetMax = new(x + Mathf.Ceil(label.GetPreferredValues(value).x) + 22f, -10f);
     }
 
     // Two-step: the first click arms this one card, the second removes it. Arming
