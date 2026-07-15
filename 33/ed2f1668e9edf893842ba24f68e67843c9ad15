@@ -1,0 +1,110 @@
+Quartz.Tests/Features/Tuf/TufInstallTests.cs
+  s_352f08faf203b1::t_fef97ff1d25274 164-171
+  s_352f08faf203b1::t_035f708db71384 1-163,172-187
+Quartz/Features/Tuf/TufService.cs
+  s_352f08faf203b1::t_6ea79ffe866319 62-64
+  s_352f08faf203b1::t_72e69d810ca3db 448-449
+  s_352f08faf203b1::t_65e43a4cc41a76 232
+  s_352f08faf203b1::t_ed7ae12d015e44 78,572
+  s_352f08faf203b1::t_86e00dccdaef41 9-10,22-23,37-42,50,56,67-68,75,77,96-101,135-146,176,178-198,201-208,220-221,228-231,233-259,266-298,303-323,325,327-338,343-363,369-373,378-382,384-395,408-409,412-413,417-420,422,424-435,439,443-447,450-489,537,548-551,554-564,566-571,573-575,601,603,606,612
+  s_352f08faf203b1::t_5fc8ce6658ca53 324,326
+  s_352f08faf203b1::t_8b34c5a9b17aa8 260-265
+  s_352f08faf203b1::t_bfb02892915e2d 299-302
+  s_352f08faf203b1::t_95d8a0b2e4f653 339-342
+  s_352f08faf203b1::t_1bd9039c8e20db 552-553,565
+  s_352f08faf203b1::t_3545dc1334d399 364-368,374-377,383,396-407,410-411,414-416,421,423,436-438,440-442
+Quartz/Features/Tuf/TufDownloadService.cs
+  s_352f08faf203b1::t_400a3c3631c93d 100
+  s_352f08faf203b1::t_3126e5dd9f6e62 80-83
+  s_352f08faf203b1::t_249aacac204d99 7-14,19,21,30-34,36,62-74,78-79,88-89,93-95,98-99,110-117,124,150-151,157,165-194,197,200-243,307-314
+  s_352f08faf203b1::t_e3b37fd908f052 16-18
+  s_352f08faf203b1::t_29513271b9b345 128,131-137
+  s_352f08faf203b1::t_7c76c5b8f6f999 245-246,261-266,271,276-286,296-298
+  s_352f08faf203b1::t_8ed004131ada09 195-196,198-199
+  s_352f08faf203b1::t_849990c95f94e3 244
+  s_352f08faf203b1::t_157318f1c95b95 299
+Quartz/Resource/Export/Lang/en-US.json
+  s_352f08faf203b1::t_ecae62770841ba 813-823,825-838,840-841
+  s_352f08faf203b1::t_42a1ba5379877d 839
+  s_352f08faf203b1::t_02f3dc15ae43ff 824
+Quartz/Features/Tuf/TufInstallPaths.cs
+  s_352f08faf203b1::t_085d34b2ee8aaa 1-126
+Quartz/UI/Factory/Page/TufBrowserUI.cs
+  s_352f08faf203b1::t_537b97b7e01f1e 385-386
+  s_352f08faf203b1::t_d97cd5372a4d8d 406-409
+  s_352f08faf203b1::t_0bc44e3c6c48a7 431-433
+  s_352f08faf203b1::t_8a2941658d0365 617-619
+  s_352f08faf203b1::t_f1e2c4c09c0df9 482-497,502-581
+  s_352f08faf203b1::t_241d2de94af709 50,52-53
+  s_352f08faf203b1::t_a7b748e04dd31a 119-125
+  s_352f08faf203b1::t_ad9b3562d40144 337-338
+  s_352f08faf203b1::t_0b5ad065f97a9d 54-55,59-63
+  s_352f08faf203b1::t_c01c7acaf12a19 394
+  s_352f08faf203b1::t_c0f21a999b35bc 424-425,428-430,438-444,448-449
+Quartz.Tests/Program.cs
+  s_352f08faf203b1::t_deb712524c64a2 19-25
+Quartz/Features/Tuf/TufModels.cs
+  s_352f08faf203b1::t_b47cca632d5065 129-133
+  s_352f08faf203b1::t_387dafcd3823cb 101-105
+  s_352f08faf203b1::t_d3832b72d67847 12-17
+  s_352f08faf203b1::t_c67a4e1da39c5e 106
+Quartz/UI/Factory/Page/TufPacksUI.cs
+  s_352f08faf203b1::t_c02166577208e6 269-271,273-276
+  s_352f08faf203b1::t_4076d12c659428 283-285
+  s_352f08faf203b1::t_d32e30b66864cd 515-517
+Quartz/Features/Tuf/TufInstallIndex.cs
+  s_352f08faf203b1::t_b5fb00e7965f3d 1-49,56-164
+  s_352f08faf203b1::t_d3a323e5a13a9d 50-55
+Quartz/Features/Tuf/TufLevelActionRunner.cs
+  s_352f08faf203b1::t_0c87ce801561f8 100-102
+  s_352f08faf203b1::t_40c4ffa377a4c3 41-44
+  s_352f08faf203b1::t_eae1a138dcd9a3 17,25,30
+  s_352f08faf203b1::t_058927897bccdc 77
+Quartz.Tests/Quartz.Tests.csproj
+  s_352f08faf203b1::t_59e813b4913200 23-24
+Quartz/UI/Factory/Page/TufSettingsUI.cs
+  s_352f08faf203b1::t_7335d087fd395d 208-209
+  s_352f08faf203b1::t_29de594cf7da4a 153-155
+  s_352f08faf203b1::t_b29a5ec46732e4 13,15-17,27,31-37,48-54,57-59,64-66,69-71,75
+  s_352f08faf203b1::t_930ac7501c98af 38-40,45
+  s_352f08faf203b1::t_0641b524ed69e0 165-175
+  s_352f08faf203b1::t_cd76b78b47f3c0 177-179
+  s_352f08faf203b1::t_ef241028d4882e 198,201-202
+  s_352f08faf203b1::t_e00e044150fd98 25
+  s_352f08faf203b1::t_1fac0a43374c85 181
+  s_352f08faf203b1::t_cd12002a17d324 5,10-12,14,18-24,26,28-30,41-44,46-47,55-56,60-63,67-68,72-74,76-84,91,109-110,113,115-116,139-152,157-162,164,176,180,182,184-197,199-200,203-207,210-219
+  s_352f08faf203b1::t_741b843cda82d0 93-107
+  s_352f08faf203b1::t_d9fed523ea18ac 111-112,114
+  s_352f08faf203b1::t_36ce1ade4bac32 117-119,124
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_352f08faf203b1::t_24dcb9053e9638 813-823,825-838,840-841
+  s_352f08faf203b1::t_5bcf9fd9e057c4 824
+  s_352f08faf203b1::t_0f4e713e644153 839
+Quartz/Features/Tuf/TufSettings.cs
+  s_352f08faf203b1::t_d0c2cbee7ecd69 17-24
+  s_352f08faf203b1::t_f2bb848f97dc18 81-86
+  s_352f08faf203b1::t_fa972fc22e5b17 61
+  s_352f08faf203b1::t_f09a15624afa74 56-58,62-69
+  s_352f08faf203b1::t_182acc789cea26 70
+Quartz/Features/Tuf/TufPackService.cs
+  s_352f08faf203b1::t_5a697908fcdb2e 52-55
+  s_352f08faf203b1::t_dfa96ce9c31ce7 213-215
+Quartz/Features/Tuf/TufLevelLauncher.cs
+  s_352f08faf203b1::t_dd1eee72c72fe0 15,20,22,25-28,32-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "33ed2f1668e9edf893842ba24f68e67843c9ad15",
+  "prompts": {},
+  "sessions": {
+    "s_352f08faf203b1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "60843700-e4bf-4bc7-832b-c5dec001ccd9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
