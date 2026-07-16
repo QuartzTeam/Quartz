@@ -8,12 +8,21 @@ name: i18n pull (quartz-i18n → translations)
 # Security: this job holds I18N_PAT, so it runs ONLY this repo's validator
 # (scripts/validate_i18n.py) and reads the i18n checkout purely as JSON data. It
 # never executes any script from the i18n checkout, so translator-controlled content
-# cannot reach the token.
+# cannot reach the token. The i18n checkout itself is deliberately UNauthenticated
+# (that repo is public), keeping the token out of the step that handles translator
+# content at all.
 #
-# Requires repo secret I18N_PAT: a fine-grained PAT scoped to BOTH repos —
-#   quartz-i18n: Contents R/W (also used by i18n-push)
-#   Quartz:      Contents R/W + Pull requests R/W (used to open the sync PR here,
-#                which is why the org "allow Actions to create PRs" toggle is not needed)
+# Auth. Only the PR-opening step needs a credential beyond github.token, and it
+# degrades rather than failing: I18N_PAT first (its PR triggers CI), github.token
+# second (needs the org "allow Actions to create PRs" toggle; its PR does NOT
+# trigger CI). The branch push always uses github.token, so translations survive
+# on the i18n-sync branch even when both PR attempts are refused.
+#
+# I18N_PAT must be a fine-grained PAT whose **Resource owner is the PrismMods org**
+# — a token owned by a personal account has NO grant on org repos, yet still reads
+# them (both are public), so it fails only on writes. Scope:
+#   Quartz-i18n: Contents R/W (used by i18n-push)
+#   Quartz:      Pull requests R/W (used to open the sync PR here)
 on:
   schedule:
     - cron: "0 * * * *"    # hourly; adjust or replace with a repository_dispatch trigger for instant sync
@@ -32,8 +41,9 @@ jobs:
           path: quartz
       - uses: actions/checkout@v4
         with:
+          # No token: Quartz-i18n is public, so the default github.token reads it
+          # fine — and the PAT never touches translator-controlled content.
           repository: PrismMods/Quartz-i18n
-          token: ${{ secrets.I18N_PAT }}
           path: i18n
       - name: Validate incoming translations
         # this repo's validator, run against i18n's data — see security note above
@@ -49,10 +59,9 @@ jobs:
       - name: Open / update PR if translations changed
         working-directory: quartz
         env:
-          # I18N_PAT (not github.token): a PAT-created PR doesn't need the
-          # org-locked "Allow GitHub Actions to create and approve pull requests"
-          # setting, and it also triggers CI on the resulting PR.
-          GH_TOKEN: ${{ secrets.I18N_PAT }}
+          # Preference order — see the Auth note at the top of this file.
+          PR_PAT: ${{ secrets.I18N_PAT }}
+          PR_GHT: ${{ github.token }}
         run: |
           git config user.name "quartz-i18n-bot"
           git config user.email "i18n-bot@users.noreply.github.com"
@@ -68,9 +77,24 @@ jobs:
             exit 0
           fi
           git commit -m "i18n: sync translations from quartz-i18n"
+          # Uses the checkout credential (github.token), so the translations reach
+          # the branch even if every PR attempt below is refused.
           git push -f origin "$br"
-          if ! gh pr list --head "$br" --state open --json number -q '.[0].number' | grep -q .; then
-            gh pr create --base main --head "$br" \
-              --title "i18n: sync translations from quartz-i18n" \
-              --body "Automated pull of community translations from PrismMods/quartz-i18n. en-US is not included (it is owned in this repo). Review the diff before merging."
+
+          if GH_TOKEN="$PR_GHT" gh pr list --head "$br" --state open --json number -q '.[0].number' | grep -q .; then
+            echo "PR already open for $br — the force-push above updated it"
+            exit 0
           fi
+
+          title="i18n: sync translations from quartz-i18n"
+          body="Automated pull of community translations from PrismMods/Quartz-i18n. en-US is not included (it is owned in this repo). Review the diff before merging."
+
+          if GH_TOKEN="$PR_PAT" gh pr create --base main --head "$br" --title "$title" --body "$body"; then
+            exit 0
+          fi
+          echo "::warning title=I18N_PAT could not open the PR::Fell back to github.token. The PR opens, but CI will NOT run on it — push to the branch or close/reopen the PR to get a run. Fix the PAT to restore automatic CI; see the error text if the fallback also failed."
+          if GH_TOKEN="$PR_GHT" gh pr create --base main --head "$br" --title "$title" --body "$body"; then
+            exit 0
+          fi
+          echo "::error title=Could not open the i18n sync PR::Both tokens were refused. The translations are NOT lost — they are committed on the '$br' branch, so open the PR by hand or re-run after fixing auth. I18N_PAT: a fine-grained PAT needs Resource owner = PrismMods (a personally-owned token has no grant on org repos) plus 'Pull requests: Read and write' on Quartz. github.token: needs the org/repo setting 'Allow GitHub Actions to create and approve pull requests'."
+          exit 1

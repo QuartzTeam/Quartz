@@ -7,7 +7,13 @@ name: i18n push (en-US → quartz-i18n)
 # a different file than any translation, so it never conflicts with translator work.
 #
 # Requires repo secret I18N_PAT: a fine-grained PAT with Contents: read/write on
-# PrismMods/quartz-i18n.
+# PrismMods/Quartz-i18n, and whose **Resource owner is the PrismMods org**. A token
+# owned by a personal account has no grant on org-owned repos — but Quartz-i18n is
+# public, so such a token still checks out fine and fails only at push time, with a
+# bare "Permission to ... denied". The preflight below turns that into a real message.
+#
+# Writing to another repo is the one thing github.token cannot do (it is scoped to
+# Quartz alone), so unlike i18n-pull this workflow has no fallback credential.
 on:
   push:
     branches: [main]
@@ -19,6 +25,17 @@ jobs:
   push:
     runs-on: ubuntu-latest
     steps:
+      - name: Preflight — can I18N_PAT write to Quartz-i18n?
+        env:
+          GH_TOKEN: ${{ secrets.I18N_PAT }}
+        run: |
+          can_push="$(gh api /repos/PrismMods/Quartz-i18n -q .permissions.push 2>/dev/null || true)"
+          if [ "$can_push" = "true" ]; then
+            echo "I18N_PAT has write access to Quartz-i18n — proceeding"
+            exit 0
+          fi
+          echo "::error title=I18N_PAT cannot write to PrismMods/Quartz-i18n::permissions.push='${can_push:-no answer}'. The token authenticates but carries no write grant, so the push at the end of this job would 403 after committing. Most likely the fine-grained PAT's Resource owner is a personal account: org-owned repos are then not covered, while public reads keep working. Fix: recreate the PAT with Resource owner = PrismMods, repository access covering Quartz-i18n and Quartz, permissions Contents: Read and write (Quartz-i18n) + Pull requests: Read and write (Quartz), approve it as org admin if prompted, then update the I18N_PAT repo secret."
+          exit 1
       - uses: actions/checkout@v4
         with:
           path: quartz
