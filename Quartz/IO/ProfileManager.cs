@@ -19,6 +19,10 @@ public static partial class ProfileManager {
         "PlayCount.json",
         "Profiles.json",
     };
+    // A preset ships one author's look to everyone, so it must not carry settings that
+    // describe that author rather than the look. ProfileBundle.StripPresetImposed drops
+    // these fields from the config file when a bundle is imported as a preset.
+    private static readonly string[] presetImposed = [nameof(CoreSettings.Language)];
     public static string Active { get; private set; } = DEFAULT_NAME;
     public static string ProfilesPath => Path.Combine(MainCore.Paths.RootPath, "Profiles");
     private static string PointerPath => Path.Combine(MainCore.Paths.RootPath, "Profiles.json");
@@ -162,7 +166,8 @@ public static partial class ProfileManager {
             return false;
         }
     }
-    public static string Import(string srcPath) {
+    private static string ConfigFileName => Path.GetFileName(MainCore.Paths.ConfigPath);
+    public static string Import(string srcPath, bool asPreset = false) {
         try {
             JToken bundle = JToken.Parse(File.ReadAllText(srcPath));
             if(!IsProfileBundle(bundle) || bundle["Files"] is not JObject files) {
@@ -172,14 +177,10 @@ public static partial class ProfileManager {
                 ?? Sanitize(Path.GetFileNameWithoutExtension(srcPath))
                 ?? "Imported";
             name = Uniquify(name);
-            string dir = DirOf(name);
-            Dictionary<string, byte[]> imported = new(StringComparer.OrdinalIgnoreCase);
-            foreach(JProperty prop in files.Properties()) {
-                string fileName = Path.GetFileName(prop.Name);
-                if(!fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase) || excluded.Contains(fileName)) continue;
-                imported[fileName] = System.Text.Encoding.UTF8.GetBytes(prop.Value.ToString());
-            }
-            WriteProfileDirectory(dir, imported);
+            WriteProfileDirectory(
+                DirOf(name),
+                ProfileBundle.ReadFiles(files, excluded, asPreset, ConfigFileName, presetImposed)
+            );
             return name;
         } catch(Exception e) {
             MainCore.Log.Err($"[{nameof(ProfileManager)}] Import '{srcPath}' failed: {e}");

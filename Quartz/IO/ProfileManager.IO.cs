@@ -47,7 +47,7 @@ public static partial class ProfileManager {
                 ?? Sanitize(Path.GetFileNameWithoutExtension(presetPath));
             if(name == null) return null;
             if(!Exists(name)) {
-                name = Import(presetPath);
+                name = Import(presetPath, asPreset: true);
                 if(name == null) return null;
             }
             if(name != Active) Apply(name);
