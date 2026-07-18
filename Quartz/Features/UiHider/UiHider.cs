@@ -217,18 +217,19 @@ public static partial class UiHider {
     private static Type betaType;
     private static bool betaTypeResolved;
     private static UnityEngine.Object[] cachedBetaObjects;
-    private static string cachedBetaScene;
+    private static int cachedBetaSceneHandle;
     private static void SetBetaObjectsActiveIfMatches(bool hide) {
         if(!betaTypeResolved) {
             betaType = AccessTools.TypeByName("scrEnableIfBeta");
             betaTypeResolved = true;
         }
         if(betaType == null) return;
-        string scene = SceneManager.GetActiveScene().name;
-        if(cachedBetaObjects == null || cachedBetaScene != scene) {
+        // handle instead of name: Scene.name marshals a fresh string, and this runs every frame
+        int scene = SceneManager.GetActiveScene().handle;
+        if(cachedBetaObjects == null || cachedBetaSceneHandle != scene) {
             try { cachedBetaObjects = Resources.FindObjectsOfTypeAll(betaType); }
             catch { cachedBetaObjects = null; }
-            cachedBetaScene = scene;
+            cachedBetaSceneHandle = scene;
         }
         if(cachedBetaObjects == null) return;
         for(int i = 0; i < cachedBetaObjects.Length; i++)

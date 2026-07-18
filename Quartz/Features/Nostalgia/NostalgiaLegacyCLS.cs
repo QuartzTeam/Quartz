@@ -185,19 +185,20 @@ public sealed class WorkshopShortcut : MonoBehaviour {
            || scnCLS.instance.showingInitialMenu) {
             return;
         }
-        object optionsPanels = optionsPanelsRef != null
-            ? optionsPanelsRef(scnCLS.instance)
-            : Traverse.Create(scnCLS.instance).Field("optionsPanels").GetValue();
+        // fetch optionsPanels lazily: the Traverse fallback allocates, and most frames press nothing
         if(Input.GetKeyDown(KeyCode.F)) {
             Nostalgia.ToggleSearchModeCLS(true);
         } else if(Input.GetKeyDown(KeyCode.S)) {
+            object optionsPanels = GetOptionsPanels();
             (toggleSpeedTrial ??= BuildActionInvoker(optionsPanels, "ToggleSpeedTrial"))(optionsPanels);
         } else if(Input.GetKeyDown(KeyCode.N)) {
+            object optionsPanels = GetOptionsPanels();
             (toggleNoFail ??= BuildActionInvoker(optionsPanels, "ToggleNoFail"))(optionsPanels);
         } else if(Input.GetKeyDown(KeyCode.Delete)) {
             scnCLS.instance.DeleteLevel();
         } else if(Input.GetKeyDown(KeyCode.O)) {
             try {
+                object optionsPanels = GetOptionsPanels();
                 var t = Traverse.Create(optionsPanels);
                 Array sortings = t.Field("sortings").GetValue<Array>();
                 object current = t.Field("sortingMethod").GetValue();
@@ -210,6 +211,10 @@ public sealed class WorkshopShortcut : MonoBehaviour {
             } catch { }
         }
     }
+    private object GetOptionsPanels() =>
+        optionsPanelsRef != null
+            ? optionsPanelsRef(scnCLS.instance)
+            : Traverse.Create(scnCLS.instance).Field("optionsPanels").GetValue();
     private bool IsResponsive(scnCLS cls) =>
         responsiveGetter != null
             ? responsiveGetter(cls)

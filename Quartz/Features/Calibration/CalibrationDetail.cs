@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using Quartz.Core;
 using UnityEngine.SceneManagement;
@@ -34,7 +33,9 @@ internal static class CalibrationDetail {
     private static class PutDataPointPatch {
         private static void Postfix(bool ___calibrated, List<scnCalibration.OffsetPair> ___listOffsets) {
             if(___calibrated || !text || !Calibration.ShouldShowDetail) return;
-            float avg = ___listOffsets.Count == 0 ? 0f : (float)(___listOffsets.Sum(t => t.offset) / ___listOffsets.Count) * 1000f;
+            double sum = 0.0;
+            foreach(scnCalibration.OffsetPair pair in ___listOffsets) sum += pair.offset;
+            float avg = ___listOffsets.Count == 0 ? 0f : (float)(sum / ___listOffsets.Count) * 1000f;
             text.text = string.Format(
                 MainCore.Tr.Get("CALIBRATION_DETAIL_STATS", "Avg {0}ms / Max {1}ms / Min {2}ms"),
                 Calibration.FormatMs(avg), Calibration.FormatMs(max ?? 0f), Calibration.FormatMs(min ?? 0f)

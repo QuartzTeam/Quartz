@@ -47,13 +47,21 @@ public static class TMPTextShadow {
         float soft = Mathf.Clamp(softness, 0f, 50f);
         int layerCount = soft > 0.001f ? 9 : 1;
         EnsureLayerCount(root, layerCount);
+        // Strip color tags once per Apply (not once per layer — soft shadows have
+        // 9 layers) and memo against the source string: Apply runs per keypress
+        // from KeyViewer CSS and per text change from the Panels overlay.
+        string srcText = text.text;
+        if(!ReferenceEquals(srcText, root.LastSourceText)) {
+            root.LastSourceText = srcText;
+            root.StrippedText = StripColorKeepAlpha(srcText);
+        }
         Vector2 baseOffset = new(offsetX, offsetY);
         float spread = soft * 0.25f;
         List<TextMeshProUGUI> layers = root.Layers;
         for(int i = 0; i < layers.Count; i++) {
             TextMeshProUGUI layer = layers[i];
             bool active = i < layerCount;
-            layer.gameObject.SetActive(active);
+            if(layer.gameObject.activeSelf != active) layer.gameObject.SetActive(active);
             if(!active) continue;
             Color layerColor = color;
             Vector2 layerOffset = baseOffset;
@@ -61,7 +69,7 @@ public static class TMPTextShadow {
                 layerOffset += SoftnessOffset(i - 1, spread);
                 layerColor.a *= 0.28f;
             }
-            SyncLayer(text, layer, layerColor, layerOffset);
+            SyncLayer(text, layer, layerColor, layerOffset, root.StrippedText);
         }
     }
     public static void Remove(TextMeshProUGUI text) {
@@ -144,7 +152,8 @@ public static class TMPTextShadow {
         TextMeshProUGUI source,
         TextMeshProUGUI layer,
         Color color,
-        Vector2 offset
+        Vector2 offset,
+        string strippedText
     ) {
         RectTransform rect = layer.rectTransform;
         rect.anchorMin = Vector2.zero;
@@ -155,7 +164,7 @@ public static class TMPTextShadow {
         if(rect.offsetMin != offset) rect.offsetMin = offset;
         if(rect.offsetMax != offset) rect.offsetMax = offset;
         layer.font = source.font;
-        layer.text = StripColorKeepAlpha(source.text);
+        layer.text = strippedText;
         layer.fontSize = source.fontSize;
         layer.fontStyle = source.fontStyle;
         layer.alignment = source.alignment;
@@ -207,6 +216,13 @@ public static class TMPTextShadow {
     }
     // Drive the drop shadow through the font material's GPU underlay instead of a
     // sibling TMP. One mesh/draw per label. Offset is font-relative (approximate).
+    // Memo note (both methods below): the fontMaterial getter is NOT a plain
+    // accessor — every access re-runs padding calc + SetVerticesDirty +
+    // SetMaterialDirty, so a memo keyed on its return value pays the exact
+    // cost it exists to skip. Key on fontSharedMaterial instead (plain field
+    // read): after the first fontMaterial access the instanced material IS the
+    // shared material, and the reference only changes on a font swap — which
+    // is precisely when the writes must re-run.
     private static void ApplyUnderlay(
         TextMeshProUGUI text,
         ShadowRoot root,
@@ -215,16 +231,27 @@ public static class TMPTextShadow {
         float offsetY,
         Color color
     ) {
-        Material mat = text.fontMaterial;
-        if(mat == null) return;
+        Material shared = text.fontSharedMaterial;
+        if(shared == null) return;
         if(!on) {
-            mat.DisableKeyword("UNDERLAY_ON");
+            // Nothing to turn off unless the underlay was enabled on this material.
+            if(!ReferenceEquals(shared, root.UnderlayAppliedMat)) return;
+            Material off = text.fontMaterial;
+            if(off != null) off.DisableKeyword("UNDERLAY_ON");
+            root.UnderlayAppliedMat = null;
             // Invalidate the cache so a later sibling-mode Apply re-runs its
             // idempotent disable writes against this material.
             root.UnderlayDisabledMat = null;
             return;
         }
         float fs = text.fontSize <= 0f ? 1f : text.fontSize;
+        // Apply runs every frame during the Combo pulse and per keypress from
+        // KeyViewer CSS — skip the material writes when nothing changed.
+        if(ReferenceEquals(shared, root.UnderlayAppliedMat)
+           && offsetX == root.UnderlayAppliedX && offsetY == root.UnderlayAppliedY
+           && fs == root.UnderlayAppliedFontSize && color == root.UnderlayAppliedColor) return;
+        Material mat = text.fontMaterial;
+        if(mat == null) return;
         mat.EnableKeyword("UNDERLAY_ON");
         mat.DisableKeyword("UNDERLAY_INNER");
         mat.SetColor("_UnderlayColor", color);
@@ -232,31 +259,46 @@ public static class TMPTextShadow {
         mat.SetFloat("_UnderlayOffsetY", Mathf.Clamp(offsetY / fs * UnderlayOffsetScale, -1f, 1f));
         mat.SetFloat("_UnderlaySoftness", 0f);
         mat.SetFloat("_UnderlayDilate", 0f);
+        root.UnderlayAppliedMat = text.fontSharedMaterial;
+        root.UnderlayAppliedX = offsetX;
+        root.UnderlayAppliedY = offsetY;
+        root.UnderlayAppliedFontSize = fs;
+        root.UnderlayAppliedColor = color;
         // Underlay is ON now — a switch back to sibling mode must actually re-run
         // DisableUnderlay, so clear its "already disabled" memo.
         root.UnderlayDisabledMat = null;
     }
     private static void DisableUnderlay(TextMeshProUGUI text, ShadowRoot root) {
+        // Underlay is permanently off and never re-enabled, so the 6 idempotent
+        // material writes only need to run once per material instance (the
+        // instance changes on a font swap, which re-triggers this).
+        Material shared = text.fontSharedMaterial;
+        if(shared == null || ReferenceEquals(shared, root.UnderlayDisabledMat)) return;
         Material mat = text.fontMaterial;
-        if(mat == null || ReferenceEquals(mat, root.UnderlayDisabledMat)) {
-            // Underlay is permanently off and never re-enabled, so the 6 idempotent
-            // material writes only need to run once per material instance (the
-            // instance changes on a font swap, which re-triggers this).
-            return;
-        }
+        if(mat == null) return;
         mat.DisableKeyword("UNDERLAY_ON");
         mat.DisableKeyword("UNDERLAY_INNER");
         mat.SetFloat("_UnderlayOffsetX", 0f);
         mat.SetFloat("_UnderlayOffsetY", 0f);
         mat.SetFloat("_UnderlaySoftness", 0f);
         mat.SetFloat("_UnderlayDilate", 0f);
-        root.UnderlayDisabledMat = mat;
+        root.UnderlayDisabledMat = text.fontSharedMaterial;
+        root.UnderlayAppliedMat = null;
     }
     private sealed class ShadowRoot : MonoBehaviour {
         public TextMeshProUGUI Target;
         public RectTransform Rect;
         public Material UnderlayDisabledMat;
+        public Material UnderlayAppliedMat;
+        public float UnderlayAppliedX;
+        public float UnderlayAppliedY;
+        public float UnderlayAppliedFontSize;
+        public Color UnderlayAppliedColor;
         public CanvasGroup Group;
+        // Memo for StripColorKeepAlpha: keyed by reference on the source string,
+        // which TMP keeps stable while the text is unchanged.
+        public string LastSourceText;
+        public string StrippedText;
         public readonly List<TextMeshProUGUI> Layers = new();
     }
     // Cached pointer from a text to its ShadowRoot, attached to the text's own

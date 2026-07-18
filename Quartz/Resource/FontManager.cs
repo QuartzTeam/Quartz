@@ -76,14 +76,16 @@ public static partial class FontManager {
     private static TMP_FontAsset BuildDefaultFont() {
         EnsureScanned();
         if(fontFiles.TryGetValue(DefaultFontFile, out string path)) {
+            Font font = null;
             try {
-                Font font = new(path);
+                font = new Font(path);
                 TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(font);
                 asset.isMultiAtlasTexturesEnabled = true;
                 AttachCjk(asset);
                 defaultSourceFont = font;
                 return asset;
             } catch(Exception e) {
+                if(font != null) UnityEngine.Object.Destroy(font);
                 MainCore.Log.Wrn($"[FontManager] default '{DefaultFontFile}' build failed: {e.Message}");
             }
         }
@@ -344,8 +346,9 @@ public static partial class FontManager {
         if(cache.TryGetValue(name, out TMP_FontAsset cached)) return cached;
         EnsureScanned();
         if(!fontFiles.TryGetValue(name, out string path)) return null;
+        Font font = null;
         try {
-            Font font = new(path);
+            font = new Font(path);
             TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(font);
             asset.isMultiAtlasTexturesEnabled = true;
             AttachCjk(asset);
@@ -354,6 +357,9 @@ public static partial class FontManager {
             sourceByName[name] = font;
             return asset;
         } catch(Exception e) {
+            // Resolve is retried on every apply while the saved name points at a
+            // broken file; destroy the orphaned Font or each retry leaks one.
+            if(font != null) UnityEngine.Object.Destroy(font);
             MainCore.Log.Wrn($"[FontManager] build '{name}' failed: {e.Message}");
             return null;
         }

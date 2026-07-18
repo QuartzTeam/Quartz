@@ -23,6 +23,7 @@ public static partial class PanelsOverlay {
         public bool Dirty = true;
         public string SeparatorSource;
         public string Separator;
+        public Func<string, string> ResolveToken;
     }
     private sealed class Updater : MonoBehaviour {
         private const float TextRefreshInterval = 0.05f;
@@ -71,7 +72,7 @@ public static partial class PanelsOverlay {
                     string value;
                     if(entry.Id == "text") {
                         if(string.IsNullOrEmpty(entry.Text)) continue;
-                        value = Quartz.Addons.AddonTags.Interpolate(entry.Text, name => ResolveStatToken(name, c));
+                        value = Quartz.Addons.AddonTags.Interpolate(entry.Text, p.ResolveToken ??= MakeResolver(c));
                         if(string.IsNullOrEmpty(value)) continue;
                     } else {
                         try { value = stat.Value(c); }
@@ -133,6 +134,10 @@ public static partial class PanelsOverlay {
         }
         private static StatDef FindStat(string id) =>
             id != null && CatalogById.TryGetValue(id, out StatDef stat) ? stat : null;
+        // Built once per panel: an inline lambda here would capture a local and
+        // allocate a display class on every 20Hz refresh of every panel.
+        private static Func<string, string> MakeResolver(PanelConfig config) =>
+            name => ResolveStatToken(name, config);
         private static string ResolveStatToken(string name, PanelConfig config) {
             if(name == "text" || !CatalogById.TryGetValue(name, out StatDef stat)) return null;
             try {

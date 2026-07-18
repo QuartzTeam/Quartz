@@ -188,13 +188,25 @@ public static class SongTitleOverlay {
                 if(__instance == null || !__instance.isTitle) return;
                 if(!TakesOverTitle || !GameStats.InGame) return;
                 int id = __instance.GetInstanceID();
-                if(!hiddenTitleGraphics.TryGetValue(id, out Graphic g) || g == null) {
+                if(!hiddenTitleGraphics.TryGetValue(id, out Graphic g)) {
+                    // First sighting of this HUD instance (scene load): drop entries
+                    // for destroyed instances so the cache doesn't grow all session.
+                    PruneDestroyedTitleGraphics();
+                    g = __instance.GetComponent<Graphic>();
+                    hiddenTitleGraphics[id] = g;
+                } else if(g == null) {
                     g = __instance.GetComponent<Graphic>();
                     hiddenTitleGraphics[id] = g;
                 }
                 if(g != null && g.enabled) g.enabled = false;
             } catch {
             }
+        }
+        private static void PruneDestroyedTitleGraphics() {
+            List<int> dead = null;
+            foreach(KeyValuePair<int, Graphic> kv in hiddenTitleGraphics)
+                if(kv.Value == null) (dead ??= []).Add(kv.Key);
+            if(dead != null) foreach(int id in dead) hiddenTitleGraphics.Remove(id);
         }
     }
 }

@@ -21,6 +21,8 @@ public static partial class PlanetColors {
     private static readonly Dictionary<string, MethodInfo> colorMethodCache = [];
     private static readonly object[] colorInvokeArgs = new object[1];
     private static MethodInfo setParticleSystemColorMethod;
+    private static Action<PlanetRenderer, ParticleSystem, Color, Color> setParticleSystemColorFast;
+    private static bool setParticleSystemColorResolved;
     private static readonly object[] particleColorInvokeArgs = new object[3];
     private static bool ringAccessorsResolved;
     private static AccessTools.FieldRef<PlanetRenderer, LineRenderer> ringRef;
@@ -232,11 +234,11 @@ public static partial class PlanetColors {
     private static void ApplyTailParticleSystemColor(PlanetRenderer renderer, ParticleSystem particles, Color baseColor, Color startColor) {
         if(renderer == null || particles == null) return;
         try {
-            setParticleSystemColorMethod ??= AccessTools.Method(
-                typeof(PlanetRenderer),
-                "SetParticleSystemColor",
-                [typeof(ParticleSystem), typeof(Color), typeof(Color)]
-            );
+            EnsureSetParticleSystemColorMethod();
+            if(setParticleSystemColorFast != null) {
+                setParticleSystemColorFast(renderer, particles, baseColor, startColor);
+                return;
+            }
             if(setParticleSystemColorMethod != null) {
                 particleColorInvokeArgs[0] = particles;
                 particleColorInvokeArgs[1] = baseColor;
@@ -250,6 +252,23 @@ public static partial class PlanetColors {
             ParticleSystem.MainModule main = particles.main;
             main.startColor = new ParticleSystem.MinMaxGradient(startColor);
         } catch {
+        }
+    }
+    private static void EnsureSetParticleSystemColorMethod() {
+        if(setParticleSystemColorResolved) return;
+        setParticleSystemColorResolved = true;
+        setParticleSystemColorMethod = AccessTools.Method(
+            typeof(PlanetRenderer),
+            "SetParticleSystemColor",
+            [typeof(ParticleSystem), typeof(Color), typeof(Color)]
+        );
+        if(setParticleSystemColorMethod == null) return;
+        try {
+            // open delegate avoids per-hit Color boxing through MethodInfo.Invoke on the tail path
+            setParticleSystemColorFast = (Action<PlanetRenderer, ParticleSystem, Color, Color>)Delegate.CreateDelegate(
+                typeof(Action<PlanetRenderer, ParticleSystem, Color, Color>), setParticleSystemColorMethod);
+        } catch {
+            setParticleSystemColorFast = null;
         }
     }
     private static void ApplyPlanetRing(PlanetRenderer renderer) {

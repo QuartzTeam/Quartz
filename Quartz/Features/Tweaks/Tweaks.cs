@@ -107,14 +107,24 @@ public static partial class Tweaks {
         } catch {
         }
     }
+    private static scrConductor lastMuteConductor;
+    private static bool lastMuteTarget;
     internal static void ApplyMenuMusicMute(scrConductor conductor) {
         if(conductor == null) return;
         bool target;
         try { target = ShouldDisableMenuMusic && ADOBase.isLevelSelect; }
         catch { return; }
+        // This postfix rides scrConductor.Update every frame in every scene.
+        // Once a conductor has been restored to unmuted (the tweak-off / not-
+        // level-select steady state), skip the AudioSource .mute reads — they
+        // are native calls. While muting is active, keep per-frame enforcement
+        // so the game can't silently unmute underneath the tweak.
+        if(!target && !lastMuteTarget && ReferenceEquals(conductor, lastMuteConductor)) return;
         try {
             if(conductor.song != null && conductor.song.mute != target) conductor.song.mute = target;
             if(conductor.song2 != null && conductor.song2.mute != target) conductor.song2.mute = target;
+            lastMuteConductor = conductor;
+            lastMuteTarget = target;
         } catch {
         }
     }
@@ -126,6 +136,7 @@ public static partial class Tweaks {
     private static readonly Dictionary<int, bool> lightUpDisableGlowStates = [];
     private static readonly Dictionary<int, bool> planetGlowEnabledStates = [];
     private static readonly Dictionary<(Type, string), MemberInfo> planetRendererMemberCache = [];
+    private static readonly Dictionary<int, (ParticleSystem, ParticleSystem)> planetParticleCache = [];
     private static readonly HashSet<int> suppressNextRandomColorFloorIds = [];
     private static readonly ffxCheckpoint[] EmptyCheckpoints = [];
     private static readonly PlanetRenderer[] EmptyRenderers = [];
@@ -143,6 +154,14 @@ public static partial class Tweaks {
         InvalidateRendererCache();
         InvalidateFloorCache();
         suppressNextRandomColorFloorIds.Clear();
+        planetParticleCache.Clear();
+        particleActiveStates.Clear();
+        particleRendererEnabledStates.Clear();
+        particleEmissionEnabledStates.Clear();
+        particleEmissionRateStates.Clear();
+        particleMaxParticleStates.Clear();
+        lightUpDisableGlowStates.Clear();
+        planetGlowEnabledStates.Clear();
     }
     private static void InvalidateCheckpointCache() => cachedCheckpoints = null;
     private static void InvalidateRendererCache() => cachedRenderers = null;
@@ -235,8 +254,20 @@ public static partial class Tweaks {
     }
     private static void ApplyBallCoreParticlesTweak(PlanetRenderer renderer, bool forceRestore = false) {
         if(renderer == null) return;
-        ApplyPlanetParticleTweak(GetCoreParticles(renderer), forceRestore);
-        ApplyPlanetParticleTweak(GetSparks(renderer), forceRestore);
+        // tweak off + nothing saved: applying would no-op, skip the reflection lookups
+        if(!forceRestore && !ShouldRemoveBallCoreParticles && !HasParticleTweakState) return;
+        (ParticleSystem core, ParticleSystem sparks) = GetPlanetParticles(renderer);
+        ApplyPlanetParticleTweak(core, forceRestore);
+        ApplyPlanetParticleTweak(sparks, forceRestore);
+    }
+    private static bool HasParticleTweakState => particleActiveStates.Count != 0 || particleRendererEnabledStates.Count != 0
+        || particleEmissionEnabledStates.Count != 0 || particleEmissionRateStates.Count != 0 || particleMaxParticleStates.Count != 0;
+    private static (ParticleSystem, ParticleSystem) GetPlanetParticles(PlanetRenderer renderer) {
+        int id = renderer.GetInstanceID();
+        if(planetParticleCache.TryGetValue(id, out (ParticleSystem, ParticleSystem) cached)) return cached;
+        (ParticleSystem, ParticleSystem) resolved = (GetCoreParticles(renderer), GetSparks(renderer));
+        if(resolved is { Item1: not null, Item2: not null }) planetParticleCache[id] = resolved; // partial pairs re-resolve later
+        return resolved;
     }
     private static ParticleSystem GetCoreParticles(PlanetRenderer renderer)
         => GetPlanetRendererParticle(renderer, "coreParticles");
@@ -284,7 +315,8 @@ public static partial class Tweaks {
     }
     private static bool IsRemovedPlanetParticle(PlanetRenderer renderer, ParticleSystem particles) {
         if(renderer == null || particles == null) return false;
-        return particles == GetCoreParticles(renderer) || particles == GetSparks(renderer);
+        (ParticleSystem core, ParticleSystem sparks) = GetPlanetParticles(renderer);
+        return particles == core || particles == sparks;
     }
     private static void ApplyPlanetParticleTweak(ParticleSystem particles, bool forceRestore) {
         if(particles == null) return;
@@ -372,6 +404,7 @@ public static partial class Tweaks {
     }
     private static void RestoreParticleSystemTree(GameObject particleObject) {
         if(particleObject == null) return;
+        if(!HasParticleTweakState) return; // every restore below is TryGetValue-gated: no state, no-op
         try {
             GameObject[] objects = CollectGameObjects(particleObject);
             for(int i = 0; i < objects.Length; i++) {

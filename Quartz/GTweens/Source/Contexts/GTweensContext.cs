@@ -19,6 +19,12 @@ public sealed class GTweensContext {
         TryStartTween(gTween);
     }
     public void Tick(float deltaTime) {
+        // Quartz: ticked every frame for the mod's lifetime, but tweens only exist
+        // around menu interactions — skip the stopwatch + list sweeps when idle.
+        if(_aliveTweens.Count == 0 && _tweensToAdd.Count == 0) {
+            TickDurationMs = 0f;
+            return;
+        }
         float scaledDeltaTime = deltaTime * TimeScale;
         _updateStopwatch.Restart();
         foreach(GTween tween in _tweensToAdd) _aliveTweens.Add(tween);
@@ -35,12 +41,16 @@ public sealed class GTweensContext {
                 _tweensToRemove.Add(tween);
             }
         }
-        foreach(GTween tween in _tweensToRemove) {
-            tween.IsAlive = false;
-            _tweensToAdd.Remove(tween);
+        // Quartz: IsAlive only flips false right here, so the RemoveAll scan is
+        // pure overhead on frames where nothing finished.
+        if(_tweensToRemove.Count > 0) {
+            foreach(GTween tween in _tweensToRemove) {
+                tween.IsAlive = false;
+                _tweensToAdd.Remove(tween);
+            }
+            _aliveTweens.RemoveAll(static tween => !tween.IsAlive);
+            _tweensToRemove.Clear();
         }
-        _aliveTweens.RemoveAll(static tween => !tween.IsAlive);
-        _tweensToRemove.Clear();
         _updateStopwatch.Stop();
         TickDurationMs = _updateStopwatch.ElapsedMilliseconds;
     }

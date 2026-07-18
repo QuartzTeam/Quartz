@@ -35,9 +35,19 @@ public static class InGameOverlayFont {
         Async.MainThread.Enqueue(Refresh);
     }
     public static void Refresh() {
+        PruneDeadCaptures();
         RefreshTitle();
         RefreshCountdown();
         RefreshJudgement();
+    }
+    // Captures whose TMP was destroyed (scene unload) can never be restored, but
+    // their entries survive Restore* passes; drop them here (runs on scene load)
+    // so tmpCaptures doesn't grow for the whole session.
+    private static void PruneDeadCaptures() {
+        List<int> dead = null;
+        foreach(var kv in tmpCaptures)
+            if(kv.Value.Tmp == null) (dead ??= []).Add(kv.Key);
+        if(dead != null) foreach(int id in dead) tmpCaptures.Remove(id);
     }
     private static void RefreshTitle() {
         if(!TitleActive) { RestoreCategory(Category.SongTitle); return; }

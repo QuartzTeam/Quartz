@@ -886,6 +886,11 @@ public static class UICore {
             holdingToggle = false;
         }
         if(Input.GetKeyUp(key)) holdingToggle = false;
+        // Menu fully closed (canvas deactivated after the close tween): every
+        // tickable is inactive and the tooltip is invisible, so skip the
+        // per-widget activeInHierarchy polling that would otherwise run on
+        // every gameplay frame.
+        if(!canvasObj.activeSelf) return;
         UIObject.TickAll();
         Tooltip.Tick();
     }

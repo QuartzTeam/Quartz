@@ -57,9 +57,9 @@ public static class ChatterBlocker {
         try {
             scrPlayer player = controller != null ? controller.playerOne : null;
             if(player == null || player.keyFrequency == null) return;
-            player.keyFrequency[key] = player.keyFrequency.ContainsKey(key)
-                ? player.keyFrequency[key] + 1
-                : 1; 
+            player.keyFrequency[key] = player.keyFrequency.TryGetValue(key, out int pressCount)
+                ? pressCount + 1
+                : 1;
             player.keyTotal++;
         } catch {
         }

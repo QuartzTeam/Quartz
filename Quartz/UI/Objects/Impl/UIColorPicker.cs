@@ -50,6 +50,7 @@ public sealed class UIColorPicker : UIObject {
     private Texture2D svTexture;
     private Texture2D hueTexture;
     private Color32[] svPixels;
+    private bool texturesBuilt;
     private float builtHue = float.NaN;
     private float hue;
     private float saturation;
@@ -106,8 +107,6 @@ public sealed class UIColorPicker : UIObject {
         if(PreviewImage != null) PreviewImage.gameObject.AddComponent<Quartz.UI.Utility.ThemeExempt>();
         SetupHexInput();
         Color.RGBToHSV(Value, out hue, out saturation, out brightness);
-        BuildHueTexture();
-        BuildSvTexture();
         SetExpanded(false, true);
         UpdateVisual(true);
     }
@@ -126,6 +125,14 @@ public sealed class UIColorPicker : UIObject {
     public void ToggleExpanded() => SetExpanded(!Expanded);
     public void SetExpanded(bool expanded, bool noAnimate = false) {
         Expanded = expanded;
+        if(expanded && !texturesBuilt) {
+            // Deferred from the constructor: every picker on every page is built
+            // at startup, and the 128x128 HSV fill is invisible until the body is
+            // first expanded (BuildSvTexture no-ops before this).
+            texturesBuilt = true;
+            BuildHueTexture();
+            BuildSvTexture();
+        }
         if(body != null && !body.activeSelf) body.SetActive(true);
         float targetHeight = expanded ? expandedHeight : 50f;
         float targetAlpha = expanded ? 1f : 0f;
@@ -280,6 +287,9 @@ public sealed class UIColorPicker : UIObject {
         hueTexture.Apply(false);
     }
     private void BuildSvTexture() {
+        // Not visible until the first expand; builtHue stays stale so the first
+        // SetExpanded(true) builds with whatever hue Set() has landed on by then.
+        if(!texturesBuilt) return;
         if(Mathf.Approximately(builtHue, hue)) return;
         if(svTexture == null) {
             svTexture = new Texture2D(SvTextureSize, SvTextureSize, TextureFormat.RGBA32, false);
