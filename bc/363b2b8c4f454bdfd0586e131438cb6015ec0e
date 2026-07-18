@@ -1,0 +1,33 @@
+Quartz/UI/Factory/Page/PagePanels.StatColorSettings.cs
+  s_de1ebdd11cce9b::t_9d263ffe54dfcc 13-24
+Quartz/UI/Factory/Page/PagePanels.cs
+  s_de1ebdd11cce9b::t_22e6e245d58a02 598
+Quartz/Resource/Export/Lang/en-US.json
+  s_65082c41801867::t_f32c28f37a7e8b 54
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_65082c41801867::t_3bad9c7cd5010a 54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "bc363b2b8c4f454bdfd0586e131438cb6015ec0e",
+  "prompts": {},
+  "sessions": {
+    "s_65082c41801867": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51f32074-2ba1-425c-bc95-ea26e606581b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_de1ebdd11cce9b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1ab299f8-a005-4564-9511-1181bce282b1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
