@@ -30,7 +30,7 @@ internal static class PageCalibration {
         );
         GenerateUI.Localize(GenerateUI.AddTextH1(GenerateUI.Row(sec.Body)), "HEADING_CALIBRATION_SONG", "Calibration Song");
         GenerateUI.SnapSlider(sec.Body, "Pitch", "calibration_song_pitch",
-            def.SongPitch, 1f, 500f, conf.SongPitch, "0.# %", 0.5f,
+            def.SongPitch, 1f, 500f, conf.SongPitch, "0.#' %'", 0.5f,
             v => conf.SongPitch = v, null, Save);
         GenerateUI.SnapSlider(sec.Body, "Repeat Song", "calibration_song_repeat",
             def.SongRepeat, 0f, 20f, conf.SongRepeat, "0 times", 1f,

@@ -128,7 +128,7 @@ internal static class PageProgressBar {
                     string.Format(MainCore.Tr.Get("PROGRESSBAR_STOP_POS", "Stop {0} Position"), index),
                     "progressbar_stoppos_" + i
                 );
-                pos.Format = "0 %";
+                pos.Format = "0' %'";
                 pos.OnChanged = v => { point.Pos = v * 0.01f; ProgressBarOverlay.Apply(); };
                 pos.OnComplete = v => {
                     point.Pos = v * 0.01f;

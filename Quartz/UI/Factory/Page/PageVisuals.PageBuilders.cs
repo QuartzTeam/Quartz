@@ -517,7 +517,7 @@ internal static partial class PageVisuals {
                 $"Planet {n} Ball Opacity",
                 $"pcol_ballop{n}"
             );
-            ballOp.Format = "0 %";
+            ballOp.Format = "0' %'";
             ballOp.OnChanged = v => { conf.BallOpacity[slot] = v; Apply(); };
             ballOp.OnComplete = v => { conf.BallOpacity[slot] = v; Apply(); Save(); };
             tailColorRows[slot] = GenerateUI.Row(sec.Body);
@@ -538,7 +538,7 @@ internal static partial class PageVisuals {
                 $"Planet {n} Tail Opacity",
                 $"pcol_tailop{n}"
             );
-            tailOp.Format = "0 %";
+            tailOp.Format = "0' %'";
             tailOp.OnChanged = v => { conf.TailOpacity[slot] = v; Apply(); };
             tailOp.OnComplete = v => { conf.TailOpacity[slot] = v; Apply(); Save(); };
         }
@@ -575,7 +575,7 @@ internal static partial class PageVisuals {
             "Ring Opacity",
             "pcol_ringop"
         );
-        ringOp.Format = "0 %";
+        ringOp.Format = "0' %'";
         ringOp.OnChanged = v => { conf.RingA = v; Apply(); };
         ringOp.OnComplete = v => { conf.RingA = v; Apply(); Save(); };
         RefreshTailRows();
