@@ -1,0 +1,23 @@
+Quartz/UI/Factory/Page/TufDifficultyRangeBar.cs
+  s_e287ffe23760d1::t_88f2258286cfe8 53-54,244-246,248-250
+Quartz/Features/Tuf/TufService.cs
+  s_e287ffe23760d1::t_88f2258286cfe8 97-99,101,275-282
+Quartz/UI/Factory/Page/TufSettingsUI.cs
+  s_e287ffe23760d1::t_88f2258286cfe8 18-26,52-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "be70e9c9e7d2b144c8bdaed486094383dde06df2",
+  "prompts": {},
+  "sessions": {
+    "s_e287ffe23760d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ab316e4b-2cb6-4398-9f71-434f3e03dacd",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
