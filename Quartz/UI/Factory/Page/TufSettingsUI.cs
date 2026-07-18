@@ -15,6 +15,15 @@ internal sealed class TufSettingsView : MonoBehaviour {
     // A rejected folder pick. Shown in the status line until the next pick, so the
     // user learns why nothing happened.
     private string notice = "";
+    private bool pendingRefresh;
+
+    // Hidden pages are deactivated; downloads still tick service.Changed. Defer the
+    // refresh until the page is shown again (same pattern as the TUF browser views).
+    private void OnEnable() {
+        if(!pendingRefresh) return;
+        pendingRefresh = false;
+        Refresh();
+    }
 
     public void Bind(TufService service) {
         this.service = service;
@@ -40,6 +49,10 @@ internal sealed class TufSettingsView : MonoBehaviour {
     // detected at load, which is why no Installed check is needed here.
     public void Refresh() {
         if(service == null) return;
+        if(!gameObject.activeInHierarchy) {
+            pendingRefresh = true;
+            return;
+        }
         // While the TUFHelperLite link owns the install target, a custom folder is
         // stored but inert; say so rather than showing a path that is not in use.
         linkedNoteRow?.gameObject.SetActive(service.LinkTufHelperLite

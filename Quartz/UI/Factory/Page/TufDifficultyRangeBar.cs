@@ -50,6 +50,8 @@ internal sealed class TufDifficultyRangeBar : MonoBehaviour, IPointerDownHandler
     private int maxIndex;
     private bool dragging;
     private bool draggingMax;
+    private int appliedMin = -1;
+    private int appliedMax = -1;
 
     public static TufDifficultyRangeBar Create(RectTransform root, int min, int max, Action<int, int> onCommit) {
         AddHeadingLabel(root, "TUF_DIFFICULTY_FILTER", "Difficulty range");
@@ -239,7 +241,13 @@ internal sealed class TufDifficultyRangeBar : MonoBehaviour, IPointerDownHandler
         return Mathf.Clamp(Mathf.RoundToInt(normalized * lastIndex), 0, lastIndex);
     }
 
+    // Re-entered on every pointer move while dragging (MoveActive) and on every
+    // service tick (RefreshControls → SetRange/SetQuantum), almost always with an
+    // unchanged range — skip the anchor writes and label concat unless it moved.
     private void Refresh() {
+        if(minIndex == appliedMin && maxIndex == appliedMax) return;
+        appliedMin = minIndex;
+        appliedMax = maxIndex;
         SetHandle(minHandle, minIndex);
         SetHandle(maxHandle, maxIndex);
         rangeLabel.text = labels[minIndex] + "  —  " + labels[maxIndex];

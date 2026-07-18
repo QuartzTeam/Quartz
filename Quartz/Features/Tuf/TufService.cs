@@ -94,9 +94,11 @@ public sealed class TufService : IRuntimeService {
         nextOffset = 0;
         appendFailed = false;
         // The local library needs no network round trip, so filter it as the user
-        // types instead of showing a spinner for 300ms first.
+        // types instead of showing a spinner for 300ms first. Filter only — the
+        // prune/adopt disk pass ran when the view was opened, and repeating it per
+        // keystroke stats every installed folder on the main thread.
         if(ShowInstalled) {
-            LoadInstalled();
+            RebuildInstalledList();
             return;
         }
         State = TufListState.Loading;
@@ -267,10 +269,17 @@ public sealed class TufService : IRuntimeService {
 
     private void LoadInstalled() {
         if(index == null) return;
-        InvalidateListRequest();
         bool pruned = index.Data.PruneMissing();
         AdoptOrphans();
         if(pruned) index.RequestSave();
+        RebuildInstalledList();
+    }
+
+    // Filter + sort straight from the in-memory index — no disk IO, so the
+    // search-as-you-type path never touches the filesystem.
+    private void RebuildInstalledList() {
+        if(index == null) return;
+        InvalidateListRequest();
         levels.Clear();
         foreach(TufInstallEntry entry in index.Data.Entries) {
             if(!MatchesInstalledFilters(entry)) continue;
