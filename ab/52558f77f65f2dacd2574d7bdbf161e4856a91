@@ -1,0 +1,36 @@
+Quartz/Features/AutoDeafen/AutoDeafen.cs
+  s_e287ffe23760d1::t_e5175314976d81 94,184-185
+  s_e287ffe23760d1::t_63178f559a6031 186
+Quartz/UI/Factory/Page/PageGameplay.AutoDeafen.cs
+  s_e287ffe23760d1::t_e5175314976d81 73-83
+Quartz/Features/AutoDeafen/AutoDeafenSettings.cs
+  s_e287ffe23760d1::t_e5175314976d81 11,31,45
+Quartz/Resource/Export/Lang/en-US.json
+  s_65082c41801867::t_42d006a21cac7b 23
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_65082c41801867::t_b1802033b3288f 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "ab52558f77f65f2dacd2574d7bdbf161e4856a91",
+  "prompts": {},
+  "sessions": {
+    "s_65082c41801867": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51f32074-2ba1-425c-bc95-ea26e606581b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_e287ffe23760d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ab316e4b-2cb6-4398-9f71-434f3e03dacd",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
