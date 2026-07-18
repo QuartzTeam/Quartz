@@ -17,7 +17,7 @@ public static partial class EffectRemover {
             return MainCore.IsModEnabled && Conf.On;
         }
     }
-    public static bool EditorSaveEnabled => !EnhancedActive;
+    public static bool EditorSaveEnabled => !EnhancedActive || Conf.EnableSave;
     private static bool EnhancedActive => Enabled && Conf.IsEnhanced;
     internal static bool SimpleActive => Enabled && Conf.IsSimple;
     private static readonly string[] ConditionalTagKeys = [

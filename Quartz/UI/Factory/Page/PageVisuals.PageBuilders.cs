@@ -48,6 +48,19 @@ internal static partial class PageVisuals {
         if(conf.IsSimple) {
             CreateSimpleEffectRemover(sec.Body, conf, def);
         } else {
+        GenerateUI.ToggleTip(
+            sec.Body,
+            def.EnableSave,
+            conf.EnableSave,
+            v => {
+                conf.EnableSave = v;
+                EffectRemover.RefreshEditorSaveButtons();
+                Save();
+            },
+            "Allow Saving in Editor",
+            "fxrm_enable_save",
+            "The editor holds the stripped chart, so saving overwrites the file and the removed effects are gone for good. Off blocks the editor's save button while Enhanced is on."
+        );
         GenerateUI.Localize(GenerateUI.AddTextH1(GenerateUI.Row(sec.Body)), "HEADING_NON_DLC_EVENTS", "Non-DLC Events");
         RectTransform removeAllRow = null;
         RectTransform setZoomRow = null;
