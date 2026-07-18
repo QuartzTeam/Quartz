@@ -1,0 +1,21 @@
+Quartz/Features/KeyViewer/KeyViewerOverlay.DmNote.cs
+  s_65082c41801867::t_a6dbbb478f1663 164-165
+Quartz/Features/KeyViewer/KeyViewerOverlay.Input.cs
+  s_65082c41801867::t_a6dbbb478f1663 77-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "543e4fa2e491109caeaab33a016d39f825d7f83f",
+  "prompts": {},
+  "sessions": {
+    "s_65082c41801867": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51f32074-2ba1-425c-bc95-ea26e606581b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
