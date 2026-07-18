@@ -110,6 +110,15 @@ internal static class PageTweaks {
             "opt_skipnoopfilters",
             "Skips ADOFAI full-screen screen-tile/screen-scroll shader passes when their current values are visually identity, replacing the shader pass with a plain copy. This removes real render work without wrapping an existing game setting."
         );
+        GenerateUI.ToggleTip(
+            optimizerSec.Body,
+            optDef.RenderAllHitSounds,
+            opt.RenderAllHitSounds,
+            v => { opt.RenderAllHitSounds = v; Optimizer.Apply(); Optimizer.Save(); },
+            "Render All Hit Sounds",
+            "opt_renderhitsounds",
+            "At very high note density (Hz / high-KPS charts) the game can't fire every hit-sound voice, so overlapping hits get dropped. This mixes all of a level's scheduled hit sounds into a continuous rendered audio track and plays that instead, so none are lost. It replaces the game's own hit sounds while active and costs a little CPU and memory during play. Off by default."
+        );
     }
     public static void MainMenuPage(RectTransform parent) {
         Tweaks.EnsureConf();

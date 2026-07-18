@@ -939,6 +939,8 @@
     "DESC_OPT_FASTBLOOM": "블룸이 활성화된 동안 ADOFAI의 블룸 후처리를 더 저렴한 저품질 렌더 경로로 강제합니다. 실제 GPU 작업을 줄여 블룸이 많은 레벨에서 FPS를 높일 수 있으며, 블룸이 더 부드럽고 덜 정밀해집니다.",
     "OPT_SKIPNOOPFILTERS": "효과 없는 화면 필터 건너뛰기",
     "DESC_OPT_SKIPNOOPFILTERS": "ADOFAI의 전체 화면 screen-tile/screen-scroll 셰이더 패스가 현재 값에서 시각적으로 동일할 때(아무 효과가 없을 때) 해당 패스를 단순 복사로 대체해 건너뜁니다. 기존 게임 설정을 감싸지 않고 실제 렌더 작업을 줄입니다.",
+    "OPT_RENDERHITSOUNDS": "모든 히트 사운드 렌더링",
+    "DESC_OPT_RENDERHITSOUNDS": "노트 밀도가 매우 높으면(Hz/고KPS 채보) 게임이 모든 히트 사운드 보이스를 재생하지 못해 겹치는 히트음이 누락됩니다. 이 옵션은 레벨에 예약된 모든 히트 사운드를 하나의 연속 오디오 트랙으로 믹싱해 대신 재생하므로 어떤 히트음도 손실되지 않습니다. 활성화된 동안에는 게임 자체 히트 사운드를 대체하며, 재생 중 약간의 CPU와 메모리를 사용합니다. 기본값은 꺼짐입니다.",
     "ADDONS": "애드온",
     "ADDONS_HINT": "QuartzAddon SDK로 .qaddon을 빌드해 UserData/Quartz/Addons에 넣으세요(또는 '애드온 추가' 사용). Quartz가 실행 시 애드온을 불러옵니다. '애드온 새로고침'은 폴더를 디스크에서 다시 읽습니다.",
     "ADDONS_RELOAD": "애드온 새로고침",

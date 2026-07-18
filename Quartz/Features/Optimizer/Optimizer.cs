@@ -32,6 +32,7 @@ public static class Optimizer {
         CaptureDefaults();
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        HitSoundRenderer.EnsureSceneHook();
         Apply();
     }
     private static void CaptureDefaults() {
@@ -57,6 +58,7 @@ public static class Optimizer {
         if(gcDeferred && !(on && Conf.SmoothGC && GameStats.InGame)) ResumeGC();
         TMPTextShadow.UnderlayOffsetScale = Conf.ShadowUnderlayOffsetScale;
         TMPTextShadow.UseMaterialUnderlay = on && Conf.LightTextShadows;
+        if(!(on && Conf.RenderAllHitSounds)) HitSoundRenderer.StopAll("disabled");
     }
     public static void Restore() {
         if(gcDeferred) ResumeGC();
@@ -99,6 +101,7 @@ public static class Optimizer {
         if(wantDefer != gcDeferred) {
             if(wantDefer) DeferGC(); else ResumeGC();
         }
+        HitSoundRenderer.Pump();
     }
     private static void DeferGC() {
         if(GarbageCollector.isIncremental) {

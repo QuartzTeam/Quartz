@@ -13,6 +13,7 @@ public sealed class OptimizerSettings : ISettingsFile {
     public bool SkipNoOpScreenFilters = true;
     public bool LightTextShadows = true;
     public float ShadowUnderlayOffsetScale = 6f;
+    public bool RenderAllHitSounds = false;
     public JToken Serialize() => new JObject {
         [nameof(SmoothGC)] = SmoothGC,
         [nameof(LeakGuard)] = LeakGuard,
@@ -24,6 +25,7 @@ public sealed class OptimizerSettings : ISettingsFile {
         [nameof(SkipNoOpScreenFilters)] = SkipNoOpScreenFilters,
         [nameof(LightTextShadows)] = LightTextShadows,
         [nameof(ShadowUnderlayOffsetScale)] = ShadowUnderlayOffsetScale,
+        [nameof(RenderAllHitSounds)] = RenderAllHitSounds,
     };
     public void Deserialize(JToken token) {
         SmoothGC = IOUtils.Read(token, nameof(SmoothGC), SmoothGC);
@@ -36,5 +38,6 @@ public sealed class OptimizerSettings : ISettingsFile {
         SkipNoOpScreenFilters = IOUtils.Read(token, nameof(SkipNoOpScreenFilters), SkipNoOpScreenFilters);
         LightTextShadows = IOUtils.Read(token, nameof(LightTextShadows), LightTextShadows);
         ShadowUnderlayOffsetScale = IOUtils.Read(token, nameof(ShadowUnderlayOffsetScale), ShadowUnderlayOffsetScale);
+        RenderAllHitSounds = IOUtils.Read(token, nameof(RenderAllHitSounds), RenderAllHitSounds);
     }
 }
