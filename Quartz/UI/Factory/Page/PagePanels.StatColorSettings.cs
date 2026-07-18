@@ -10,6 +10,18 @@ internal static partial class PagePanels {
     ) {
         StatColor color = entry.EnsureColor();
         bool hasRatio = StatColor.HasRatio(entry.Id);
+        if(entry.Id == "fps") {
+            GenerateUI.SnapSlider(
+                parent, "FPS Update Interval", "overlay_fps_smooth",
+                0f, 0f, 2f, MainCore.Conf.FpsRefreshInterval, "0.00 s", 0.05f,
+                v => MainCore.Conf.FpsRefreshInterval = v,
+                null,
+                () => MainCore.ConfMgr.RequestSave()
+            ).Rect.AddToolTip(
+                "DESC_OVERLAY_FPS_SMOOTH",
+                "How long the FPS counter holds each value before updating. "
+                + "0 = every frame; higher makes the number tick more slowly and steadily.");
+        }
         GenerateUI.Toggle(
             GenerateUI.Row(parent),
             false,

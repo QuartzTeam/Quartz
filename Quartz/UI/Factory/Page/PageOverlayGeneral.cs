@@ -30,16 +30,6 @@ internal static class PageOverlayGeneral {
             "overlay_enabled",
             "Master switch for every overlay HUD — panels, progress bar, combo and judgement."
         );
-        var fpsSlider = GenerateUI.SnapSlider(
-            content.transform, "FPS Update Interval", "overlay_fps_smooth",
-            0f, 0f, 2f, MainCore.Conf.FpsRefreshInterval, "0.00 s", 0.05f,
-            v => MainCore.Conf.FpsRefreshInterval = v,
-            null,
-            () => MainCore.ConfMgr.RequestSave());
-        fpsSlider.Rect.AddToolTip(
-            "DESC_OVERLAY_FPS_SMOOTH",
-            "How long the FPS counter holds each value before updating. "
-            + "0 = every frame; higher makes the number tick more slowly and steadily.");
         GenerateUI.CollapsibleSection countdownSec = null;
         countdownSec = GenerateUI.Collapsible(
             content.transform, "Countdown Font", startExpanded: false,

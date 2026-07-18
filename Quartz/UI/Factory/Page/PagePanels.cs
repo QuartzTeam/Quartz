@@ -595,7 +595,7 @@ internal static partial class PagePanels {
             ApplyLabelDotColor();
             save();
         });
-        GenerateUI.MiniButton(bg, "Color", "COLOR_SHORT", -144f, 88f, onColor);
+        GenerateUI.MiniButton(bg, "Setting", "SETTING_SHORT", -144f, 88f, onColor);
         GenerateUI.MiniButton(bg, "Swap", "SWAP", -56f, 84f, onSwap);
         GenerateUI.MiniButton(bg, "X", "DELETE_SHORT", -8f, 44f, onDelete);
     }
