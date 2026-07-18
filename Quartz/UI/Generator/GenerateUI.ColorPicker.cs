@@ -187,6 +187,12 @@ public static partial class GenerateUI {
                 id + "_ch" + channel
             );
             slider.Format = "0.00";
+            if(channel < 3) {
+                // R/G/B fills show their own channel color; exempt from the accent
+                // theme sweep so a theme change doesn't repaint them.
+                slider.SetAccent(channel == 0 ? UIColors.ChannelR : channel == 1 ? UIColors.ChannelG : UIColors.ChannelB);
+                slider.FillImage.gameObject.AddComponent<ThemeExempt>();
+            }
             RectTransform sr = slider.Rect;
             sr.anchorMin = new(0f, 1f);
             sr.anchorMax = new(1f, 1f);

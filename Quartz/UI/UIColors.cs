@@ -35,6 +35,9 @@ public static class UIColors {
     public static readonly Color ObjectActiveMathOk = new(0.588f, 1f, 0.569f, 1f);
     public static readonly Color ObjectActiveMathWarn = new(1f, 0.898f, 0.569f, 1f);
     public static readonly Color ObjectActiveMathErr = new(1f, 0.569f, 0.569f, 1f);
+    public static readonly Color ChannelR = new(1f, 0.478f, 0.478f, 1f);
+    public static readonly Color ChannelG = new(0.427f, 0.867f, 0.478f, 1f);
+    public static readonly Color ChannelB = new(0.478f, 0.647f, 1f, 1f);
     public static Color SoftRed { get; private set; } = BaseSoftRed;
     public static Palette Current => new() {
         PanelBG = PanelBG,
