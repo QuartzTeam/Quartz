@@ -1,0 +1,19 @@
+Quartz/UI/Factory/Page/PageSettings.cs
+  s_02bea41bcc42a2::t_faa8d39f9a0426 214-222,224-225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "186e8cbce45a990d6023d73b7edca7cc4a22b1c9",
+  "prompts": {},
+  "sessions": {
+    "s_02bea41bcc42a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6a2305a-635a-430b-8986-33d5847dcd68",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
