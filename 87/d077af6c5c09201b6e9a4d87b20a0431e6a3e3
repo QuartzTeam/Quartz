@@ -1,0 +1,63 @@
+Quartz/Features/Tuf/TufLevelActionRunner.cs
+  s_f5a0574730be3f::t_137edde62139cc 51-57
+  s_f5a0574730be3f::t_3e2a4aeec5463f 67-76
+  s_f5a0574730be3f::t_6d9fc93e555708 77-78
+Quartz/Resource/Export/Lang/en-US.json
+  s_b6b5f4af118b3f::t_008a7267789e55 1160-1163
+Quartz/Features/Tuf/TufApiClient.cs
+  s_b6b5f4af118b3f::t_935fbe3ad0a832 81
+Quartz/UI/Factory/Page/TufPacksUI.cs
+  s_f5a0574730be3f::t_eae1bc000307cc 512-513,515
+  s_f5a0574730be3f::t_46a34c45f4327f 514
+  s_f5a0574730be3f::t_d78a504e5e65a9 534-538
+Quartz/Features/Tuf/TufModels.cs
+  s_b6b5f4af118b3f::t_935fbe3ad0a832 122-129
+Quartz/Features/Tuf/TufMainLevel.cs
+  s_f5a0574730be3f::t_1ae53144f32dba 120-123,126,131-135,154-155,157-170
+  s_f5a0574730be3f::t_16473d83d714fd 136-153,156
+  s_f5a0574730be3f::t_55d69c5f7d2985 66-68,73-74,76-78,80-84,86,198-202,204-206
+  s_f5a0574730be3f::t_968b1d9c0d9af9 227-229
+  s_f5a0574730be3f::t_2d96673d51ff45 24-40,44,46-54
+  s_f5a0574730be3f::t_2254dcbbdd27d0 4
+  s_f5a0574730be3f::t_2b108463887601 3,5-17,55-65,69-72,75,203,207-226,230-247,249-250,269-271
+  s_f5a0574730be3f::t_7ba284dadba333 1
+  s_f5a0574730be3f::t_0c2efb29c9f5b6 79,85,87-93,97-101,104-105,118-119,124-125,127-130,171
+  s_f5a0574730be3f::t_dd0f143b2d1058 172-180,182-197
+  s_f5a0574730be3f::t_15c6456570f0a1 18-23
+  s_f5a0574730be3f::t_f4e63f8b98049a 41
+  s_f5a0574730be3f::t_6908752e5d3063 248,251-268
+  s_f5a0574730be3f::t_6a3fb5ed00a5bd 42-43,45
+  s_f5a0574730be3f::t_f8f543150c6e14 94-96,102-103,106-117
+  s_f5a0574730be3f::t_f5c5cc0c1175ea 2
+  s_f5a0574730be3f::t_46a7520cdc2ab1 181
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_b6b5f4af118b3f::t_008a7267789e55 1160-1163
+Quartz/UI/Factory/Page/TufBrowserUI.cs
+  s_f5a0574730be3f::t_3c4c918a67729a 614
+  s_f5a0574730be3f::t_5b32b7ad744e84 612-613,615
+  s_f5a0574730be3f::t_6cb2253f361747 634-638
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "87d077af6c5c09201b6e9a4d87b20a0431e6a3e3",
+  "prompts": {},
+  "sessions": {
+    "s_b6b5f4af118b3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8ff3675f-f5d4-43f7-83f0-ed910cd48c42",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_f5a0574730be3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e55b667-d95f-4ba2-a294-c43781ee7581",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
