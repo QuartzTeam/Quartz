@@ -512,14 +512,14 @@ internal static partial class PageVisuals {
             );
             UISlider ballOp = GenerateUI.Slider(
                 GenerateUI.Row(sec.Body),
-                def.BallOpacity[slot], 0f, 1f, conf.BallOpacity[slot],
-                null, null, null,
+                def.BallOpacity[slot] * 100f, 0f, 100f, conf.BallOpacity[slot] * 100f,
+                Mathf.Round, null, null,
                 $"Planet {n} Ball Opacity",
                 $"pcol_ballop{n}"
             );
             ballOp.Format = "0' %'";
-            ballOp.OnChanged = v => { conf.BallOpacity[slot] = v; Apply(); };
-            ballOp.OnComplete = v => { conf.BallOpacity[slot] = v; Apply(); Save(); };
+            ballOp.OnChanged = v => { conf.BallOpacity[slot] = v / 100f; Apply(); };
+            ballOp.OnComplete = v => { conf.BallOpacity[slot] = v / 100f; Apply(); Save(); };
             tailColorRows[slot] = GenerateUI.Row(sec.Body);
             GenerateUI.ColorPicker(
                 tailColorRows[slot],
@@ -533,14 +533,14 @@ internal static partial class PageVisuals {
             );
             UISlider tailOp = GenerateUI.Slider(
                 GenerateUI.Row(sec.Body),
-                def.TailOpacity[slot], 0f, 1f, conf.TailOpacity[slot],
-                null, null, null,
+                def.TailOpacity[slot] * 100f, 0f, 100f, conf.TailOpacity[slot] * 100f,
+                Mathf.Round, null, null,
                 $"Planet {n} Tail Opacity",
                 $"pcol_tailop{n}"
             );
             tailOp.Format = "0' %'";
-            tailOp.OnChanged = v => { conf.TailOpacity[slot] = v; Apply(); };
-            tailOp.OnComplete = v => { conf.TailOpacity[slot] = v; Apply(); Save(); };
+            tailOp.OnChanged = v => { conf.TailOpacity[slot] = v / 100f; Apply(); };
+            tailOp.OnComplete = v => { conf.TailOpacity[slot] = v / 100f; Apply(); Save(); };
         }
         GenerateUI.Localize(
             GenerateUI.AddTextH1(GenerateUI.Row(sec.Body)),
@@ -570,14 +570,14 @@ internal static partial class PageVisuals {
         );
         UISlider ringOp = GenerateUI.Slider(
             GenerateUI.Row(sec.Body),
-            def.RingA, 0f, 1f, conf.RingA,
-            null, null, null,
+            def.RingA * 100f, 0f, 100f, conf.RingA * 100f,
+            Mathf.Round, null, null,
             "Ring Opacity",
             "pcol_ringop"
         );
         ringOp.Format = "0' %'";
-        ringOp.OnChanged = v => { conf.RingA = v; Apply(); };
-        ringOp.OnComplete = v => { conf.RingA = v; Apply(); Save(); };
+        ringOp.OnChanged = v => { conf.RingA = v / 100f; Apply(); };
+        ringOp.OnComplete = v => { conf.RingA = v / 100f; Apply(); Save(); };
         RefreshTailRows();
     }
     private static void CreateVisualTweaks(Transform content) {
