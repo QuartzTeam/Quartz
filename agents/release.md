@@ -12,7 +12,7 @@ Old releases shipped boilerplate bodies (`alpha build 27 of 2.0.0.`). A full rel
 
 | Piece | What | Where it goes |
 |-------|------|---------------|
-| **name** | one-line codename for the build's headline change | title, after an em dash: `v2.0.0-alpha-29 — Editor Readout & BGA` |
+| **name** | one-line codename for the build's headline change | title, after an em dash: `v2.0.0-alpha-85 — Editor Readout & BGA` |
 | **changelog** | categorized, user-facing bullets | release body (markdown) |
 
 ## The script is the engine — you supply the words
@@ -26,15 +26,23 @@ tools/release.sh [flags]
   -F, --notes-file PATH  changelog body from a file ("-" = stdin)
       --no-auto          don't auto-draft from git when no notes given
       --dry-run          print tag/title/range/body; no bump, no build, no publish
+  -h, --help
 ```
 
 With no notes flag it auto-drafts from commit subjects since the previous build's tag. **Treat that draft as raw material, not the final answer** — see the next section.
+
+### What a publish actually does
+
+1. Bumps `build.json`, derives the tag `v${Version}-${Channel}-${next}`.
+2. Builds Release **twice** — MelonLoader, then `-p:LoaderTarget=UMM`.
+3. Creates the tag's release and uploads **three** assets: `Quartz.zip`, `Quartz.dll`, `QuartzUmm.zip`. `dist/QuartzUmm.zip` is a hard precondition; the script aborts without it, because the UMM updater's `UpdateAssetName` points at it.
+4. Force-rolls the **`latest-alpha`** tag and its pre-release onto the new build, re-uploading the same three assets. This is the pointer the in-game updater follows. Its name must stay non-SemVer-parseable — a parseable name would make `UpdateService.FetchLatest` offer the pointer itself as an upgrade.
 
 ## The core gotcha: ranges over-count, so de-dup against prior notes
 
 Tags in this repo are not a clean one-per-commit timeline:
 
-- Builds are sometimes **re-cut from the same commit** (`alpha-27` and `alpha-28` both point at `b052c5b` — the `build: bump alpha to 26` commit).
+- Builds are sometimes **re-cut from the same commit**. `alpha-27` and `alpha-28` both point at `f4100ed` (the `build: bump alpha to 26` commit), and `alpha-20` through `alpha-24` — five tags — all point at `fbb4198`.
 - A build's tag can sit **behind** the build it names: the tag stays on an older commit while the binary that shipped was built from a *later* tree. So a feature whose commit is **newer than the tag** may still already be in that build.
 
 So `git log <prev-tag>..HEAD` — what `--dry-run` shows as `range:` — will re-list work that already shipped in an earlier build. `git describe` is just as unreliable. **Two authoritative sources beat the tag-based range, and you need both:**
@@ -69,13 +77,14 @@ So `git log <prev-tag>..HEAD` — what `--dry-run` shows as `range:` — will re
    - Also write a changelog for Korean. There are alot of korean users and they would appreciate it.
 6. **Pick the name.** Short codename = the build's headline. Past-style examples: *KeyViewer CSS Engine*, *Nostalgia Tab*, *Settings Importer*, *Editor Readout & BGA*. One feature stands out → name it after that; a grab-bag → name the biggest piece.
 7. **Preview.** `./tools/release.sh -n "Name" -F /tmp/notes.md --dry-run`. Preview it yourself then publish.
-8. **Publish.** Same command, drop `--dry-run`. The script bumps `build.json`, builds Release, and uploads `Quartz.zip` + `Quartz.dll`. (Re-running an existing tag refreshes title + notes and re-uploads assets.)
+8. **Publish.** Same command, drop `--dry-run`. See "What a publish actually does" above. (Re-running an existing tag refreshes title + notes and re-uploads assets.)
 9. **Commit the bump.** The build-number bump leaves `build.json` dirty. Commit it per [`agents/commits.md`](commits.md): `build: bump <chan> to <next>`. **Push only if asked.**
-10. **Update the docs site.** Every release ends with a docs pass: follow [`agents/docs.md`](docs.md) to fold the changelog you just published into <https://quartzz.xyz/docs/> (the `PrismMods/Quartz-Website` repo). A release isn't done until the docs describe it. **Always run this step as part of `release` — it's not optional and doesn't need a separate ask, including the final commit+push to the website repo described in `docs.md`.**
+10. **Update the docs site.** Every release ends with a docs pass: follow [`agents/docs.md`](docs.md) to fold the changelog you just published into <https://quartzz.xyz/docs/> (the `PrismMods/QuartzWebsite` repo, checked out at `../Quartz-Website`). A release isn't done until the docs describe it. **Always run this step as part of `release` — it's not optional and doesn't need a separate ask, including the final commit+push to the website repo described in `docs.md`.**
 
 ## Don'ts
 
 - Don't hand-edit `build.json` / `Info.cs`, or pass a hand-made tag — identity is derived.
+- Don't rename or hand-move the `latest-alpha` tag. A SemVer-parseable name there breaks the in-game updater.
 - Don't trust `range:` / the auto-draft as the changelog — it over-counts (step 4 exists for this).
 - Don't re-list a feature a prior build already announced.
 - Don't bump Version or change Channel as part of a routine release — that's a deliberate human call in `Info.cs`.

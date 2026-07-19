@@ -51,7 +51,7 @@ One logical change per commit. A working tree with many unrelated edits becomes 
 - Keep cross-file references together so each commit compiles on its own: if file A's hunk calls a method added in file B, they land in the same commit.
 - Two unrelated fixes in the same file → two commits (split by hunk, see below).
 
-Real example — one working tree became these 7 commits:
+Real example (`e4a07df`…`f4100ed`) — one working tree became these 7 commits:
 
 ```
 fix:   fall back to hook-held state for Hangul/Hanja keys in key viewer
@@ -85,11 +85,11 @@ If a hunk boundary won't split the way you need, fall back to a hand-built patch
 
 `en-US.json` and `ko-KR.json` are **authored here** and move together — they must stay key-balanced. Attach each feature's new keys to **that feature's** commit (hunk-split the JSON), rather than dumping all locale changes in one catch-all commit — unless the keys are genuinely cross-cutting.
 
-Every other language (`zh-CN`, …) is authored by translators in [PrismMods/Quartz-i18n](https://github.com/PrismMods/Quartz-i18n) and arrives as a PR from the `i18n pull` workflow. Don't hand-edit those here — the next pull merges the translator's values back over yours. The ownership list is `OWNED_HERE` in `scripts/i18n_sync.py`, and both sync directions read it, so change it there and nowhere else.
+Every other language (`zh-CN`, …) is authored by translators in [PrismMods/Quartz-i18n](https://github.com/PrismMods/Quartz-i18n) and arrives as a PR from the `i18n pull` workflow (hourly, `cron: "0 * * * *"`). Don't hand-edit those here — the next pull merges the translator's values back over yours. The ownership list is `OWNED_HERE = {"en-US", "ko-KR"}` in `scripts/i18n_sync.py`, and both sync directions read it, so change it there and nowhere else.
 
 ### A lang commit isn't done until it's pushed
 
-`i18n push` sends `en-US`/`ko-KR` out to the translation repo, and it fires **on push to `main`** — never on a local commit. So a lang commit left sitting unpushed has two costs: translators keep working against a stale key set, and the hourly `i18n pull` sees keys in this repo that i18n lacks. It used to propose **deleting** them (that was PR #2 — 31 Korean strings); it now merges instead, so nothing is lost, but the keys still never reach translators until you push.
+`i18n push` sends `en-US`/`ko-KR` out to the translation repo, and it fires **on push to `main`** filtered to `Quartz/Resource/Export/Lang/**` — never on a local commit. So a lang commit left sitting unpushed has two costs: translators keep working against a stale key set, and the hourly `i18n pull` sees keys in this repo that i18n lacks. It used to propose **deleting** them (that was PR #2 — 31 Korean strings); it now merges instead, so nothing is lost, but the keys still never reach translators until you push.
 
 The usual "push only when asked" below still holds. But when a commit touches `Quartz/Resource/Export/Lang/`, **say it's pending sync and offer to push** rather than leaving it silently local. After pushing, check that the sync actually ran:
 
@@ -127,5 +127,5 @@ To restyle subjects after the fact without interactive rebase (no TTY): map old�
 
 ## Notes
 
-- Per environment policy a `Co-Authored-By: Claude ...` trailer may be appended to commit messages; it doesn't change the subject rules above.
+- If tooling appends a `Co-Authored-By: Claude ...` trailer to a message template, **strip it before committing** — see [Including yourself](#including-yourself). Never add one by hand.
 - Don't commit or push unless the task calls for it.
