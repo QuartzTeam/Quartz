@@ -1,0 +1,27 @@
+Quartz/Features/UiHider/UiHider.cs
+  s_a4d7b37eff0786::t_a400bd953ff855 203-205,207-210,212-215
+  s_a4d7b37eff0786::t_ae7b96d09aa81e 195
+  s_a4d7b37eff0786::t_0d0872ac264863 150-163
+  s_a4d7b37eff0786::t_4817b7adae53ce 187
+  s_a4d7b37eff0786::t_2abbc19cd3cfc8 70-71
+  s_a4d7b37eff0786::t_da7ec64b2d3f55 221
+Quartz/Features/UiHider/UiHiderPatches.cs
+  s_a4d7b37eff0786::t_2d9c48da0e11df 70
+  s_a4d7b37eff0786::t_6c54317a96c828 36-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "0bc181c8a349d66ffd068b4425a4e6e204e236c6",
+  "prompts": {},
+  "sessions": {
+    "s_a4d7b37eff0786": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c3da5f65-414d-49ed-b51f-7d7cf3fc4dca",
+        "model": "claude-fable-5"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
