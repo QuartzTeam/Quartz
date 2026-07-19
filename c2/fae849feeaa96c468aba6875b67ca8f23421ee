@@ -1,0 +1,30 @@
+Quartz/Features/EffectRemover/EffectRemoverSimplePatches.cs
+  s_abfa8f37a551fc::t_54640e46e1f95f 72-103
+  s_abfa8f37a551fc::t_9c7a103d47ae26 14
+Quartz/UI/Factory/Page/PageVisuals.PageBuilders.cs
+  s_abfa8f37a551fc::t_9e004492169781 296-300
+Quartz/Features/EffectRemover/EffectRemoverSettings.cs
+  s_abfa8f37a551fc::t_9ab5702ef7f8d1 20-21
+  s_abfa8f37a551fc::t_5d7d6ac71a7871 105
+  s_abfa8f37a551fc::t_992c3cbe174df5 62
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_abfa8f37a551fc::t_2071b5b5ae6d83 942-943
+Quartz/Resource/Export/Lang/en-US.json
+  s_abfa8f37a551fc::t_e20fc5d2cc4034 942-943
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "c2fae849feeaa96c468aba6875b67ca8f23421ee",
+  "prompts": {},
+  "sessions": {
+    "s_abfa8f37a551fc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2abcc506-0ee1-4b51-a2ad-c2a094064145",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
