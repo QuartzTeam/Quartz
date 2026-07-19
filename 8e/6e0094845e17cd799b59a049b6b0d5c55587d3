@@ -1,0 +1,40 @@
+Quartz/Features/Status/ProgressTracker.cs
+  s_2de79a9f25de5d::t_e2f83b700c824c 41-42
+  s_2de79a9f25de5d::t_b5cc56837e384a 28,32,35-40,43-53
+  s_2de79a9f25de5d::t_f537c94fa09540 7
+  s_2de79a9f25de5d::t_c4c75949da50bf 54
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_2de79a9f25de5d::t_9497180959bc52 155
+  s_2de79a9f25de5d::t_c26289a782cc0c 599
+Quartz/Features/ProgressBar/ProgressBar.cs
+  s_2de79a9f25de5d::t_28537dccd1f22c 87-88
+  s_2de79a9f25de5d::t_45650d0778b6c6 125-138
+  s_2de79a9f25de5d::t_c1d58f157c56d8 160
+Quartz/UI/Factory/Page/PageProgressBar.cs
+  s_2de79a9f25de5d::t_e2fcf71658bca8 32-42
+Quartz/Resource/Export/Lang/en-US.json
+  s_2de79a9f25de5d::t_491ecddfebdc14 599
+  s_2de79a9f25de5d::t_0c5b8e6260d2c0 155
+Quartz/Features/ProgressBar/ProgressBarSettings.cs
+  s_2de79a9f25de5d::t_3a1d061be078cb 40
+  s_2de79a9f25de5d::t_5feb5ab700f750 64
+  s_2de79a9f25de5d::t_f59529ac86c84d 16
+Quartz/Features/Status/GameStats.cs
+  s_2de79a9f25de5d::t_42219651645c48 98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8e6e0094845e17cd799b59a049b6b0d5c55587d3",
+  "prompts": {},
+  "sessions": {
+    "s_2de79a9f25de5d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff88da24-9afb-4020-bcb5-fcf43ac9c296",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
