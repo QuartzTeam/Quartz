@@ -119,6 +119,16 @@ internal static class TufSettingsUI {
                 "Saves downloaded levels into TUFHelperLite's Downloads folder (as tuf-<id>) so both mods share one level library. Inside the game folder, UMMMods is checked first, then Mods."
             );
 
+        GenerateUI.ToggleTip(
+            content.transform,
+            true,
+            service.ShowPreviews,
+            service.SetShowPreviews,
+            "Level Previews",
+            "tuf_previews",
+            "Show a blurred preview image behind each level in the browser, taken from its YouTube video. Turn off to skip the thumbnail downloads."
+        );
+
         GenerateUI.Localize(GenerateUI.AddTextH1(GenerateUI.Row(content.transform)),
             "TUF_LIBRARY", "Level Library");
         // Plain muted text, not the localized helper: these two carry runtime values,

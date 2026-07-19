@@ -76,7 +76,9 @@ public sealed class TufApiClient : IDisposable {
                 Math.Max(0, token.Value<int?>("clears") ?? 0),
                 Math.Max(0, token.Value<int?>("likes") ?? 0),
                 download
-            ));
+            ) {
+                VideoLink = TufInput.CapDisplay(token.Value<string>("videoLink"), "", 300),
+            });
         }
         return new TufPage(levels, root.Value<bool?>("hasMore") == true, results.Count);
     }

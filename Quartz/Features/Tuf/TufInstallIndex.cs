@@ -22,6 +22,7 @@ public sealed class TufInstallEntry {
     public int Likes;
     public string Folder = "";
     public string DownloadUrl = "";
+    public string VideoLink = "";
     public long InstalledAtUtc;
 
     public JObject Serialize() => new() {
@@ -35,6 +36,7 @@ public sealed class TufInstallEntry {
         [nameof(Likes)] = Likes,
         [nameof(Folder)] = Folder,
         [nameof(DownloadUrl)] = DownloadUrl,
+        [nameof(VideoLink)] = VideoLink,
         [nameof(InstalledAtUtc)] = InstalledAtUtc
     };
 
@@ -59,6 +61,7 @@ public sealed class TufInstallEntry {
                 Likes = Math.Max(0, token[nameof(Likes)]?.Value<int>() ?? 0),
                 Folder = folder,
                 DownloadUrl = token[nameof(DownloadUrl)]?.Value<string>() ?? "",
+                VideoLink = TufInput.CapDisplay(token[nameof(VideoLink)]?.Value<string>(), "", 300),
                 InstalledAtUtc = token[nameof(InstalledAtUtc)]?.Value<long>() ?? 0
             };
         } catch { return null; }
@@ -67,7 +70,9 @@ public sealed class TufInstallEntry {
     public TufLevel ToLevel() {
         Uri? uri = Uri.TryCreate(DownloadUrl, UriKind.Absolute, out Uri? parsed)
             && TufNetworkPolicy.IsAllowedDownloadUri(parsed) ? parsed : null;
-        return new TufLevel(Id, Song, Artist, Creator, Difficulty, DifficultyColor, Clears, Likes, uri);
+        return new TufLevel(Id, Song, Artist, Creator, Difficulty, DifficultyColor, Clears, Likes, uri) {
+            VideoLink = VideoLink
+        };
     }
 }
 
@@ -100,6 +105,7 @@ public sealed class TufInstallIndex : ISettingsFile {
             Likes = level.Likes,
             Folder = Path.GetFullPath(folder),
             DownloadUrl = level.DownloadUri?.ToString() ?? "",
+            VideoLink = level.VideoLink,
             InstalledAtUtc = installedAt
         });
         Sort();

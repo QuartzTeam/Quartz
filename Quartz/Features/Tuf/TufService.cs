@@ -170,6 +170,18 @@ public sealed class TufService : IRuntimeService {
         Refresh();
     }
 
+    public bool ShowPreviews => settings?.Data.ShowPreviews ?? true;
+
+    public void SetShowPreviews(bool value) {
+        if(settings == null || settings.Data.ShowPreviews == value) return;
+        settings.Data.ShowPreviews = value;
+        settings.RequestSave();
+        // Off frees the cached thumbnails now; the browser drops the preview layer on
+        // its next rebuild (ShowPreviews is part of the list signature).
+        if(!value) TufPreviewCache.Clear();
+        Notify();
+    }
+
     public bool LinkTufHelperLite => settings?.Data.LinkTufHelperLite ?? false;
 
     public void SetLinkTufHelperLite(bool value) {
@@ -621,6 +633,7 @@ public sealed class TufService : IRuntimeService {
         moveRequest?.Dispose();
         downloads?.Dispose();
         api?.Dispose();
+        TufPreviewCache.Clear();
         Changed = delegate { };
         levels.Clear();
         if(ReferenceEquals(Instance, this)) Instance = null;

@@ -839,6 +839,8 @@
     "DESC_TUF_OPEN_FOLDER": "다운로드한 TUF 레벨이 저장되는 폴더를 엽니다.",
     "TUF_LINK_HELPER": "TUFHelperLite 폴더와 연동",
     "DESC_TUF_LINK_HELPER": "다운로드한 레벨을 TUFHelperLite의 Downloads 폴더에 tuf-<id> 형식으로 저장해 두 모드가 하나의 레벨 라이브러리를 공유합니다. 게임 폴더 안에서 UMMMods를 먼저 확인하고, 없으면 Mods를 사용합니다.",
+    "TUF_PREVIEWS": "레벨 미리보기",
+    "DESC_TUF_PREVIEWS": "브라우저의 각 레벨 뒤에 해당 레벨의 YouTube 영상에서 가져온 미리보기 이미지를 흐리게 표시합니다. 끄면 썸네일을 내려받지 않습니다.",
     "TUF_INSTALLED": "설치했던 맵",
     "DESC_TUF_INSTALLED": "다운로드한 레벨만 최신 설치순으로 보여줍니다. 오프라인에서도 동작합니다.",
     "TUF_INSTALLED_EMPTY": "아직 다운로드한 레벨이 없습니다.",

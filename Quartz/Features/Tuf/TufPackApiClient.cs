@@ -102,9 +102,12 @@ public sealed class TufPackApiClient : IDisposable {
             string ownerName = TufInput.CapDisplay(
                 owner?.Value<string>("nickname") ?? owner?.Value<string>("username"), "Unknown", 60);
             List<string> preview = [];
+            int firstLevelId = 0;
             if(token["packItems"] is JArray items)
                 foreach(JToken item in items) {
-                    string song = item["referencedLevel"]?.Value<string>("song") ?? "";
+                    JToken referenced = item["referencedLevel"];
+                    if(firstLevelId <= 0) firstLevelId = Math.Max(0, SafeInt(referenced, "id"));
+                    string song = referenced?.Value<string>("song") ?? "";
                     if(!string.IsNullOrWhiteSpace(song)) preview.Add(TufInput.CapDisplay(song, "", 60));
                     if(preview.Count >= 3) break;
                 }
@@ -116,7 +119,10 @@ public sealed class TufPackApiClient : IDisposable {
                 ownerName,
                 Math.Max(0, levelCount),
                 Math.Max(0, SafeInt(token, "favoritesCount")),
-                preview.AsReadOnly()));
+                preview.AsReadOnly()) {
+                    IconUrl = TufInput.CapDisplay(token.Value<string>("iconUrl"), "", 300),
+                    FirstLevelId = firstLevelId
+                });
         }
         return new TufPacksPage(result, Math.Max(SafeInt(root, "total"), result.Count));
     }
@@ -196,7 +202,10 @@ public sealed class TufPackApiClient : IDisposable {
                 diffColor,
                 Math.Max(0, SafeInt(level, "clears")),
                 Math.Max(0, SafeInt(level, "likes")),
-                download) { DifficultyRank = difficulties.RankOf(SafeInt(level, "diffId")) }));
+                download) {
+                    DifficultyRank = difficulties.RankOf(SafeInt(level, "diffId")),
+                    VideoLink = TufInput.CapDisplay(level.Value<string>("videoLink"), "", 300)
+                }));
         }
         return result;
     }

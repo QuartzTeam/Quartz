@@ -116,6 +116,9 @@ public sealed class TufLevel {
     public int Clears { get; }
     public int Likes { get; }
     public Uri? DownloadUri { get; }
+    // The level's showcase video (YouTube, Bilibili, …), straight from the API. Only
+    // YouTube links become a preview thumbnail; see TufThumbnail. Empty when unknown.
+    public string VideoLink { get; set; } = "";
     // Ordering key for difficulty sorts (difficulties endpoint sortOrder). Only
     // populated for pack levels; the plain browser sorts server-side.
     public int DifficultyRank { get; set; }

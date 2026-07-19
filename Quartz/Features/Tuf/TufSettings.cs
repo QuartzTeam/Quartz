@@ -14,6 +14,9 @@ public sealed class TufSettings : ISettingsFile {
     public int QuantumMaxIndex = TufDifficultyFilter.QuantumNames.Count - 1;
     public List<string> SpecialDifficulties = [];
     public bool LinkTufHelperLite;
+    // Blurred YouTube thumbnail behind each browser card. On by default; off stops the
+    // thumbnail downloads and frees the cached textures.
+    public bool ShowPreviews = true;
     // Empty = install into Quartz's own Levels cache. Set = the folder the user
     // picked instead (typically on a roomier drive).
     public string CustomLevelsRoot = "";
@@ -54,6 +57,7 @@ public sealed class TufSettings : ISettingsFile {
         [nameof(QuantumMaxIndex)] = QuantumMaxIndex,
         [nameof(SpecialDifficulties)] = new JArray(SpecialDifficulties),
         [nameof(LinkTufHelperLite)] = LinkTufHelperLite,
+        [nameof(ShowPreviews)] = ShowPreviews,
         [nameof(CustomLevelsRoot)] = CustomLevelsRoot,
         [nameof(KnownRoots)] = new JArray(KnownRoots)
     };
@@ -78,6 +82,7 @@ public sealed class TufSettings : ISettingsFile {
         QuantumMinIndex = Read(token, nameof(QuantumMinIndex), QuantumMinIndex);
         QuantumMaxIndex = Read(token, nameof(QuantumMaxIndex), QuantumMaxIndex);
         LinkTufHelperLite = Read(token, nameof(LinkTufHelperLite), LinkTufHelperLite);
+        ShowPreviews = Read(token, nameof(ShowPreviews), ShowPreviews);
         CustomLevelsRoot = Read(token, nameof(CustomLevelsRoot), CustomLevelsRoot) ?? "";
         KnownRoots.Clear();
         if(token[nameof(KnownRoots)] is JArray roots) {

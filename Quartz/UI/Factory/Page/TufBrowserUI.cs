@@ -52,6 +52,8 @@ internal sealed class TufBrowserView : MonoBehaviour {
     private const float MetaGap = 12f;
     private readonly Dictionary<int, TMP_Text> cardLabels = [];
     private readonly Dictionary<int, Image> deleteChips = [];
+    // The blurred-thumbnail layer behind each card that has one.
+    private TufPreviewGroup previews;
     private Image installedChip;
     private TMP_Text installedLabel;
     private string listSignature;
@@ -89,6 +91,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
         scroll = pad.gameObject.AddComponent<UIScrollController>();
         scroll.SetContent(content, viewport);
         built = true;
+        previews = new TufPreviewGroup();
         service.Changed += Rebuild;
         service.EnsureLoaded();
         Rebuild();
@@ -335,6 +338,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
     // shorter than the viewport, filling until the list scrolls.
     private void Update() {
         if(!built || service == null || content == null || viewport == null) return;
+        previews?.Tick();
         if(armedDeleteId != 0 && Time.unscaledTime >= armedUntil) DisarmDelete();
         // The Installed view is the whole local library at once — nothing to page.
         if(!service.HasMore || service.LoadingMore || service.State != TufListState.Ready) return;
@@ -381,6 +385,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
         float oldY = content.anchoredPosition.y;
         RefreshControls();
         chartChooserSeq?.Kill();
+        previews.ClearSlots();
         GenerateUI.ClearChildren(content);
         cardLabels.Clear();
         deleteChips.Clear();
@@ -422,7 +427,9 @@ internal sealed class TufBrowserView : MonoBehaviour {
             .Append(service.HasMore ? '1' : '0')
             .Append(service.LoadingMore ? '1' : '0')
             .Append(service.IsBusy ? '1' : '0')
-            .Append(service.ShowInstalled ? '1' : '0').Append('|');
+            .Append(service.ShowInstalled ? '1' : '0')
+            // Toggling previews adds or removes the whole preview layer on every card.
+            .Append(service.ShowPreviews ? '1' : '0').Append('|');
         foreach(TufLevel level in service.Levels)
             sb.Append(level.Id).Append(':').Append((int)level.State)
                 // A card gains a badge and a Delete button (and loses text width) the
@@ -466,6 +473,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
         bg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
         bg.type = Image.Type.Sliced;
         bg.color = Color.Lerp(UIColors.ObjectBG, UIColors.PanelBG, 0.12f);
+        if(service.ShowPreviews) previews.Attach(card, level.Id.ToString(), TufPreviewSource.Video(level.VideoLink));
         RectTransform rail = Rect("Difficulty Rail", card, new(0f, 0f), new(0f, 1f), new(5f, 8f), new(11f, -8f));
         Image railImage = rail.gameObject.AddComponent<Image>();
         railImage.sprite = MainCore.Spr.GetFilled(2f);
@@ -770,6 +778,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
     private static string Tr(string key, string fallback) => MainCore.Tr.Get(key, fallback);
     private void OnDestroy() {
         if(service != null) service.Changed -= Rebuild;
+        previews?.Dispose();
         filterLayoutSeq?.Kill();
         specialArrowSeq?.Kill();
         chartChooserSeq?.Kill();

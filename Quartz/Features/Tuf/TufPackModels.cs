@@ -42,6 +42,12 @@ public sealed class TufPack {
     public int LevelCount { get; }
     public int Favorites { get; }
     public IReadOnlyList<string> Preview { get; }
+    // Full CDN url of the pack's uploaded icon, straight from the list response; empty
+    // when the pack has none. Used for the blurred card background (see TufPreviewCache).
+    public string IconUrl { get; set; } = "";
+    // First previewed level's id, 0 if none. Most packs have no icon, so the card falls
+    // back to this level's video thumbnail.
+    public int FirstLevelId { get; set; }
 
     public TufPack(string id, string name, string owner, int levelCount, int favorites, IReadOnlyList<string> preview) {
         Id = id;

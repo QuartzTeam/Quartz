@@ -34,6 +34,10 @@ internal sealed class TufPacksView : MonoBehaviour {
     private TMP_Text directionLabel;
     private readonly Dictionary<int, TMP_Text> cardLabels = [];
     private readonly HashSet<long> expandedFolders = [];
+    // Blurred pack-icon / level-thumbnail layer, shared with the level browser (same
+    // cache, same disk files). Preview visibility follows the browser's setting.
+    private TufPreviewGroup previews;
+    private static bool ShowPreviews => TufService.Instance?.ShowPreviews ?? true;
     private string expandedPackId;
     private GTween chartChooserSeq;
     private GTween viewSwitchSeq;
@@ -68,6 +72,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         scroll = pad.gameObject.AddComponent<UIScrollController>();
         scroll.SetContent(content, viewport);
         built = true;
+        previews = new TufPreviewGroup();
         service.Changed += Rebuild;
         service.EnsureLoaded();
         Rebuild();
@@ -143,6 +148,7 @@ internal sealed class TufPacksView : MonoBehaviour {
     // first page is shorter than the viewport, filling until the list scrolls.
     private void Update() {
         if(!built || service == null || content == null || viewport == null) return;
+        previews?.Tick();
         if(service.SelectedPack != null) return;
         if(!service.HasMore || service.LoadingMore || service.ListState != TufPackListState.Ready) return;
         float max = content.rect.height - viewport.rect.height;
@@ -181,6 +187,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         float oldY = content.anchoredPosition.y;
         RefreshControls();
         chartChooserSeq?.Kill();
+        previews.ClearSlots();
         GenerateUI.ClearChildren(content);
         cardLabels.Clear();
         bool detail = service.SelectedPack != null;
@@ -385,6 +392,8 @@ internal sealed class TufPacksView : MonoBehaviour {
 
     private string BuildSignature() {
         StringBuilder sb = new();
+        // Toggling previews adds or removes the whole preview layer on every card.
+        sb.Append(ShowPreviews ? 'P' : 'p');
         if(service.SelectedPack != null) {
             sb.Append("D:").Append(service.SelectedPack.Id).Append('|')
                 .Append((int)service.DetailState).Append('|').Append(service.IsBusy ? '1' : '0').Append('|')
@@ -439,6 +448,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         bg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
         bg.type = Image.Type.Sliced;
         bg.color = Color.Lerp(UIColors.ObjectBG, UIColors.PanelBG, 0.12f);
+        if(ShowPreviews) previews.Attach(card, "pack-" + pack.Id, TufPreviewSource.ForPack(pack.IconUrl, pack.FirstLevelId));
 
         RectTransform nameRect = Rect("Name", card, new(0f, 1f), new(1f, 1f), new(22f, -46f), new(-22f, -12f));
         TMP_Text name = Text(nameRect, pack.Name, 22f, TextAlignmentOptions.Left);
@@ -467,6 +477,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         bg.sprite = MainCore.Spr.Get(UISliceSprite.Circle256P2048);
         bg.type = Image.Type.Sliced;
         bg.color = Color.Lerp(UIColors.ObjectBG, UIColors.PanelBG, 0.12f);
+        if(ShowPreviews) previews.Attach(card, level.Id.ToString(), TufPreviewSource.Video(level.VideoLink));
         RectTransform rail = Rect("Difficulty Rail", card, new(0f, 0f), new(0f, 1f), new(5f, 8f), new(11f, -8f));
         Image railImage = rail.gameObject.AddComponent<Image>();
         railImage.sprite = MainCore.Spr.GetFilled(2f);
@@ -665,6 +676,7 @@ internal sealed class TufPacksView : MonoBehaviour {
     private void OnDestroy() {
         viewSwitchSeq?.Kill();
         chartChooserSeq?.Kill();
+        previews?.Dispose();
         if(service != null) service.Changed -= Rebuild;
     }
 }
