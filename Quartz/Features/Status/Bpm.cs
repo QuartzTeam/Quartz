@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Quartz.Core;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Status;
 internal static class Bpm {
     private static readonly Queue<float> autoTileTimes = new();
@@ -46,7 +47,7 @@ internal static class Bpm {
             scrConductor conductor = scrConductor.instance;
             scrFloor floor = controller != null ? (controller.currFloor ?? controller.firstFloor) : null;
             if(controller == null || conductor == null || floor == null || conductor.song == null) return;
-            double speed = controller.planetarySystem != null ? controller.planetarySystem.speed : 1.0;
+            double speed = GameApi.PlanetSpeed(controller);
             tileBpm = (float)(conductor.bpm * conductor.song.pitch * speed);
             double dt = floor.nextfloor ? floor.nextfloor.entryTime - floor.entryTime : 0.0;
             actualBpm = floor.nextfloor && dt > 1e-9

@@ -11,6 +11,7 @@ using Quartz.Tween;
 using GTweens.Builders;
 using GTweens.Easings;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Objects.Impl;
 public class UIDropDown<T> : UIObject {
     public T DefaultValue { get; }
@@ -155,7 +156,7 @@ public class UIDropDown<T> : UIObject {
             rowImage.color = Color.clear;
             TextMeshProUGUI rowText = GenerateUI.AddText(rowRect);
             rowText.text = Display(item);
-            rowText.textWrappingMode = TextWrappingModes.NoWrap;
+            TextCompat.NoWrap(rowText);
             rowText.overflowMode = TextOverflowModes.Ellipsis;
             rowText.rectTransform.offsetMax = new(-16f, 0f);
             rowTexts.Add((item, rowText));

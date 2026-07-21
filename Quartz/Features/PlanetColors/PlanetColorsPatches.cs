@@ -1,6 +1,7 @@
 using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.PlanetColors;
 public static partial class PlanetColors {
     private static IEnumerable<MethodBase> ExistingMethods(Type type, params string[] names) {
@@ -94,12 +95,14 @@ public static partial class PlanetColors {
     private static class LogoLateUpdatePatch {
         private static bool Prefix() => !ShouldChange;
     }
-    [HarmonyPatch(typeof(PlanetarySystem), "RainbowMode")]
+    [HarmonyPatch]
     private static class LevelSelectRainbowPatch {
+        private static MethodBase TargetMethod() => GameApi.PlanetPaletteMethod("RainbowMode");
         private static bool Prefix() => !ShouldChange;
     }
-    [HarmonyPatch(typeof(PlanetarySystem), "EnbyMode")]
+    [HarmonyPatch]
     private static class LevelSelectEnbyPatch {
+        private static MethodBase TargetMethod() => GameApi.PlanetPaletteMethod("EnbyMode");
         private static bool Prefix() => !ShouldChange;
     }
 }

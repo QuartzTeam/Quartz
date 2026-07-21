@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Quartz.Compat.Game;
 using DG.Tweening;
 using HarmonyLib;
 using UnityEngine;
@@ -10,7 +11,7 @@ public static partial class Nostalgia {
         private static void Postfix(scrController __instance) {
             if(__instance.gameworld && ShouldNoResult) {
                 __instance.txtCongrats.text = string.Empty;
-                scrUIController.instance.txtResults.gameObject.SetActive(false);
+                GameApi.ResultsReadout(scrUIController.instance)?.SetActive(false);
                 __instance.txtAllStrictClear.text = string.Empty;
             }
         }
@@ -123,9 +124,7 @@ public static partial class Nostalgia {
     }
     [HarmonyPatch]
     private static class LegacyFlashPatch {
-        private static MethodBase TargetMethod() =>
-            AccessTools.Method(typeof(scrPlayer), "OnDamage")
-            ?? AccessTools.Method(typeof(scrController), "OnDamage");
+        private static MethodBase TargetMethod() => GameApi.OnDamageTarget;
         private static bool Prepare() => TargetMethod() != null;
         private static void Postfix() {
             if(!ShouldLegacyFlash) return;
@@ -137,13 +136,44 @@ public static partial class Nostalgia {
         private static void Postfix(scrHitTextMesh __instance) {
             if(!ShouldNoJudgeAnimation) return;
             __instance.transform.DOKill();
-            __instance.transform.localRotation = scrCamera.instance.transform.rotation;
+            __instance.transform.localRotation = GameApi.Camera.transform.rotation;
         }
     }
-    [HarmonyPatch(typeof(scrHitTextManager), "ShowHitText")]
+    private static scrPlanet legacyHitPlanet;
+    [HarmonyPatch]
+    private static class LegacySwitchChosenPatch {
+        private static bool Prepare() => GameApi.SwitchChosenTarget != null && GameApi.LegacyShowHitTextTarget != null;
+        private static MethodBase TargetMethod() => GameApi.SwitchChosenTarget;
+        private static void Prefix(scrPlanet __instance) => legacyHitPlanet = __instance;
+        private static void Finalizer() => legacyHitPlanet = null;
+    }
+    [HarmonyPatch]
+    private static class LegacyLateJudgementPatch {
+        private static bool Prepare() => GameApi.LegacyShowHitTextTarget != null;
+        private static MethodBase TargetMethod() => GameApi.LegacyShowHitTextTarget;
+        private static void Prefix(HitMargin hitMargin, ref Vector3 position) {
+            if(!ShouldLateJudgement || legacyHitPlanet == null) return;
+            switch(hitMargin) {
+                case HitMargin.TooEarly:
+                case HitMargin.TooLate:
+                case HitMargin.FailMiss:
+                case HitMargin.FailOverload:
+                    return;
+            }
+            try {
+                scrFloor other = legacyHitPlanet.other?.currfloor;
+                if(other == null) return;
+                Vector3 pos = other.transform.position;
+                pos.y += 1f;
+                position = pos;
+            } catch { }
+        }
+    }
+    [HarmonyPatch]
     private static class LateJudgementPatch {
-        private static bool Prepare() => AccessTools.Method(typeof(scrHitTextManager), "ShowHitText") != null;
-        private static void Postfix(scrHitTextManager __instance, HitMargin hitMargin, scrPlanet planet) {
+        private static MethodBase TargetMethod() => GameApi.ShowHitTextTarget;
+        private static bool Prepare() => TargetMethod() != null;
+        private static void Postfix(object __instance, HitMargin hitMargin, scrPlanet planet) {
             if(!ShouldLateJudgement) return;
             switch(hitMargin) {
                 case HitMargin.TooEarly:
@@ -158,7 +188,7 @@ public static partial class Nostalgia {
                 Vector3 pos = other.transform.position;
                 pos.y += 1f;
                 EnsureHitTextAccessors();
-                var cached = cachedHitTextsRef != null ? cachedHitTextsRef(__instance) : null;
+                var cached = cachedHitTextsField?.GetValue(__instance) as Dictionary<HitMargin, scrHitTextMesh[]>;
                 if(cached == null || !cached.TryGetValue(hitMargin, out scrHitTextMesh[] arr)) return;
                 scrHitTextMesh newest = null;
                 int best = int.MinValue;
@@ -178,14 +208,14 @@ public static partial class Nostalgia {
         }
     }
     private static bool hitTextAccessorsResolved;
-    private static AccessTools.FieldRef<scrHitTextManager, Dictionary<HitMargin, scrHitTextMesh[]>> cachedHitTextsRef;
+    private static FieldInfo cachedHitTextsField;
     private static AccessTools.FieldRef<scrHitTextMesh, int> hitTextMeshFrameShownRef;
     private static AccessTools.FieldRef<scrHitTextMesh, Vector3> hitTextMeshTextPosRef;
     private static void EnsureHitTextAccessors() {
         if(hitTextAccessorsResolved) return;
         hitTextAccessorsResolved = true;
         try {
-            cachedHitTextsRef = AccessTools.FieldRefAccess<scrHitTextManager, Dictionary<HitMargin, scrHitTextMesh[]>>("cachedHitTexts");
+            cachedHitTextsField = AccessTools.Field(GameApi.ShowHitTextTarget?.DeclaringType, "cachedHitTexts");
         } catch { }
         try {
             hitTextMeshFrameShownRef = AccessTools.FieldRefAccess<scrHitTextMesh, int>("frameShown");

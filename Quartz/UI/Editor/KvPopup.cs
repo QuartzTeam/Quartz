@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal sealed class KvPopup : MonoBehaviour {
     private static float ItemHeight => 24f * KvPalette.Scale;
@@ -111,7 +112,7 @@ internal sealed class KvPopup : MonoBehaviour {
         label.text = text;
         label.color = KvPalette.TextDim;
         label.alignment = TextAlignmentOptions.Center;
-        label.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(label);
         label.raycastTarget = false;
         label.gameObject.AddComponent<TextLocalization>().Init(key, text);
         GenerateUI.AddButton(obj, btn => {

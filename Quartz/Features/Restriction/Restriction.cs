@@ -3,6 +3,8 @@ using Quartz.Core;
 using Quartz.Features.Interop;
 using Quartz.Features.Status;
 using Quartz.IO;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Restriction;
 public static class Restriction {
     public static SettingsFile<RestrictionSettings> ConfMgr { get; private set; }
@@ -21,10 +23,7 @@ public static class Restriction {
         try {
             scrController c = scrController.instance;
             if(c == null || failTriggered) return;
-            scrPlayer p = c.playerOne;
-            if(p == null) return;
-            failTriggered = true;
-            p.DieByHitbox(reason ?? "");
+            failTriggered = GameApi.FailByHitbox(c, reason);
         } catch { }
     }
     public static string JudgementName(HitMargin hit) {
@@ -107,8 +106,9 @@ public static class Restriction {
             }
         }
     }
-    [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
+    [HarmonyPatch]
     private static class AddHitPatch {
+        private static MethodBase TargetMethod() => GameApi.AddHitTarget;
         private static void Postfix(HitMargin hit) => AfterAddHit(hit);
     }
     [HarmonyPatch(typeof(scnGame), "Play")]

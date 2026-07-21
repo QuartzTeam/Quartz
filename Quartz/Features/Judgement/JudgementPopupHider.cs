@@ -3,6 +3,7 @@ using Quartz.Core;
 using Quartz.Features.Interop;
 using Quartz.IO;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Judgement;
 public static class JudgementPopupHider {
     public static SettingsFile<JudgementPopupHiderSettings> ConfMgr { get; private set; }
@@ -41,16 +42,14 @@ public static class JudgementPopupHider {
     }
     [HarmonyPatch(typeof(scrHitTextMesh), "Show")]
     private static class HitTextShowPatch {
-        private static void Prefix(scrHitTextMesh __instance, ref Vector3 position, ref Vector3 borderOffset, ref float scale) {
+        private static void Prefix(scrHitTextMesh __instance, ref Vector3 position) {
             if(!ShouldHide(__instance)) return;
             position = HiddenPosition;
-            borderOffset = Vector3.zero;
-            scale = 0f;
         }
         private static void Postfix(scrHitTextMesh __instance) {
             if(!ShouldHide(__instance)) return;
             __instance.dead = true;
-            if(__instance.text != null) __instance.text.text = "";
+            GameApi.ClearHitTextLabel(__instance);
             __instance.transform.localPosition = HiddenPosition;
             __instance.transform.localScale = Vector3.zero;
             __instance.gameObject.SetActive(false);

@@ -9,6 +9,7 @@ using GTweens.Tweens;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal static partial class PagePanels {
     private sealed class StatColorBody {
@@ -74,11 +75,11 @@ internal static partial class PagePanels {
         TMP_InputField field = inputObj.AddComponent<TMP_InputField>();
         var text = GenerateUI.AddText(inputObj.transform, true);
         text.alignment = TextAlignmentOptions.Left;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         SetFullRect(text.rectTransform, 10f);
         var placeholder = GenerateUI.AddText(inputObj.transform, true);
         placeholder.alignment = TextAlignmentOptions.Left;
-        placeholder.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(placeholder);
         placeholder.color = new Color(1f, 1f, 1f, 0.3f);
         GenerateUI.Localize(placeholder, "PANEL_TEXT_PLACEHOLDER", "Custom text…");
         SetFullRect(placeholder.rectTransform, 10f);

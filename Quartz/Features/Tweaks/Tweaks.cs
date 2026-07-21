@@ -3,6 +3,7 @@ using Quartz.Core;
 using Quartz.Features.Status;
 using Quartz.IO;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Tweaks;
 public static partial class Tweaks {
     public static SettingsFile<TweaksSettings> ConfMgr { get; private set; }
@@ -94,9 +95,7 @@ public static partial class Tweaks {
     }
     private static void SetAllPlayerSpeed(double speed) {
         try {
-            foreach(scrPlayer p in ADOBase.playerManager) {
-                if(p != null && p.planetarySystem != null) p.planetarySystem.speed = speed;
-            }
+            GameApi.SetPlanetSpeed(speed);
         } catch {
         }
     }
@@ -496,7 +495,7 @@ public static partial class Tweaks {
         try {
             scnEditor editor = ADOBase.editor;
             if(editor == null) return;
-            editor.pausedInPlayMode = false;
+            GameApi.ClearEditorPlayModePause(editor);
             if(editor.buttonAuto != null) editor.buttonAuto.interactable = true;
         } catch { }
     }

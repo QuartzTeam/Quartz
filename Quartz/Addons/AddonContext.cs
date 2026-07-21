@@ -67,7 +67,7 @@ public sealed class AddonContext {
         AddonUI.Register(Id, title, GenerateUI.LocaleKeyFromText("ADDON_", title), build);
     internal void Cleanup() {
         try {
-            harmony?.UnpatchSelf();
+            harmony?.UnpatchAll(harmony.Id);
         } catch(Exception e) {
             MainCore.Log.Err($"[Addon:{Id}] unpatch failed: {e}");
         }

@@ -3,6 +3,7 @@ using Quartz.UI.Generator;
 using Quartz.Update;
 using UnityEngine;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal static class PageDeveloper {
     private static TextMeshProUGUI statusText;
@@ -44,7 +45,7 @@ internal static class PageDeveloper {
         var statusSec = GenerateUI.Collapsible(content.transform, "Status", startExpanded: true);
         statusText = GenerateUI.AddText(GenerateUI.Row(statusSec.Body, 320f));
         statusText.alignment = TextAlignmentOptions.TopLeft;
-        statusText.textWrappingMode = TextWrappingModes.Normal;
+        TextCompat.Wrap(statusText);
         if(!hooked) {
             UpdateService.OnChanged += RefreshStatus;
             hooked = true;

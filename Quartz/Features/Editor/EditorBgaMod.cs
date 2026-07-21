@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Editor;
 public static partial class EditorFeature {
     internal static bool ShouldHideForBga => Enabled && Conf.BgaMod && IsPlaying;
@@ -77,16 +78,11 @@ public static partial class EditorFeature {
         }
     }
     private static void SetPlanetsVisible(bool visible) {
-        scrPlayerManager pm = ADOBase.playerManager;
-        if(pm != null && pm.players != null) {
-            foreach(scrPlayer player in pm.players) {
-                List<scrPlanet> planets = player != null && player.planetarySystem != null
-                    ? player.planetarySystem.planetList
-                    : null;
-                if(planets == null) continue;
-                foreach(scrPlanet planet in planets)
-                    if(planet != null) SetPlanetRendererVisible(planet.planetRenderer, visible);
-            }
+        foreach(PlanetarySystem system in GameApi.AllPlanetarySystems()) {
+            List<scrPlanet> planets = system.planetList;
+            if(planets == null) continue;
+            foreach(scrPlanet planet in planets)
+                if(planet != null) SetPlanetRendererVisible(planet.planetRenderer, visible);
         }
         List<PlanetRenderer> dummies = ADOBase.controller != null ? ADOBase.controller.dummyPlanets : null;
         if(dummies != null) {
@@ -100,7 +96,7 @@ public static partial class EditorFeature {
         Set(ParticleRenderer(pr.coreParticles), visible);
         Set(ParticleRenderer(pr.tailParticles), visible);
         Set(ParticleRenderer(pr.sparks), visible);
-        Set(pr.ring, visible);
+        Set(GameApi.PlanetRing(pr), visible);
         Set(pr.glow, visible);
         Set(pr.faceSprite, visible);
         Set(pr.faceDetails, visible);

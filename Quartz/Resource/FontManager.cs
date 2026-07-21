@@ -2,6 +2,7 @@ using Quartz.Core;
 using System.Reflection;
 using UnityEngine;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.Resource;
 public static partial class FontManager {
     public const string DefaultName = "Default (Cookie Run Bold)";
@@ -370,7 +371,8 @@ public static partial class FontManager {
     }
     private static void DestroyFontAsset(TMP_FontAsset asset) {
         if(asset == null) return;
-        if(asset.material != null) UnityEngine.Object.Destroy(asset.material);
+        Material assetMaterial = GameApi.FontMaterial(asset);
+        if(assetMaterial != null) UnityEngine.Object.Destroy(assetMaterial);
         Texture2D[] atlases = asset.atlasTextures;
         if(atlases != null)
             foreach(Texture2D tex in atlases) if(tex != null) UnityEngine.Object.Destroy(tex);

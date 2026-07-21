@@ -1,11 +1,14 @@
+using System.Reflection;
 using HarmonyLib;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Calibration;
 internal static class CalibrationSong {
     private static float bpm;
     private static float lastSongTime;
     private static int attempt;
-    [HarmonyPatch(typeof(scnCalibration), "Start")]
+    [HarmonyPatch]
     private static class StartPatch {
+        private static MethodBase TargetMethod() => GameApi.CalibrationMethod("Start");
         private static void Postfix(scrConductor ___conductor) {
             if(!Calibration.Enabled) return;
             ___conductor.song.pitch = Calibration.Conf.SongPitch / 100f;
@@ -14,8 +17,9 @@ internal static class CalibrationSong {
             attempt = 0;
         }
     }
-    [HarmonyPatch(typeof(scnCalibration), "CleanSlate")]
+    [HarmonyPatch]
     private static class CleanSlatePatch {
+        private static MethodBase TargetMethod() => GameApi.CalibrationMethod("CleanSlate");
         private static void Postfix(scrConductor ___conductor) {
             if(!Calibration.Enabled) return;
             ___conductor.song.pitch = Calibration.Conf.SongPitch / 100f;
@@ -23,8 +27,9 @@ internal static class CalibrationSong {
             attempt = 0;
         }
     }
-    [HarmonyPatch(typeof(scnCalibration), "PutDataPoint")]
+    [HarmonyPatch]
     private static class PutDataPointPatch {
+        private static MethodBase TargetMethod() => GameApi.CalibrationMethod("PutDataPoint");
         private static void Prefix(scrConductor ___conductor) {
             if(Calibration.Enabled) ___conductor.bpm = bpm;
         }
@@ -32,14 +37,17 @@ internal static class CalibrationSong {
             if(Calibration.Enabled) ___conductor.bpm = 130f;
         }
     }
-    [HarmonyPatch(typeof(scnCalibration), "Calibrated")]
+    [HarmonyPatch]
     private static class CalibratedPatch {
+        private static bool Prepare() => TargetMethod() != null;
+        private static MethodBase TargetMethod() => GameApi.CalibrationMethod("Calibrated");
         private static void Prefix(scrConductor ___conductor) {
             if(Calibration.Enabled) ___conductor.song.pitch = 1f;
         }
     }
-    [HarmonyPatch(typeof(scnCalibration), "GetOffset")]
+    [HarmonyPatch]
     private static class GetOffsetPatch {
+        private static MethodBase TargetMethod() => GameApi.CalibrationMethod("GetOffset");
         private static void Postfix(ref double __result) {
             if(!Calibration.Enabled) return;
             double time360 = 30000.0 / bpm;
@@ -48,8 +56,9 @@ internal static class CalibrationSong {
             __result = result / 1000.0;
         }
     }
-    [HarmonyPatch(typeof(scnCalibration), "Update")]
+    [HarmonyPatch]
     private static class UpdatePatch {
+        private static MethodBase TargetMethod() => GameApi.CalibrationMethod("Update");
         private static void Postfix(scrConductor ___conductor) {
             if(!Calibration.Enabled || Calibration.Conf.SongRepeat <= 0) return;
             if(lastSongTime > ___conductor.song.time && ++attempt >= Calibration.Conf.SongRepeat)

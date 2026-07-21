@@ -5,6 +5,7 @@ using Quartz.Core;
 using Quartz.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Quartz.Compat.Game;
 namespace Quartz.Features.EffectRemover;
 public static partial class EffectRemover {
     public static SettingsFile<EffectRemoverSettings> ConfMgr { get; private set; }
@@ -116,7 +117,7 @@ public static partial class EffectRemover {
                 return allCoreTypes;
             case LevelEventType.AddDecoration:
                 return conf.DecoImage
-                    || (conf.DecoFailHitbox && data.ContainsKey("hitbox") && data.Get<HitboxType>("hitbox") == HitboxType.Kill);
+                    || (conf.DecoFailHitbox && GameApi.EventHas(data, "hitbox") && GameApi.EventGet<HitboxType>(data, "hitbox") == HitboxType.Kill);
             case LevelEventType.AddText:
             case LevelEventType.SetText:
             case LevelEventType.SetDefaultText:
@@ -127,7 +128,7 @@ public static partial class EffectRemover {
                 return conf.Particles;
             case LevelEventType.AddObject:
             case LevelEventType.SetObject:
-                bool isFloor = data.ContainsKey("objectType") && data.Get<ObjectDecorationType>("objectType") == ObjectDecorationType.Floor;
+                bool isFloor = GameApi.EventHas(data, "objectType") && GameApi.EventGet<ObjectDecorationType>(data, "objectType") == ObjectDecorationType.Floor;
                 return isFloor ? conf.DecoTiles : conf.DecoPlanet;
             default:
                 return false;
@@ -138,7 +139,7 @@ public static partial class EffectRemover {
         foreach(LevelEvent eventData in levelData.levelEvents) {
             if(eventData == null || eventData.eventType != Event(35)) continue;
             foreach(string key in ConditionalTagKeys) {
-                if(!eventData.ContainsKey(key)) continue;
+                if(!GameApi.EventHas(eventData, key)) continue;
                 string tag = eventData.GetString(key);
                 if(!string.IsNullOrWhiteSpace(tag) && tag != "None" && tag != "없음") tags.Add(tag);
             }
@@ -183,7 +184,7 @@ public static partial class EffectRemover {
         return false;
     }
     private static IEnumerable<string> GetTags(LevelEvent eventData, string key) {
-        if(eventData == null || !eventData.ContainsKey(key)) yield break;
+        if(eventData == null || !GameApi.EventHas(eventData, key)) yield break;
         string tags = eventData.GetString(key);
         if(string.IsNullOrWhiteSpace(tags)) yield break;
         foreach(string tag in tags.Split(' ')) {
@@ -211,7 +212,7 @@ public static partial class EffectRemover {
     private static void LimitTrackOpacityValues(LevelData levelData) {
         foreach(LevelEvent eventData in levelData.levelEvents) {
             if(eventData == null || (eventData.eventType != Event(18) && eventData.eventType != Event(30))) continue;
-            if(eventData.ContainsKey("opacity") && eventData.GetFloat("opacity") > 100.0f) eventData["opacity"] = 100.0f;
+            if(GameApi.EventHas(eventData, "opacity") && eventData.GetFloat("opacity") > 100.0f) eventData["opacity"] = 100.0f;
         }
     }
     [HarmonyPatch(typeof(LevelData), "Decode")]

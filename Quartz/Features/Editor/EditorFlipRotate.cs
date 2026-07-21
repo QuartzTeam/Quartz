@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ADOFAI;
 using HarmonyLib;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Editor;
 public static partial class EditorFeature {
     internal static bool ShouldAdjustOnFlip => Enabled && Conf.AdjustOnFlip;
     internal static bool ShouldAdjustOnRotate => Enabled && Conf.AdjustOnRotate;
     internal static bool ShouldCustomAngleRotation => Enabled && Conf.CustomAngleRotation;
     private static bool customRotateRunning;
+    private static bool customRotateCW;
     private const string PositionOffsetKey = "positionOffset";
     private static bool TrySelectionRange(out int first, out int last) {
         first = last = 0;
@@ -27,7 +30,7 @@ public static partial class EditorFeature {
         if(targets.Count == 0) return;
         using(new SaveStateScope(ed, false, true, false)) {
             foreach(LevelEvent e in targets)
-                e[PositionOffsetKey] = transform(e.Get<Vector2>(PositionOffsetKey));
+                e[PositionOffsetKey] = transform(GameApi.EventGet<Vector2>(e, PositionOffsetKey));
             ed.RemakePath(true, true);
         }
     }
@@ -69,7 +72,10 @@ public static partial class EditorFeature {
     }
     [HarmonyPatch(typeof(scnEditor), "RotateFloor")]
     private static class RotateFloorPatch {
-        private static void Prefix() => customRotateRunning = true;
+        private static void Prefix(bool CW) {
+            customRotateRunning = true;
+            customRotateCW = CW;
+        }
         private static void Finalizer() => customRotateRunning = false;
         private static void Postfix(scrFloor floor, bool CW, bool remakePath) {
             if(!ShouldAdjustOnRotate || !remakePath || floor == null) return;
@@ -91,27 +97,31 @@ public static partial class EditorFeature {
             AdjustPositionTracks(floor.seqID, floor.seqID, Rotate180);
         }
     }
-    [HarmonyPatch(typeof(scrLevelMaker), "GetRotDirection", new[] { typeof(char), typeof(bool) })]
+    [HarmonyPatch]
     private static class CustomAngleCharPatch {
         private const string Codes = "UoTEJpRAMCBYDVFZNxLWHQGq";
-        private static bool Prefix(char direction, bool CW, ref char __result) {
+        private static bool Prepare() => GameApi.RotateCharTarget != null;
+        private static MethodBase TargetMethod() => GameApi.RotateCharTarget;
+        private static bool Prefix(char __0, ref char __result) {
             if(!ShouldCustomAngleRotation || !customRotateRunning) return true;
-            __result = direction;
-            int idx = Codes.IndexOf(direction);
+            __result = __0;
+            int idx = Codes.IndexOf(__0);
             if(idx == -1) return false;
-            for(idx += (CW ? 1 : -1) * (int)(Conf.CustomAngle / 15f); idx < 0; idx += Codes.Length) { }
+            for(idx += (customRotateCW ? 1 : -1) * (int)(Conf.CustomAngle / 15f); idx < 0; idx += Codes.Length) { }
             idx %= Codes.Length;
             __result = Codes[idx];
             return false;
         }
     }
-    [HarmonyPatch(typeof(scrLevelMaker), "GetRotDirection", new[] { typeof(float), typeof(bool) })]
+    [HarmonyPatch]
     private static class CustomAngleFloatPatch {
-        private static bool Prefix(float direction, bool CW, ref float __result) {
+        private static bool Prepare() => GameApi.RotateFloatTarget != null;
+        private static MethodBase TargetMethod() => GameApi.RotateFloatTarget;
+        private static bool Prefix(float __0, ref float __result) {
             if(!ShouldCustomAngleRotation || !customRotateRunning) return true;
-            __result = direction;
-            if(direction == 999f) return false;
-            __result = direction + (CW ? -1 : 1) * Conf.CustomAngle;
+            __result = __0;
+            if(__0 == 999f) return false;
+            __result = __0 + (customRotateCW ? -1 : 1) * Conf.CustomAngle;
             return false;
         }
     }

@@ -2,6 +2,8 @@ using HarmonyLib;
 using Quartz.Core;
 using Quartz.Features.Interop;
 using UnityEngine;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Combo;
 internal static class Combo {
     internal static int Count;
@@ -57,8 +59,9 @@ internal static class Combo {
             PulseStartTime = -1f;
         }
     }
-    [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
+    [HarmonyPatch]
     private static class AddHitPatch {
+        private static MethodBase TargetMethod() => GameApi.AddHitTarget;
         private static void Postfix(HitMargin hit) {
             if(!MainCore.IsModEnabled) return;
             ComboSettings conf = ComboOverlay.Conf;

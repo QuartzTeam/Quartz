@@ -13,6 +13,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 public static class TufPacksUI {
     public static void Create(RectTransform parent) {
@@ -101,9 +102,9 @@ internal sealed class TufPacksView : MonoBehaviour {
         RectTransform textArea = Rect("Text Area", bg, Vector2.zero, Vector2.one, new(16f, 0f), new(-40f, 0f));
         textArea.gameObject.AddComponent<RectMask2D>();
         TMP_Text value = Text(textArea, "", 17f, TextAlignmentOptions.Left);
-        value.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(value);
         TMP_Text placeholder = Text(textArea, "Search packs…", 17f, TextAlignmentOptions.Left);
-        placeholder.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(placeholder);
         placeholder.color = new(1f, 1f, 1f, 0.28f);
         placeholder.gameObject.AddComponent<TextLocalization>().Init("TUF_PACK_SEARCH_PLACEHOLDER", "Search packs…");
         GameObject iconObj = new("Search Icon");
@@ -314,7 +315,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         name.rectTransform.offsetMax = new(-140f, 0f);
         name.fontStyle = FontStyles.Bold;
         name.overflowMode = TextOverflowModes.Ellipsis;
-        name.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(name);
         TMP_Text count = Text(row, string.Format(Tr("TUF_PACK_LEVEL_COUNT", "{0} levels"), folder.LevelCount), 14f, TextAlignmentOptions.Right);
         count.rectTransform.offsetMax = new(-18f, 0f);
         count.color = new(1f, 1f, 1f, 0.46f);
@@ -369,7 +370,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         name.rectTransform.offsetMax = new(-180f, 0f);
         name.fontStyle = FontStyles.Bold;
         name.overflowMode = TextOverflowModes.Ellipsis;
-        name.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(name);
         TMP_Text count = Text(row, string.Format(Tr("TUF_PACK_LEVEL_COUNT", "{0} levels"), pack.LevelCount), 15f, TextAlignmentOptions.Right);
         count.rectTransform.offsetMin = new(0f, 0f);
         count.rectTransform.offsetMax = new(-20f, 0f);
@@ -389,7 +390,7 @@ internal sealed class TufPacksView : MonoBehaviour {
         TMP_Text name = Text(nameRect, pack.Name, 22f, TextAlignmentOptions.Left);
         name.fontStyle = FontStyles.Bold;
         name.overflowMode = TextOverflowModes.Ellipsis;
-        name.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(name);
         string preview = pack.Preview.Count > 0 ? "  ·  " + string.Join(", ", pack.Preview) : "";
         RectTransform metaRect = Rect("Metadata", card, new(0f, 0f), new(1f, 0f), new(22f, 10f), new(-22f, 46f));
         TMP_Text meta = Text(metaRect,
@@ -398,7 +399,7 @@ internal sealed class TufPacksView : MonoBehaviour {
             15f, TextAlignmentOptions.Left);
         meta.color = new(1f, 1f, 1f, 0.46f);
         meta.overflowMode = TextOverflowModes.Ellipsis;
-        meta.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(meta);
         GenerateUI.AddButton(card.gameObject, input => {
             if(input == PointerEventData.InputButton.Left) service.OpenPack(pack);
         });
@@ -425,12 +426,12 @@ internal sealed class TufPacksView : MonoBehaviour {
         TMP_Text song = Text(songRect, level.Song, 23f, TextAlignmentOptions.Left);
         song.fontStyle = FontStyles.Bold;
         song.overflowMode = TextOverflowModes.Ellipsis;
-        song.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(song);
         RectTransform metaRect = Rect("Metadata", card, new(0f, 0f), new(1f, 0f), new(22f, 8f), new(-150f, 34f));
         TMP_Text meta = Text(metaRect, $"{level.Artist}  ·  {level.Creator}  ·  ✓ {level.Clears:N0}  ♥ {level.Likes:N0}", 15f, TextAlignmentOptions.Left);
         meta.color = new(1f, 1f, 1f, 0.46f);
         meta.overflowMode = TextOverflowModes.Ellipsis;
-        meta.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(meta);
         AddAction(card, level);
     }
     private void AddAction(RectTransform card, TufLevel level) {
@@ -483,7 +484,7 @@ internal sealed class TufPacksView : MonoBehaviour {
             TMP_Text label = Text(row, "▶  " + display, 15f, TextAlignmentOptions.Left);
             label.rectTransform.offsetMin = new(40f, 0f);
             label.overflowMode = TextOverflowModes.Ellipsis;
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TextCompat.NoWrap(label);
             GenerateUI.AddButton(row.gameObject, input => {
                 if(input == PointerEventData.InputButton.Left) service.LaunchChart(level, chart);
             });

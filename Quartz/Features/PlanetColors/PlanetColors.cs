@@ -3,6 +3,7 @@ using HarmonyLib;
 using Quartz.Core;
 using Quartz.IO;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.PlanetColors;
 public static partial class PlanetColors {
     public static SettingsFile<PlanetColorsSettings> ConfMgr { get; private set; }
@@ -25,7 +26,6 @@ public static partial class PlanetColors {
     private static bool setParticleSystemColorResolved;
     private static readonly object[] particleColorInvokeArgs = new object[3];
     private static bool ringAccessorsResolved;
-    private static AccessTools.FieldRef<PlanetRenderer, LineRenderer> ringRef;
     private static AccessTools.FieldRef<PlanetRenderer, bool> onlyRingRef;
     private static readonly scrPlanet[] EmptyPlanets = [];
     private static PlanetarySystem cachedSystem;
@@ -59,7 +59,7 @@ public static partial class PlanetColors {
     }
     private static scrPlanet[] GetPlanets() {
         try {
-            PlanetarySystem system = ADOBase.controller != null ? ADOBase.controller.planetarySystem : null;
+            PlanetarySystem system = GameApi.Planetary(ADOBase.controller);
             scrPlanet[] planets = GetSystemPlanets(system);
             if(planets.Length > 0) return planets;
         } catch {
@@ -70,7 +70,7 @@ public static partial class PlanetColors {
     private static bool IsRedPlanet(scrPlanet planet) {
         try {
             PlanetarySystem system = planet != null ? planet.planetarySystem : null;
-            system ??= ADOBase.controller != null ? ADOBase.controller.planetarySystem : null;
+            system ??= GameApi.Planetary(ADOBase.controller);
             if(system != null) {
                 if(system.planetRed == planet) return true;
                 if(system.planetBlue == planet) return false;
@@ -84,7 +84,7 @@ public static partial class PlanetColors {
         if(planet == null) return 0;
         try {
             PlanetarySystem system = planet.planetarySystem;
-            system ??= ADOBase.controller != null ? ADOBase.controller.planetarySystem : null;
+            system ??= GameApi.Planetary(ADOBase.controller);
             if(system != null) {
                 if(system.planetRed == planet) return 0;
                 if(system.planetBlue == planet) return 1;
@@ -272,26 +272,15 @@ public static partial class PlanetColors {
     }
     private static void ApplyPlanetRing(PlanetRenderer renderer) {
         if(!ShouldChange || renderer == null) return;
-        LineRenderer ring = GetRing(renderer);
-        if(ring == null) return;
         if(IsOnlyRing(renderer)) return;
         try {
             if(Conf.EnableRingRecolor) {
-                Color rc = Conf.GetRingColor();
-                if(ring.startColor != rc) ring.startColor = rc;
-                if(ring.endColor != rc) ring.endColor = rc;
-            } else {
-                Color s = ring.startColor;
-                if(s.a != 0f) {
-                    s.a = 0f;
-                    ring.startColor = s;
-                }
-                Color e = ring.endColor;
-                if(e.a != 0f) {
-                    e.a = 0f;
-                    ring.endColor = e;
-                }
+                GameApi.SetRingColor(renderer, Conf.GetRingColor());
+                return;
             }
+            if(!GameApi.TryGetRingColor(renderer, out Color current) || current.a == 0f) return;
+            current.a = 0f;
+            GameApi.SetRingColor(renderer, current);
         } catch {
         }
     }
@@ -299,18 +288,9 @@ public static partial class PlanetColors {
         if(ringAccessorsResolved) return;
         ringAccessorsResolved = true;
         try {
-            ringRef = AccessTools.FieldRefAccess<PlanetRenderer, LineRenderer>("ring");
-        } catch {
-        }
-        try {
             onlyRingRef = AccessTools.FieldRefAccess<PlanetRenderer, bool>("onlyRing");
         } catch {
         }
-    }
-    private static LineRenderer GetRing(PlanetRenderer renderer) {
-        EnsureRingAccessors();
-        if(ringRef != null) return ringRef(renderer);
-        return TryGetMemberValue(renderer, "ring", out object ringObj) ? ringObj as LineRenderer : null;
     }
     private static bool IsOnlyRing(PlanetRenderer renderer) {
         EnsureRingAccessors();

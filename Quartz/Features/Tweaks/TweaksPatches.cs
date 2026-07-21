@@ -1,5 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Tweaks;
 public static partial class Tweaks {
     [HarmonyPatch(typeof(scrController), "StartLoadingScene")]
@@ -164,8 +166,9 @@ public static partial class Tweaks {
             catch { }
         }
     }
-    [HarmonyPatch(typeof(ffxMenuPlanetSpeedChange), "StartEffect", new[] { typeof(scrPlanet) })]
+    [HarmonyPatch]
     private static class MenuBpmTogglePatch {
+        private static MethodBase TargetMethod() => GameApi.MenuSpeedStartEffectTarget;
         private static bool Prefix(ffxMenuPlanetSpeedChange __instance) {
             try {
                 return !HandleMenuBpmToggle(__instance.floor);

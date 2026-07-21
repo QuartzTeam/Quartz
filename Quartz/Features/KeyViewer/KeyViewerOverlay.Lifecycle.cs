@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.Features.KeyViewer;
 public static partial class KeyViewerOverlay {
     public static void Initialize(GameObject rootObject) {
@@ -158,7 +159,7 @@ public static partial class KeyViewerOverlay {
         error = null;
         string picked;
         try {
-            picked = UnityFileDialog.FileBrowser.PickFile(
+            picked = FileDialog.PickFile(
                 "", filterName, new[] { ext }, title);
         } catch(Exception ex) {
             error = "Picker failed: " + ex.Message;

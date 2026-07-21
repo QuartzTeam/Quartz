@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Editor;
 public static partial class EditorFeature {
     internal static bool ShouldShowFloorReadout => Enabled && Conf.ShowAny;
@@ -120,7 +121,7 @@ public static partial class EditorFeature {
         TextMeshProUGUI tmp = textGo.AddComponent<TextMeshProUGUI>();
         tmp.font = FontManager.Current;
         tmp.alignment = TextAlignmentOptions.Center;
-        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(tmp);
         tmp.overflowMode = TextOverflowModes.Overflow;
         tmp.raycastTarget = false;
         tmp.richText = true;
@@ -137,7 +138,7 @@ public static partial class EditorFeature {
         if(first != null && first.enabled) return first;
         scrFloor last = selected[selected.Count - 1];
         if(last != null && last.enabled) return last;
-        scrCamera camera = scrCamera.instance;
+        scrCamera camera = GameApi.Camera;
         Vector3 cam = camera != null ? camera.transform.position : Vector3.zero;
         cam.z = 0f;
         float best = float.PositiveInfinity;

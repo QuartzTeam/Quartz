@@ -6,6 +6,7 @@ using Quartz.UI.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal static class PageImport {
     private static RectTransform listContainer;
@@ -25,7 +26,7 @@ internal static class PageImport {
         GenerateUI.Localize(headerText, "IMPORT_HEADER", "Import from other mods");
         var hintRow = GenerateUI.Row(content.transform, 96f);
         var hintText = GenerateUI.AddMutedText(hintRow, 17f, 0.45f, true);
-        hintText.textWrappingMode = TextWrappingModes.Normal;
+        TextCompat.Wrap(hintText);
         hintText.rectTransform.offsetMax = new Vector2(-250f, 0f);
         GenerateUI.Localize(
             hintText,
@@ -67,7 +68,7 @@ internal static class PageImport {
         if(options.Count == 0 && incompatible.Count == 0) {
             var emptyRow = GenerateUI.Row(listContainer, 96f);
             var emptyText = GenerateUI.AddMutedText(emptyRow, 18f, 0.6f, true);
-            emptyText.textWrappingMode = TextWrappingModes.Normal;
+            TextCompat.Wrap(emptyText);
             emptyText.rectTransform.offsetMax = new Vector2(-250f, 0f);
             GenerateUI.Localize(
                 emptyText,

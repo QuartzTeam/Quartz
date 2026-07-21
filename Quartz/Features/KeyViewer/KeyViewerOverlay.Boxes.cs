@@ -5,6 +5,7 @@ using Quartz.UI.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.Features.KeyViewer;
 public static partial class KeyViewerOverlay {
     private static void AddReorganizeHandle() =>
@@ -81,7 +82,7 @@ public static partial class KeyViewerOverlay {
         tmp.font = FontManager.Current;
         tmp.fontSize = fontSize;
         tmp.alignment = TextAlignmentOptions.Center;
-        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(tmp);
         tmp.raycastTarget = false;
         tmp.text = text;
         return tmp;

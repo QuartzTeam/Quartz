@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Quartz.Compat.Game;
 namespace Quartz.Features.InGameOverlay;
 public static class InGameOverlayFont {
     public enum Category { SongTitle, Countdown, Judgement }
@@ -13,7 +14,7 @@ public static class InGameOverlayFont {
         public TMP_Text Tmp;
         public TMP_FontAsset Original;
         public float OriginalSize;
-        public TextWrappingModes OriginalWrap;
+        public object OriginalWrap;
     }
     private static readonly Dictionary<int, Capture> tmpCaptures = [];
     private static bool hooked;
@@ -75,7 +76,7 @@ public static class InGameOverlayFont {
             if(kv.Value.Cat != cat) continue;
             if(kv.Value.Tmp != null) {
                 kv.Value.Tmp.font = kv.Value.Original;
-                kv.Value.Tmp.textWrappingMode = kv.Value.OriginalWrap;
+                TextCompat.RestoreWrap(kv.Value.Tmp, kv.Value.OriginalWrap);
                 kv.Value.Tmp.fontSize = kv.Value.OriginalSize;
             }
             (dead ??= []).Add(kv.Key);
@@ -87,7 +88,7 @@ public static class InGameOverlayFont {
         foreach(Capture cap in tmpCaptures.Values) {
             if(cap.Tmp == null) continue;
             cap.Tmp.font = cap.Original;
-            cap.Tmp.textWrappingMode = cap.OriginalWrap;
+            TextCompat.RestoreWrap(cap.Tmp, cap.OriginalWrap);
             cap.Tmp.fontSize = cap.OriginalSize;
         }
         tmpCaptures.Clear();
@@ -104,18 +105,18 @@ public static class InGameOverlayFont {
                 Tmp = tmp,
                 Original = tmp.font,
                 OriginalSize = gameSize,
-                OriginalWrap = tmp.textWrappingMode,
+                OriginalWrap = TextCompat.CaptureWrap(tmp),
             };
             tmp.font = want;
-            tmp.fontSharedMaterial = want.material;
+            tmp.fontSharedMaterial = GameApi.FontMaterial(want);
             ApplySize(tmp, gameSize, cat);
         } else if(tmp.font != want) {
             tmp.font = want;
-            tmp.fontSharedMaterial = want.material;
+            tmp.fontSharedMaterial = GameApi.FontMaterial(want);
         }
     }
     private static void ApplySize(TMP_Text tmp, float gameSize, Category cat) {
-        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(tmp);
         float boxW = tmp.rectTransform.rect.width;
         float wantW = tmp.GetPreferredValues(tmp.text).x;
         float fit = (boxW > 0f && wantW > boxW) ? gameSize * (boxW / wantW) * 0.98f : gameSize;
@@ -163,7 +164,8 @@ public static class InGameOverlayFont {
         private static void Postfix(scrHitTextMesh __instance) {
             if(!JudgementActive) return;
             try {
-                if(__instance.text != null) OverrideTmp(__instance.text, Category.Judgement);
+                TMP_Text label = GameApi.HitTextLabel(__instance);
+                if(label != null) OverrideTmp(label, Category.Judgement);
             } catch(Exception e) {
                 MainCore.Log.Wrn($"[InGameOverlayFont] JudgementFontPatch: {e}");
             }
@@ -265,8 +267,7 @@ internal sealed class GameFontMirror : MonoBehaviour {
         TextAlignmentOptions alignment = MapAlignment(source.alignment);
         if(twin.alignment != alignment) twin.alignment = alignment;
         bool wrap = source.horizontalOverflow == HorizontalWrapMode.Wrap;
-        TextWrappingModes wrapMode = wrap ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
-        if(twin.textWrappingMode != wrapMode) twin.textWrappingMode = wrapMode;
+        if(TextCompat.GetWrap(twin) != wrap) TextCompat.SetWrap(twin, wrap);
         if(twin.overflowMode != TextOverflowModes.Overflow) twin.overflowMode = TextOverflowModes.Overflow;
         float mult = InGameOverlayFont.SizeMultiplier(pair.Cat);
         if(source.resizeTextForBestFit) {

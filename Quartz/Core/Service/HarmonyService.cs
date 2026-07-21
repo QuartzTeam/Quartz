@@ -23,7 +23,7 @@ public sealed class HarmonyService : IRuntimeService, IRuntimeTick {
         }
     }
     public void Dispose() {
-        Harmony?.UnpatchSelf();
+        Harmony?.UnpatchAll(Harmony.Id);
         Harmony = null;
     }
 }

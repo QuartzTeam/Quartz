@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal sealed class KvTabStrip {
     private static float ButtonHeight => KvPalette.IconButton;
@@ -94,7 +95,7 @@ internal sealed class KvTabStrip {
         label.text = text;
         label.color = KvPalette.TextDim;
         label.alignment = TextAlignmentOptions.Center;
-        label.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(label);
         label.overflowMode = TextOverflowModes.Ellipsis;
         label.raycastTarget = false;
         float width = label.GetPreferredValues(text).x + LabelPadX * 2f;

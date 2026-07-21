@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal static partial class KvWidgets {
     private const float ColorHeaderH = RowHeight;
@@ -52,7 +53,7 @@ internal static partial class KvWidgets {
         valueText.fontSize = 17f;
         valueText.alignment = TextAlignmentOptions.Right;
         valueText.color = new Color(1f, 1f, 1f, 0.6f);
-        valueText.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(valueText);
         RectTransform valueRect = valueText.rectTransform;
         valueRect.offsetMin = Vector2.zero;
         valueRect.offsetMax = new Vector2(-(Pad + SwatchSize + HueGap), 0f);
@@ -188,7 +189,7 @@ internal static partial class KvWidgets {
         text.alignment = TextAlignmentOptions.Left;
         text.verticalAlignment = VerticalAlignmentOptions.Middle;
         text.characterSpacing = -3f;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         field.textViewport = rect;
         field.textComponent = text;
         return field;

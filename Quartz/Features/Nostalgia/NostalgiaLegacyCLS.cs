@@ -6,6 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Nostalgia;
 public static partial class Nostalgia {
     private static readonly Type OptionsPanelsCLS = AccessTools.TypeByName("OptionsPanelsCLS");
@@ -74,7 +75,7 @@ public static partial class Nostalgia {
             text.fontStyle = FontStyle.Italic;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
             text.supportRichText = true;
-            text.text = RDString.Get("cls.find");
+            text.text = GameApi.GameString("cls.find");
             text.color = new Color(0.1961f, 0.1961f, 0.1961f, 0.5f);
         } else {
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -91,7 +92,7 @@ public static partial class Nostalgia {
     private static IEnumerator ToggleSearchModeCo(bool search) {
         Traverse.Create(OptionsPanels).Field("searchMode").SetValue(clsSearchMode = search);
         if(search && RDC.runningOnSteamDeck) {
-            while(!SteamWorkshop.ShowTextInput()) yield return null;
+            while(GameApi.ShowSteamTextInput() == false) yield return null;
         }
         clsSearchSeq?.Kill(false);
         const float duration = 0.33f;

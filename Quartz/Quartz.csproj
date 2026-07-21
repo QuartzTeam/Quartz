@@ -106,7 +106,6 @@
 		     netstandard facade versions so MSBuild's conflict resolver matches the
 		     runtime binding set instead of reporting version conflicts through
 		     Assembly-CSharp/System.Text.Json. -->
-		<Reference Include="UnityFileDialog" Condition="Exists('$(GamePath)/$(GameData)/Managed/UnityFileDialog.dll')"><HintPath>$(GamePath)/$(GameData)/Managed/UnityFileDialog.dll</HintPath><Private>false</Private></Reference>
 		<Reference Include="System.Buffers" Condition="Exists('$(ManagedDir)/System.Buffers.dll') Or Exists('$(LibDir)/System.Buffers.dll')"><HintPath>$(ManagedDir)/System.Buffers.dll</HintPath></Reference>
 		<Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Condition="Exists('$(ManagedDir)/System.IO.Compression.dll') Or Exists('$(LibDir)/System.IO.Compression.dll')"><HintPath>$(ManagedDir)/System.IO.Compression.dll</HintPath></Reference>
 		<Reference Include="System.Memory" Condition="Exists('$(ManagedDir)/System.Memory.dll') Or Exists('$(LibDir)/System.Memory.dll')"><HintPath>$(ManagedDir)/System.Memory.dll</HintPath></Reference>
@@ -115,6 +114,9 @@
 			<HintPath Condition="Exists('$(GamePath)/MelonLoader/net35/0Harmony.dll')">$(GamePath)/MelonLoader/net35/0Harmony.dll</HintPath>
 			<HintPath Condition="!Exists('$(GamePath)/MelonLoader/net35/0Harmony.dll')">$(ManagedDir)/UnityModManager/0Harmony.dll</HintPath>
 		</Reference>
+<!-- UnityFileDialog is NOT referenced: 3.x ships it in Managed/, r136 does not.
+		     A compile-time reference would make the assembly unloadable on r136, so
+		     Quartz.Compat.Game.FileDialog binds it late instead. -->
 	</ItemGroup>
 
 	<!-- MelonLoader entry: ML build only. -->

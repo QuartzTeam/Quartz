@@ -10,6 +10,8 @@ using MonsterLove.StateMachine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.PlayCount;
 public sealed class PlayCount : IRuntimeService, IRuntimeTick {
     private static readonly Dictionary<string, PlayData> playDatas = new();
@@ -288,8 +290,9 @@ public sealed class PlayCount : IRuntimeService, IRuntimeTick {
             else if(state == States.Won) OnRunClear();
         }
     }
-    [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
+    [HarmonyPatch]
     private static class AddHitPatch {
+        private static MethodBase TargetMethod() => GameApi.AddHitTarget;
         private static void Postfix(HitMargin hit) {
             if(!MainCore.IsModEnabled || runHadFail) return;
             if(hit == HitMargin.FailMiss || hit == HitMargin.FailOverload) {

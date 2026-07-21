@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Generator;
 public static partial class GenerateUI {
     public static UIColorPicker ColorPicker(
@@ -160,7 +161,7 @@ public static partial class GenerateUI {
         hexText.alignment = TextAlignmentOptions.Left;
         hexText.verticalAlignment = VerticalAlignmentOptions.Middle;
         hexText.characterSpacing = -3f;
-        hexText.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(hexText);
         hexInput.textViewport = hexRect;
         hexInput.textComponent = hexText;
         UIColorPicker picker = null;

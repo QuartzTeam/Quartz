@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal static partial class KvWidgets {
     internal const float MinPaneWidth = 260f;
@@ -30,7 +31,7 @@ internal static partial class KvWidgets {
         tmp.fontSize = LabelSize;
         tmp.text = text;
         tmp.alignment = TextAlignmentOptions.MidlineLeft;
-        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(tmp);
         tmp.overflowMode = TextOverflowModes.Ellipsis;
         Fit(tmp, LabelSize, LabelSizeMin);
         if(labelKey != null) GenerateUI.Localize(tmp, labelKey, text);
@@ -78,7 +79,7 @@ internal static partial class KvWidgets {
         label.fontSize = LabelSize;
         label.text = text;
         label.alignment = TextAlignmentOptions.Center;
-        label.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(label);
         label.overflowMode = TextOverflowModes.Ellipsis;
         Fit(label, LabelSize, LabelSizeMin);
         GenerateUI.LocalizeById(label, id, text);
@@ -100,7 +101,7 @@ internal static partial class KvWidgets {
         tmp.fontSize = 21f;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.BottomLeft;
-        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(tmp);
         tmp.overflowMode = TextOverflowModes.Ellipsis;
         tmp.raycastTarget = false;
         RectTransform rect = tmp.rectTransform;
@@ -132,7 +133,7 @@ internal static partial class KvWidgets {
             TextMeshProUGUI label = child.GetComponentInChildren<TextMeshProUGUI>();
             if(label == null) continue;
             label.fontSize = SegmentLabelSize;
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TextCompat.NoWrap(label);
             label.overflowMode = TextOverflowModes.Ellipsis;
             Fit(label, SegmentLabelSize, SegmentLabelSizeMin);
         }

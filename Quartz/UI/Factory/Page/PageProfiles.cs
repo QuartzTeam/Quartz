@@ -8,8 +8,8 @@ using Quartz.UI.Objects.Impl;
 using Quartz.UI.Utility;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityFileDialog;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal static class PageProfiles {
     private static RectTransform listContainer;
@@ -66,7 +66,7 @@ internal static class PageProfiles {
             () => {
                 try {
                     Directory.CreateDirectory(ProfileManager.ProfilesPath);
-                    FileBrowser.Reveal(ProfileManager.ProfilesPath);
+                    FileDialog.Reveal(ProfileManager.ProfilesPath);
                 } catch(Exception e) {
                     MainCore.Log.Err($"[{nameof(PageProfiles)}] Reveal failed: {e}");
                 }
@@ -196,7 +196,7 @@ internal static class PageProfiles {
     private static void ImportProfile() {
         string path;
         try {
-            path = FileBrowser.PickFile(
+            path = FileDialog.PickFile(
                 null,
                 "Quartz Profile",
                 [.. ProfileManager.ImportExtensions, "json"],
@@ -218,7 +218,7 @@ internal static class PageProfiles {
     private static void ExportProfile(string name) {
         string path;
         try {
-            path = FileBrowser.SaveFile(
+            path = FileDialog.SaveFile(
                 null,
                 $"{name}.{ProfileManager.EXPORT_EXTENSION}",
                 "Quartz Profile",

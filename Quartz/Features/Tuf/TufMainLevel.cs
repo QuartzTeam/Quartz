@@ -3,6 +3,7 @@ using HarmonyLib;
 using Quartz.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Tuf;
 internal static class TufMainLevel {
     private static bool returnToLevelSelectOnExit;
@@ -131,14 +132,15 @@ internal static class TufMainLevel {
         if(world.Length == 0) return false;
         foreach(char c in world)
             if(!char.IsLetterOrDigit(c)) return false;
-        try { return WorldData.dict.ContainsKey(world); }
+        try { return GameApi.WorldTable()?.Contains(world) == true; }
         catch { return false; }
     }
     private static bool IsRealLevel(string world, string lvl) {
         try {
-            if(!WorldData.dict.TryGetValue(world, out WorldData data)) return false;
+            int levelCount = GameApi.WorldLevelCount(world);
+            if(levelCount < 0) return false;
             if(lvl == "X") return true;
-            return int.TryParse(lvl, out int n) && n >= 1 && n <= data.levelCount;
+            return int.TryParse(lvl, out int n) && n >= 1 && n <= levelCount;
         } catch {
             return false;
         }
@@ -152,7 +154,7 @@ internal static class TufMainLevel {
                 controller.EnterLevel(code, false);
                 return true;
             }
-            bool internalLevel = scrController.IsWorldAndLevelInternalLevel(code);
+            bool internalLevel = GameApi.IsInternalLevelCode(code);
             GCS.speedTrialMode = false;
             GCS.nextSpeedRun = 1f;
             GCS.practiceMode = false;
@@ -160,9 +162,8 @@ internal static class TufMainLevel {
             GCS.customLevelIndex = 0;
             GCS.internalLevelName = internalLevel ? code : null;
             GCS.sceneToLoad = internalLevel ? "scnGame" : code;
-            scrLoader loader = ADOBase.loader;
-            if(loader != null) loader.LoadSceneWithTransition(WipeDirection.StartsFromRight);
-            else SceneManager.LoadScene(GCS.sceneToLoad);
+            if(!GameApi.LoadSceneWithTransition(WipeDirection.StartsFromRight))
+                SceneManager.LoadScene(GCS.sceneToLoad);
             return true;
         } catch(Exception e) {
             returnToLevelSelectOnExit = false;
@@ -177,7 +178,7 @@ internal static class TufMainLevel {
             returnToLevelSelectOnExit = false;
             try {
                 if(!GCS.webVersion && GCS.customLevelPaths == null)
-                    GCS.sceneToLoad = GCNS.sceneLevelSelect;
+                    GCS.sceneToLoad = GameApi.SceneLevelSelect;
             } catch(Exception e) {
                 MainCore.Log.Wrn("[TUF] exit-to-hub redirect failed: " + e);
             }

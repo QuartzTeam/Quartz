@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Calibration;
 internal static class CalibrationFloatOffset {
     [HarmonyPatch(typeof(scrConductor), "get_calibration_i")]
@@ -43,9 +44,9 @@ internal static class CalibrationFloatOffset {
         private static void Prefix(PauseSettingButton ___offsetButton) {
             if(!___offsetButton) return;
             if(Calibration.FloatOffsetEnabled) SetOffsetLabel(___offsetButton);
-            else ___offsetButton.valueLabel.text = scrConductor.currentPreset.inputOffset + RDString.Get("editor.unit." + ___offsetButton.unit);
+            else ___offsetButton.valueLabel.text = scrConductor.currentPreset.inputOffset + GameApi.GameString("editor.unit." + ___offsetButton.unit);
         }
     }
     private static void SetOffsetLabel(PauseSettingButton setting) =>
-        setting.valueLabel.text = Calibration.FormatMs(Calibration.GetOffsetMs()) + RDString.Get("editor.unit." + setting.unit);
+        setting.valueLabel.text = Calibration.FormatMs(Calibration.GetOffsetMs()) + GameApi.GameString("editor.unit." + setting.unit);
 }

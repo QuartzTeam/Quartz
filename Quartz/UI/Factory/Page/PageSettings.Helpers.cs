@@ -15,9 +15,9 @@ using Quartz.Utility;
 using Quartz.Update;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityFileDialog;
 using GTweenExtensions = GTweens.Extensions.GTweenExtensions;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal static partial class PageSettings {
     private static string CurrentSettingsFontValue() {
@@ -73,7 +73,7 @@ internal static partial class PageSettings {
     private static void AddCustomFont() {
         string path;
         try {
-            path = FileBrowser.PickFile(
+            path = FileDialog.PickFile(
                 null,
                 "Font",
                 ["ttf", "otf", "ttc"],

@@ -32,6 +32,11 @@ public static class MainCore {
         Runtime = new QuartzRuntime(host);
         try {
             Runtime.Initialize();
+            try {
+                Compat.Game.GameApi.LogDetectedVersion();
+            } catch(Exception e) {
+                Log.Err($"[Compat] could not identify the game build: {e}");
+            }
         } catch {
             try {
                 Runtime.Dispose();

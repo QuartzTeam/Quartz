@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Quartz.Compat.Game;
 using UnityEngine;
 namespace Quartz.Features.Nostalgia;
 public static partial class Nostalgia {
@@ -11,9 +12,11 @@ public static partial class Nostalgia {
                && !Input.GetKey(KeyCode.RightShift)
                && Input.GetKeyDown(KeyCode.Space)) {
                 if(__instance.SelectionIsSingle()) {
-                    var lm = scrLevelMaker.instance;
-                    object floatDir = lm.GetRotDirection(lm.GetRotDirection(__instance.selectedFloors[0].floatDirection, true), true);
-                    object stringDir = lm.GetRotDirection(lm.GetRotDirection(__instance.selectedFloors[0].stringDirection, true), true);
+                    scrFloor floor = __instance.selectedFloors[0];
+                    object floatDir = GameApi.RotateDirection(
+                        GameApi.RotateDirection(floor.floatDirection, true), true);
+                    object stringDir = GameApi.RotateDirection(
+                        GameApi.RotateDirection(floor.stringDirection, true), true);
                     Traverse.Create(__instance).Method(
                         "CreateFloorWithCharOrAngle",
                         floatDir, stringDir, true, true).GetValue();

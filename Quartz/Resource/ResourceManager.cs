@@ -3,6 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.Resource;
 public enum Asset {
     SUIT_Regular,
@@ -126,7 +127,8 @@ public sealed class ResourceManager(Assembly assembly, string resourcePath) : ID
                     Object.Destroy(texture);
                     break;
                 case TMP_FontAsset font:
-                    if(font.material != null) Object.Destroy(font.material);
+                    Material fontMaterial = GameApi.FontMaterial(font);
+                    if(fontMaterial != null) Object.Destroy(fontMaterial);
                     Texture2D[] atlases = font.atlasTextures;
                     if(atlases != null)
                         foreach(Texture2D tex in atlases) if(tex != null) Object.Destroy(tex);

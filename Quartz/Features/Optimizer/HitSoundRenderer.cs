@@ -8,6 +8,7 @@ using Quartz.Core;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Optimizer;
 internal static class HitSoundRenderer {
     private const int SampleRate = 48000;
@@ -373,7 +374,7 @@ internal static class HitSoundRenderer {
     }
     private static AudioClip LoadClip(string clipName) {
         try {
-            return AudioManager.Instance != null ? AudioManager.Instance.FindOrLoadAudioClip(clipName) : null;
+            return AudioManager.Instance != null ? GameApi.FindAudioClip(clipName) : null;
         } catch(Exception e) {
             MainCore.Log.Wrn("[Optimizer] could not load " + clipName + ": " + e.Message);
             return null;

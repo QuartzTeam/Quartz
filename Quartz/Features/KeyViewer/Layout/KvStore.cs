@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Quartz.Async;
 using Quartz.Core;
 using Quartz.IO;
+using Quartz.Compat.Game;
 namespace Quartz.Features.KeyViewer.Layout;
 internal static class KvStore {
     private const string JsonExtension = ".json";
@@ -236,7 +237,7 @@ internal static class KvStore {
         error = null;
         string picked;
         try {
-            picked = UnityFileDialog.FileBrowser.PickFile(
+            picked = FileDialog.PickFile(
                 "", FilterName, ["json"], "Select a DM Note preset or Quartz layout");
         } catch(Exception e) {
             error = "Picker failed: " + e.Message;
@@ -250,7 +251,7 @@ internal static class KvStore {
         string picked;
         try {
             Directory.CreateDirectory(LibraryDir);
-            picked = UnityFileDialog.FileBrowser.SaveFile(
+            picked = FileDialog.SaveFile(
                 LibraryDir, DefaultExportName, FilterName, ["json"], "Export KeyViewer layout");
         } catch(Exception e) {
             error = "Picker failed: " + e.Message;
@@ -264,7 +265,7 @@ internal static class KvStore {
     internal static void RevealLibrary() {
         try {
             Directory.CreateDirectory(LibraryDir);
-            UnityFileDialog.FileBrowser.Reveal(LibraryDir);
+            FileDialog.Reveal(LibraryDir);
         } catch(Exception e) {
             Msg("[KeyViewer] Reveal failed: " + e.Message);
         }

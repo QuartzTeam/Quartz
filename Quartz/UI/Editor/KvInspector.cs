@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal sealed partial class KvInspector {
     private enum InspTab {
@@ -278,7 +279,7 @@ internal sealed partial class KvInspector {
         TextMeshProUGUI caption = GenerateUI.AddText(row);
         caption.fontSize = 19f;
         caption.alignment = TextAlignmentOptions.MidlineLeft;
-        caption.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(caption);
         caption.overflowMode = TextOverflowModes.Ellipsis;
         caption.raycastTarget = false;
         GenerateUI.LocalizeById(caption, id, label);

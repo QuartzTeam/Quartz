@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Judgement;
 public static class JudgementOverlay {
     public static SettingsFile<JudgementSettings> ConfMgr { get; private set; }
@@ -73,7 +74,7 @@ public static class JudgementOverlay {
             text.alignment = TextAlignmentOptions.Center;
             text.color = Judgement.SlotColors[i];
             text.raycastTarget = false;
-            text.textWrappingMode = TextWrappingModes.NoWrap;
+            TextCompat.NoWrap(text);
             text.text = "0";
             labels[i] = text;
         }
@@ -102,7 +103,7 @@ public static class JudgementOverlay {
         rowLabel.alignment = TextAlignmentOptions.Center;
         rowLabel.richText = true;
         rowLabel.raycastTarget = false;
-        rowLabel.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(rowLabel);
         rowLabel.text = "0";
     }
     public static void Apply() {
@@ -141,7 +142,7 @@ public static class JudgementOverlay {
         text.alignment = TextAlignmentOptions.Center;
         text.color = color;
         text.raycastTarget = false;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         text.text = "0";
         return text;
     }

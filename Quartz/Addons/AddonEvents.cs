@@ -1,6 +1,8 @@
 using HarmonyLib;
 using Quartz.Core;
 using UnityEngine.SceneManagement;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Addons;
 public static class AddonEvents {
     public static event Action LevelStart;
@@ -58,8 +60,9 @@ public static class AddonEvents {
             SafeRaise(LevelEnd);
         }
     }
-    [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
+    [HarmonyPatch]
     private static class AddHitPatch {
+        private static MethodBase TargetMethod() => GameApi.AddHitTarget;
         private static void Postfix(HitMargin hit) {
             if(!MainCore.IsModEnabled) return;
             SafeRaise(Hit, hit);

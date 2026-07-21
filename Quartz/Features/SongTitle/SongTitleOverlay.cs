@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.Features.SongTitle;
 public static class SongTitleOverlay {
     public static SettingsFile<SongTitleSettings> ConfMgr { get; private set; }
@@ -58,7 +59,7 @@ public static class SongTitleOverlay {
         text.font = FontManager.Current;
         text.alignment = TextAlignmentOptions.Top;
         text.raycastTarget = false;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         text.text = "";
         dragObj = ReorganizeHandle.CreateDragSurface(root, () => MainCore.Tr.Get("SONG_TITLE", "Song Title"), Save);
         updater = canvasObj.AddComponent<Updater>();

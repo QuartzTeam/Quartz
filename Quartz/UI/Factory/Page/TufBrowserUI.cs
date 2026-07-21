@@ -13,6 +13,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 public static class TufBrowserUI {
     public static void Create(RectTransform parent) {
@@ -232,7 +233,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
         text.rectTransform.offsetMin = new(38f, 0f);
         text.rectTransform.offsetMax = new(-10f, 0f);
         text.overflowMode = TextOverflowModes.Ellipsis;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         text.gameObject.AddComponent<TextLocalization>().Init(key, label);
         GenerateUI.AddButton(cell.gameObject, button => {
             if(button == PointerEventData.InputButton.Left) service.ToggleSpecialDifficulty(name);
@@ -253,9 +254,9 @@ internal sealed class TufBrowserView : MonoBehaviour {
         RectTransform textArea = Rect("Text Area", bg, Vector2.zero, Vector2.one, new(16f, 0f), new(-40f, 0f));
         textArea.gameObject.AddComponent<RectMask2D>();
         TMP_Text value = Text(textArea, "", 17f, TextAlignmentOptions.Left);
-        value.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(value);
         TMP_Text placeholder = Text(textArea, "Search levels…", 17f, TextAlignmentOptions.Left);
-        placeholder.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(placeholder);
         placeholder.color = new(1f, 1f, 1f, 0.28f);
         placeholder.gameObject.AddComponent<TextLocalization>().Init("TUF_SEARCH_PLACEHOLDER", "Search levels…");
         GameObject iconObj = new("Search Icon");
@@ -410,12 +411,12 @@ internal sealed class TufBrowserView : MonoBehaviour {
         TMP_Text songText = Text(songRect, song, 23f, TextAlignmentOptions.Left);
         songText.fontStyle = FontStyles.Bold;
         songText.overflowMode = TextOverflowModes.Ellipsis;
-        songText.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(songText);
         RectTransform metaRect = Rect("Metadata", card, new(0f, 0f), new(1f, 0f), new(22f, 8f), new(textRight, 34f));
         TMP_Text meta = Text(metaRect, CardMeta(level), 15f, TextAlignmentOptions.Left);
         meta.color = new(1f, 1f, 1f, 0.46f);
         meta.overflowMode = TextOverflowModes.Ellipsis;
-        meta.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(meta);
         AddAction(card, level);
         if(installed) AddDelete(card, level);
     }
@@ -432,7 +433,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
         RectTransform rect = Rect(name, card, new(0f, 1f), new(0f, 1f), new(x, -35f), new(x, -8f));
         TMP_Text text = Text(rect, value, 16f, TextAlignmentOptions.Left);
         text.overflowMode = TextOverflowModes.Ellipsis;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         float width = Mathf.Min(Mathf.Ceil(text.GetPreferredValues(value).x), maxWidth);
         rect.offsetMax = new(x + width, -8f);
         x += width;
@@ -541,7 +542,7 @@ internal sealed class TufBrowserView : MonoBehaviour {
             TMP_Text label = Text(row, "▶  " + display, 15f, TextAlignmentOptions.Left);
             label.rectTransform.offsetMin = new(40f, 0f);
             label.overflowMode = TextOverflowModes.Ellipsis;
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TextCompat.NoWrap(label);
             GenerateUI.AddButton(row.gameObject, input => {
                 if(input == PointerEventData.InputButton.Left) service.LaunchChart(level, chart);
             });

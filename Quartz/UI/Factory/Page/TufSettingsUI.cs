@@ -4,6 +4,7 @@ using Quartz.UI.Generator;
 using Quartz.UI.Objects.Impl;
 using TMPro;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal sealed class TufSettingsView : MonoBehaviour {
     private TufService service;
@@ -114,7 +115,7 @@ internal static class TufSettingsUI {
                 try {
                     string path = service.ActiveRootPath;
                     System.IO.Directory.CreateDirectory(path);
-                    UnityFileDialog.FileBrowser.Reveal(path);
+                    FileDialog.Reveal(path);
                 } catch(System.Exception e) {
                     MainCore.Log.Err($"[TufSettingsUI] Reveal failed: {e}");
                 }
@@ -169,7 +170,7 @@ internal static class TufSettingsUI {
     private static void PickFolder(TufService service, TufSettingsView view) {
         string picked;
         try {
-            picked = UnityFileDialog.FileBrowser.PickFolder(
+            picked = FileDialog.PickFolder(
                 service.ActiveRootPath, null, null, MainCore.Tr.Get("TUF_PICK_FOLDER_TITLE", "Choose a levels folder"));
         } catch(System.Exception e) {
             MainCore.Log.Err($"[TufSettingsUI] folder picker failed: {e}");

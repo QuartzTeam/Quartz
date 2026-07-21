@@ -239,7 +239,7 @@ public static partial class UiHider {
             betaTypeResolved = true;
         }
         if(betaType == null) return;
-        int scene = SceneManager.GetActiveScene().handle;
+        int scene = SceneManager.GetActiveScene().GetHashCode();
         if(cachedBetaObjects == null || cachedBetaSceneHandle != scene) {
             try { cachedBetaObjects = Resources.FindObjectsOfTypeAll(betaType); }
             catch { cachedBetaObjects = null; }

@@ -5,8 +5,8 @@ using Quartz.Localization;
 using Quartz.UI.Generator;
 using Quartz.UI.Objects.Impl;
 using UnityEngine;
-using UnityFileDialog;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Factory.Page;
 internal static class PageAddons {
     public static void Create(RectTransform parent) {
@@ -79,7 +79,7 @@ internal static class PageAddons {
             bool hasError = error != null;
             var statusRow = GenerateUI.Row(content.transform, hasError ? 96f : 34f);
             TextMeshProUGUI status = GenerateUI.AddMutedText(statusRow, 15f, 0.45f, true);
-            status.textWrappingMode = hasError ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
+            TextCompat.SetWrap(status, hasError);
             status.overflowMode = TextOverflowModes.Ellipsis;
             status.verticalAlignment = hasError ? VerticalAlignmentOptions.Top : VerticalAlignmentOptions.Middle;
             if(error != null) {
@@ -123,7 +123,7 @@ internal static class PageAddons {
     private static void AddAddon() {
         string path;
         try {
-            path = FileBrowser.PickFile(
+            path = FileDialog.PickFile(
                 null,
                 "Quartz Addon",
                 AddonService.ImportExtensions,

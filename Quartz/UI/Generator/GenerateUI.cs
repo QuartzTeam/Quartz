@@ -15,6 +15,7 @@ using GTweens.Builders;
 using Quartz.Tween;
 using GTweenExtensions = GTweens.Extensions.GTweenExtensions;
 using TMPro;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Generator;
 public static partial class GenerateUI {
     public static RectTransform Row(Transform parent, float height = 50f) {
@@ -376,13 +377,13 @@ public static partial class GenerateUI {
                 leadRect.pivot = new(0.5f, 1f);
                 leadRect.offsetMin = new(16f, -rowHeight);
                 leadRect.offsetMax = new(-(250f + width + 16f), 0f);
-                lead.textWrappingMode = TextWrappingModes.NoWrap;
+                TextCompat.NoWrap(lead);
                 lead.overflowMode = TextOverflowModes.Ellipsis;
             }
         }
         TextMeshProUGUI tmp = AddText(rect);
         tmp.text = display(value);
-        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(tmp);
         tmp.overflowMode = TextOverflowModes.Ellipsis;
         tmp.rectTransform.offsetMax = new(-50f, 0f);
         GameObject change = AddSmallChangedCircle(rect);
@@ -569,7 +570,7 @@ public static partial class GenerateUI {
         text.font = FontManager.Current;
         text.text = value ?? string.Empty;
         text.alignment = TextAlignmentOptions.Left;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         RectTransform textRect = text.rectTransform;
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
@@ -579,7 +580,7 @@ public static partial class GenerateUI {
         placeholderText.font = FontManager.Current;
         placeholderText.text = placeholder;
         placeholderText.alignment = TextAlignmentOptions.Left;
-        placeholderText.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(placeholderText);
         placeholderText.color = new Color(1, 1, 1, 0.2f);
         LocalizeById(placeholderText, id, placeholder);
         RectTransform placeholderRect = placeholderText.rectTransform;

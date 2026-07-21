@@ -4,6 +4,7 @@ using MonsterLove.StateMachine;
 using SkyHook;
 using System.Threading;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.KeyLimiter;
 internal static partial class KeyLimiter {
     public static SettingsFile<KeyLimiterSettings> ConfMgr { get; private set; }
@@ -164,7 +165,7 @@ internal static partial class KeyLimiter {
         KeyCode unityKey = HookKeyToPhysicalUnityKey(key, label);
         if(IsMouseKey(unityKey)) return false;
         if(unityKey != KeyCode.None && IsAllowedKey(unityKey)) return false;
-        KeyCode mappedKey = SkyHookKeyMapper.SkyHookKeyToUnityKey(label);
+        KeyCode mappedKey = GameApi.HookKeyToUnityKey(label);
         if(mappedKey == KeyCode.None && IsAllowedGenericModifierVirtualKey(key)) return false;
         return mappedKey == KeyCode.None || !IsAllowedKey(mappedKey);
     }
@@ -220,7 +221,7 @@ internal static partial class KeyLimiter {
         }
     }
     public static KeyCode HookKeyToPhysicalUnityKey(ushort key, KeyLabel label) {
-        KeyCode labelKey = SkyHookKeyMapper.SkyHookKeyToUnityKey(label);
+        KeyCode labelKey = GameApi.HookKeyToUnityKey(label);
         if(IsNumpadOrArrowKey(labelKey)) return labelKey;
         if(IsWindowsRuntime()) {
             KeyCode hookKey = WindowsVirtualKeyToUnityKey(key);
@@ -337,7 +338,7 @@ internal static partial class KeyLimiter {
             "MouseMiddle" => KeyCode.Mouse2,
             "MouseX1" => KeyCode.Mouse3,
             "MouseX2" => KeyCode.Mouse4,
-            _ => SkyHookKeyMapper.SkyHookKeyToUnityKey(label),
+            _ => GameApi.HookKeyToUnityKey(label),
         };
     }
     private static KeyCode WindowsVirtualKeyToUnityKey(ushort key) => key switch {

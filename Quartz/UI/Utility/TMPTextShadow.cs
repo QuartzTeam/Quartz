@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Object = UnityEngine.Object;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Utility;
 public static class TMPTextShadow {
     private const string RootName = "__QuartzTextShadow";
@@ -166,7 +167,7 @@ public static class TMPTextShadow {
         layer.wordSpacing = source.wordSpacing;
         layer.paragraphSpacing = source.paragraphSpacing;
         layer.richText = source.richText;
-        layer.textWrappingMode = source.textWrappingMode;
+        TextCompat.SetWrap(layer, TextCompat.GetWrap(source));
         layer.overflowMode = source.overflowMode;
         layer.enableAutoSizing = source.enableAutoSizing;
         layer.fontSizeMin = source.fontSizeMin;

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using MonsterLove.StateMachine;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Calibration;
 internal static class CalibrationTiming {
     private static readonly List<float> timings = [];
@@ -54,8 +56,9 @@ internal static class CalibrationTiming {
             }
         }
     }
-    [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
+    [HarmonyPatch]
     private static class AddHitPatch {
+        private static MethodBase TargetMethod() => GameApi.AddHitTarget;
         private static void Postfix(HitMargin hit) {
             if(!Calibration.Enabled || hit != HitMargin.FailMiss) return;
             if(float.IsNaN(lastTooEarly) || float.IsNaN(lastTooLate)) return;

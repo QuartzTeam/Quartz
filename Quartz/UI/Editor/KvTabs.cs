@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal static class KvTabs {
     private static float TrackHeight => 30f * KvPalette.Scale;
@@ -97,7 +98,7 @@ internal static class KvTabs {
             TextMeshProUGUI label = GenerateUI.AddText(rect, true);
             label.fontSize = LabelSize;
             label.alignment = TextAlignmentOptions.Center;
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TextCompat.NoWrap(label);
             label.overflowMode = TextOverflowModes.Ellipsis;
             label.raycastTarget = false;
             if(key != null) GenerateUI.Localize(label, key(optValue), text);

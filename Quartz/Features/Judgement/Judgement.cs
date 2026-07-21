@@ -1,6 +1,8 @@
 using HarmonyLib;
 using Quartz.Core;
 using UnityEngine;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Judgement;
 internal static class Judgement {
     internal const int Slots = 9;
@@ -33,8 +35,9 @@ internal static class Judgement {
         int idx = (int)hit;
         return idx >= 0 && idx < counts.Length ? counts[idx] : 0;
     }
-    [HarmonyPatch(typeof(scrMarginTracker), "AddHit", typeof(HitMargin))]
+    [HarmonyPatch]
     private static class AddHitPatch {
+        private static MethodBase TargetMethod() => GameApi.AddHitTarget;
         private static void Postfix(HitMargin hit) {
             int idx = (int)hit;
             if(MainCore.IsModEnabled && idx >= 0 && idx < counts.Length) counts[idx]++;

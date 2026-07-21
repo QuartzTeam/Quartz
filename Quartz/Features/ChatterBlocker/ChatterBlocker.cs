@@ -4,6 +4,8 @@ using Quartz.Core;
 using Quartz.IO;
 using SkyHook;
 using UnityEngine;
+using System.Reflection;
+using Quartz.Compat.Game;
 namespace Quartz.Features.ChatterBlocker;
 public static class ChatterBlocker {
     public static SettingsFile<ChatterBlockerSettings> ConfMgr { get; private set; }
@@ -55,18 +57,12 @@ public static class ChatterBlocker {
     }
     private static void RecordKeyStats(scrController controller, object key) {
         try {
-            scrPlayer player = controller != null ? controller.playerOne : null;
-            if(player == null || player.keyFrequency == null) return;
-            player.keyFrequency[key] = player.keyFrequency.TryGetValue(key, out int pressCount)
-                ? pressCount + 1
-                : 1;
-            player.keyTotal++;
+            GameApi.RecordKeyPress(controller, key);
         } catch {
         }
     }
-    private static void ResetKeyLimiterOverCounter(scrController controller) {
-        if(controller != null && controller.playerOne != null) controller.playerOne.keyLimiterOverCounter = 0;
-    }
+    private static void ResetKeyLimiterOverCounter(scrController controller) =>
+        GameApi.ResetKeyLimiterOverCounter(controller);
     private static int CountValidKeysPressed() {
         scrController controller = scrController.instance;
         if(controller == null) return 0;
@@ -171,18 +167,20 @@ public static class ChatterBlocker {
     }
     private static bool AsyncKeyboardActive() {
         try {
-            return RDInput.asyncKeyboard != null && RDInput.asyncKeyboard.isActive;
+            return GameApi.AsyncKeyboardActive();
         } catch {
             return false;
         }
     }
-    [HarmonyPatch(typeof(scrPlayer), "Simulated_PlayerControl_Update")]
+    [HarmonyPatch]
     private static class SimulatedPlayerControlUpdatePatch {
+        private static MethodBase TargetMethod() => GameApi.PlayerControlUpdateTarget;
         private static void Prefix() => NotePlayerBatch(true);
         private static void Postfix() => NotePlayerBatch(false);
     }
-    [HarmonyPatch(typeof(scrPlayer), "CountValidKeysPressed")]
+    [HarmonyPatch]
     private static class CountValidKeysPressedPatch {
+        private static MethodBase TargetMethod() => GameApi.CountValidKeysPressedTarget;
         private static bool Prefix(ref int __result) {
             if(!HasAnyFilter()) return true;
             __result = CountValidKeysPressed();

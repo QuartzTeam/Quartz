@@ -3,6 +3,7 @@ using HarmonyLib;
 using Quartz.Core;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Optimizer;
 public static class OptimizerPatches {
     [HarmonyPatch(typeof(TextureManager), "LoadTexture")]
@@ -10,7 +11,7 @@ public static class OptimizerPatches {
         private static bool Prefix(string filePath, ref LoadResult status, int maxSideSize, ref Texture2D __result) {
             Optimizer.EnsureConf();
             if(!MainCore.IsModEnabled || Optimizer.Conf == null || !Optimizer.Conf.LossyTextureCompression) return true;
-            if(GCS.internalLevelName != null || ADOBase.isBundleLevel) return true;
+            if(GCS.internalLevelName != null || GameApi.IsBundleLevel()) return true;
             status = LoadResult.MissingFile;
             if(!RDFile.Exists(filePath)) {
                 __result = null;

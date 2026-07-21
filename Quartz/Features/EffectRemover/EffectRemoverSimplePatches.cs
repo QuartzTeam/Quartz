@@ -3,6 +3,7 @@ using System.Collections;
 using HarmonyLib;
 using Quartz.Core;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.EffectRemover;
 public static partial class EffectRemover {
     private static bool SimpleFilterActive => SimpleActive && Conf.SimpleFilter;
@@ -71,7 +72,7 @@ public static partial class EffectRemover {
     }
     private static void ForceDisableCamBehaviour<T>(ffxPlusBase fx) where T : Behaviour {
         try {
-            scrCamera cam = fx?.cam ?? scrCamera.instance;
+            scrCamera cam = fx?.cam ?? GameApi.Camera;
             if(cam == null) return;
             T comp = cam.GetComponent<T>();
             if(comp != null) comp.enabled = false;

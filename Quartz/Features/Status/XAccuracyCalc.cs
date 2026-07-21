@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Quartz.Compat.Game;
 namespace Quartz.Features.Status
 {
     internal static class XAccuracyCalc
@@ -43,10 +44,10 @@ namespace Quartz.Features.Status
             int remaining = cachedHittableTotal - consumedHittable;
             return remaining < 0 ? 0 : remaining;
         }
-        private static int Hits(scrMarginTracker t, HitMargin m)
+        private static int Hits(object t, HitMargin m)
         {
             int i = (int)m;
-            int[] counts = t.hitMarginsCount;
+            int[] counts = GameApi.HitMarginCounts(t);
             return (counts != null && i >= 0 && i < counts.Length) ? counts[i] : 0;
         }
         internal static float MaxRatio() => MaxRatio(0);
@@ -56,17 +57,19 @@ namespace Quartz.Features.Status
             {
                 scrController ctrl = scrController.instance;
                 if (ctrl == null) return 1f;
-                scrMarginTracker t = MistakesAccess.Tracker(playerID);
-                if (t == null || t.hitMargins == null) return 1f;
+                object t = MistakesAccess.Tracker(playerID);
+                if (t == null) return 1f;
+                int judged = GameApi.HitMarginTotal(t);
+                if (judged < 0) return 1f;
                 double checkpointFactor = Math.Pow(CheckpointPenalty, scrController.checkpointsUsed);
-                int deadTiles = t.deadTiles;
+                int deadTiles = GameApi.DeadTiles(t);
                 double weightedSum =
                       1.0  * (Hits(t, HitMargin.Perfect) + Hits(t, HitMargin.Auto))
                     + 0.75 * (Hits(t, HitMargin.EarlyPerfect) + Hits(t, HitMargin.LatePerfect))
                     + 0.4  * (Hits(t, HitMargin.VeryEarly) + Hits(t, HitMargin.VeryLate))
                     + 0.2  * (Hits(t, HitMargin.TooEarly) + Hits(t, HitMargin.TooLate))
                     + 0.2  * deadTiles;
-                double denom = t.hitMargins.Count + deadTiles;
+                double denom = judged + deadTiles;
                 int remaining = RemainingHittable();
                 int playerCount = MistakesAccess.PlayerCount();
                 if (playerCount > 1) remaining = remaining / playerCount;

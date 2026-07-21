@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.PointerEventData;
+using Quartz.Compat.Game;
 namespace Quartz.UI.Editor;
 internal static partial class KvWidgets {
     private const float IconReserve = 44f;
@@ -67,7 +68,7 @@ internal static partial class KvWidgets {
         text.text = value ?? string.Empty;
         text.color = color;
         text.alignment = TextAlignmentOptions.Left;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
+        TextCompat.NoWrap(text);
         RectTransform rect = text.rectTransform;
         rect.anchorMin = Vector2.zero;
         rect.anchorMax = Vector2.one;
