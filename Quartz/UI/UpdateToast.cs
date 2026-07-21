@@ -31,6 +31,7 @@ public static class UpdateToast {
     private static GTween autoHideSeq;
     private static bool visible;
     private static string shownTag;
+    private static string shownName;
     private static string dismissedTag;
     private static Action<string> _onLanguageChanged;
     public static void Initialize() {
@@ -182,12 +183,13 @@ public static class UpdateToast {
         UpdateStatus status = UpdateService.Status;
         UpdateInfo info = UpdateService.Available;
         if(status == UpdateStatus.Idle) dismissedTag = null;
-        if(status == UpdateStatus.Available && info != null && info.Tag != dismissedTag) Show(info.Tag);
+        if(status == UpdateStatus.Available && info != null && info.Tag != dismissedTag) Show(info.Tag, info.Name);
         else Hide();
     }
-    private static void Show(string tag) {
+    private static void Show(string tag, string name) {
         if(visible && shownTag == tag) return;
         shownTag = tag;
+        shownName = name;
         RenderText();
         bg.color = UIColors.TopBar;
         visible = true;
@@ -236,7 +238,9 @@ public static class UpdateToast {
     private static void RenderText() {
         if(titleText == null) return;
         titleText.text = $"{MainCore.Tr.Get("UPDATE_AVAILABLE", "Update available:")} {shownTag}";
-        hintText.text = MainCore.Tr.Get("UPDATE_TOAST_HINT", "Click to open Settings");
+        hintText.text = string.IsNullOrEmpty(shownName)
+            ? MainCore.Tr.Get("UPDATE_TOAST_HINT", "Click to open Settings")
+            : shownName;
     }
     public static void Dispose() {
         UpdateService.OnChanged -= Refresh;
@@ -259,5 +263,6 @@ public static class UpdateToast {
         hintText = null;
         visible = false;
         shownTag = null;
+        shownName = null;
     }
 }

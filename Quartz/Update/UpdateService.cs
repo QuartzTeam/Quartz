@@ -28,6 +28,7 @@ public enum UpdateFailure {
 }
 public sealed class UpdateInfo {
     public string Tag;
+    public string Name;
     public SemVer Version;
     public string Url;
     public string AssetUrl;
@@ -144,6 +145,7 @@ public static class UpdateService {
             if(best == null || v.CompareTo(best.Version) > 0) {
                 best = new UpdateInfo {
                     Tag = tag,
+                    Name = ParseReleaseName((string)rel["name"], tag),
                     Version = v,
                     Url = (string)rel["html_url"],
                     AssetUrl = assetUrl,
@@ -153,6 +155,17 @@ public static class UpdateService {
             }
         }
         return best;
+    }
+    private static string ParseReleaseName(string title, string tag) {
+        if(string.IsNullOrWhiteSpace(title)) return null;
+        string name = title.Trim();
+        if(!string.IsNullOrEmpty(tag) && name.StartsWith(tag, System.StringComparison.OrdinalIgnoreCase))
+            name = name.Substring(tag.Length);
+        name = name.TrimStart(' ', '\t', '—', '–', '-', ':', '|');
+        name = name.Trim();
+        return name.Length == 0 || string.Equals(name, tag, System.StringComparison.OrdinalIgnoreCase)
+            ? null
+            : name;
     }
     private static string ParseSha256Digest(string digest) {
         const string prefix = "sha256:";
@@ -359,6 +372,7 @@ public static class UpdateService {
     }
     private static UpdateInfo Simulated() => new() {
         Tag = "v" + Info.DisplayVersion,
+        Name = "Simulated Release",
         Version = Info.Current,
         Url = Info.GithubLink,
         AssetUrl = null,

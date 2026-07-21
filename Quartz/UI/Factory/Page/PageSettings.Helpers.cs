@@ -198,7 +198,10 @@ internal static partial class PageSettings {
             string simulated = UpdateService.DevSimulate
                 ? $" {GenerateUI.Tr("UPDATE_SIMULATED", "(simulated)")}"
                 : "";
-            updateVersionText.text = $"v{Info.DisplayVersion}  {arrow}  {info.Tag}{simulated}";
+            string name = string.IsNullOrEmpty(info.Name)
+                ? ""
+                : $"  {(HasGlyph('—') ? "—" : "-")}  {info.Name}";
+            updateVersionText.text = $"v{Info.DisplayVersion}  {arrow}  {info.Tag}{name}{simulated}";
         } else {
             updateVersionText.text = "";
         }
