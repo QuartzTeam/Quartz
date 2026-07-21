@@ -370,7 +370,7 @@ internal sealed class RainManager : MonoBehaviour {
             }
             group.Insert(at, raw);
         }
-        float now = Time.unscaledTime;
+        float now = KvClock.Now;
         for(int g = 0; g < groups.Length; g++) {
             List<RawRain> active = groups[g];
             int write = 0;

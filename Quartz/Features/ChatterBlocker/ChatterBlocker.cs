@@ -193,9 +193,10 @@ public static class ChatterBlocker {
             try {
                 SkyHookEvent ev = __0;
                 if(KeyLimiter.KeyLimiter.IsMouseLabel(ev.Label)) return;
-                KeyLimiter.KeyLimiter.NoteHookEvent(
-                    KeyLimiter.KeyLimiter.HookKeyToPhysicalUnityKey(ev.Key, ev.Label),
-                    ev.Type == SkyHook.EventType.KeyPressed);
+                KeyCode key = KeyLimiter.KeyLimiter.HookKeyToPhysicalUnityKey(ev.Key, ev.Label);
+                bool down = ev.Type == SkyHook.EventType.KeyPressed;
+                KeyLimiter.KeyLimiter.NoteHookEvent(key, down);
+                KeyViewer.KvInputQueue.Push(key, down);
             } catch {
             }
         }

@@ -10,6 +10,7 @@ namespace Quartz.Features.KeyViewer;
 public static partial class KeyViewerOverlay {
     private sealed class Updater : MonoBehaviour {
         private static bool CanRebuild => !GameStats.InGame || Quartz.UI.UICore.IsOpen;
+        private void OnApplicationFocus(bool hasFocus) => KvInputQueue.SetFocused(hasFocus);
         private void LateUpdate() {
             if(cssDownloadArrived && CanRebuild) {
                 cssDownloadArrived = false;
@@ -18,15 +19,15 @@ public static partial class KeyViewerOverlay {
                     return;
                 }
             }
-            if(layoutRebuildPending && Time.unscaledTime >= layoutRebuildAt && CanRebuild) {
+            if(layoutRebuildPending && KvClock.Now >= layoutRebuildAt && CanRebuild) {
                 layoutRebuildPending = false;
                 if(Conf != null) {
                     Rebuild();
                     return;
                 }
             }
-            if(cssFx.Count > 0 && root != null && root.gameObject.activeSelf) CssTick(Time.unscaledTime);
-            if(counterBounces.Count > 0) TickCounterBounces(Time.unscaledTime);
+            if(cssFx.Count > 0 && root != null && root.gameObject.activeSelf) CssTick(KvClock.Now);
+            if(counterBounces.Count > 0) TickCounterBounces(KvClock.Now);
         }
         private static void TickCounterBounces(float now) {
             for(int i = counterBounces.Count - 1; i >= 0; i--) {
@@ -77,17 +78,22 @@ public static partial class KeyViewerOverlay {
         }
         private void Update() {
             if(root == null) return;
-            float now = Time.unscaledTime;
+            float now = KvClock.Now;
             bool inGame = GameStats.InGame;
             if(gameStateKnown && wasInGame && !inGame) FlushCounts();
             wasInGame = inGame;
             gameStateKnown = true;
             bool isReorganizing = UICore.IsReorganizing;
             bool show = Panels.PanelsOverlay.IsEnabled && Conf.Enabled && (Conf.ShowOutsideGame || inGame) || isReorganizing;
+            bool focused = Application.isFocused;
+            bool independent = Conf.Enabled && Conf.IndependentInput;
+            KvInputQueue.SetWanted(independent);
+            KvInputQueue.SetFocused(focused);
+            KvInputQueue.Pump(now, independent);
             if(raycaster != null && raycaster.enabled != isReorganizing) raycaster.enabled = isReorganizing;
             if(root.gameObject.activeSelf != show) root.gameObject.SetActive(show);
             if(dragObj != null && dragObj.activeSelf != isReorganizing) dragObj.SetActive(isReorganizing);
-            if(!show || !Application.isFocused) {
+            if(!show || !focused) {
                 MarkInputInactive(now, clearTransientStats: !show);
                 TryFlushCounts(now, inGame);
                 return;
@@ -97,10 +103,7 @@ public static partial class KeyViewerOverlay {
                 Conf.DmOffsetX = stored.x;
                 Conf.DmOffsetY = stored.y;
             }
-            if(!InputReady(now)) {
-                TryFlushCounts(now, inGame);
-                return;
-            }
+            EnsureInputPrimed(now);
             UpdateDmNote(now);
             TryFlushCounts(now, inGame);
         }

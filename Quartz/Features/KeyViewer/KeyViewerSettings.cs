@@ -50,6 +50,8 @@ public sealed partial class KeyViewerSettings : ISettingsFile {
     public float DmShortNoteThresholdMs = 50f;
     public float DmShortNoteMinLengthPx = 30f;
     public float DmKeyDisplayDelayMs = 0f;
+    public float DmMinLitMs = 40f;
+    public bool IndependentInput = true;
     public bool DmCssEnabled = false;
     public string DmCssText = "";
     public string DmCssPath = "";

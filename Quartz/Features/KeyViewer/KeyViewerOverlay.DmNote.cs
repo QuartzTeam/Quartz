@@ -27,6 +27,7 @@ public static partial class KeyViewerOverlay {
         totalCount = 0;
         foreach(Box box in boxes)
             if(!box.IsStat && box.CountInTotal) totalCount += box.Count;
+        RebuildKeyMap();
         PaintInitialCounts();
         AddReorganizeHandle(rainLayer);
         Apply();
@@ -116,6 +117,9 @@ public static partial class KeyViewerOverlay {
         return pressLog.Count;
     }
     private static void UpdateDmNote(float now) {
+        SyncHookCoverage();
+        DrainInputEvents(now);
+        PollUncoveredKeys(now);
         while(pressLog.Count > 0 && now - pressLog.Peek() > 1f) pressLog.Dequeue();
         if(now >= nextKpsSample) {
             int kps = pressLog.Count;
@@ -144,32 +148,17 @@ public static partial class KeyViewerOverlay {
                 box.LastShown = value;
                 continue;
             }
-            bool physicalPressed = KeyHeld(box.Key);
-            bool ghostPressed = KeyHeld(spec.GhostKeyCode);
-            if(physicalPressed && !box.RawPressed) {
-                RecordDmPress(box, now);
-                BeginDmNoteRain(box, now);
-            } else if(!physicalPressed && box.RawPressed) {
-                EndDmNoteRain(box, now);
-            }
-            box.RawPressed = physicalPressed;
             UpdateDelayedDmNote(box, now);
-            if(ghostPressed && !box.GhostPressed) {
-                if(Conf.DmNoteEffect && spec.NoteEnabled && rainManager != null) box.LastGhostRain = SpawnDmRain(box, now, true);
-            } else if(!ghostPressed && box.GhostPressed && box.LastGhostRain != null) {
-                float minLengthSeconds = dmNoteSpeed > 0f ? dmShortNoteMinLengthPx / dmNoteSpeed : 0f;
-                box.LastGhostRain.EndTime = Mathf.Max(now, box.LastGhostRain.StartTime + Mathf.Max(0.001f, minLengthSeconds));
-                box.LastGhostRain = null;
-            }
+            bool wantPressed = box.RawPressed || now < box.LitUntil;
             bool displayPressed;
             float displayDelay = dmKeyDisplayDelayMs / 1000f;
             if(displayDelay <= 0.0001f) {
-                box.DisplayTargetPressed = physicalPressed;
+                box.DisplayTargetPressed = wantPressed;
                 box.DisplayTargetTime = now;
-                displayPressed = physicalPressed;
+                displayPressed = wantPressed;
             } else {
-                if(physicalPressed != box.DisplayTargetPressed) {
-                    box.DisplayTargetPressed = physicalPressed;
+                if(wantPressed != box.DisplayTargetPressed) {
+                    box.DisplayTargetPressed = wantPressed;
                     box.DisplayTargetTime = now + displayDelay;
                 }
                 displayPressed = now >= box.DisplayTargetTime ? box.DisplayTargetPressed : box.Pressed;
@@ -179,7 +168,6 @@ public static partial class KeyViewerOverlay {
                 ApplyBoxColors(box);
                 RaisePressChanged(box);
             }
-            box.GhostPressed = ghostPressed;
             int shown = box.Count;
             if(box.PerKeyKps) {
                 while(box.KpsLog.Count > 0 && now - box.KpsLog.Peek() > 1f) box.KpsLog.Dequeue();

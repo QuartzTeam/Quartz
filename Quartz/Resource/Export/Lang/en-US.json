@@ -1150,6 +1150,8 @@
     "TUF_PLAY": "Play",
     "TUF_MAIN_LAUNCH_FAILED": "Could not open the base-game level.",
     "TUF_BUY_DLC": "Buy DLC",
+    "KEYVIEWER_DM_INDEPENDENT_INPUT": "Independent Key Input",
+    "KEYVIEWER_DM_MIN_LIT": "Minimum Lit Time",
     "TOGGLE_BIND_HINT": "Right-click any toggle to give it its own hotkey. Press Esc while binding to unbind it."
   }
 }

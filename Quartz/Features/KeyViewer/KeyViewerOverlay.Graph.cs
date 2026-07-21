@@ -68,7 +68,7 @@ public static partial class KeyViewerOverlay {
             SetVerticesDirty();
         }
         private void Update() {
-            float now = Time.unscaledTime;
+            float now = KvClock.Now;
             if(now >= _nextSample) {
                 Sample();
                 _nextSample = now + GraphUpdateMs / 1000f;
@@ -97,7 +97,7 @@ public static partial class KeyViewerOverlay {
             }
             if(_anim) {
                 Array.Copy(_history, _animFrom, _history.Length);
-                _animStart = Time.unscaledTime;
+                _animStart = KvClock.Now;
             } else {
                 Array.Copy(_animTo, _history, _history.Length);
                 SetVerticesDirty();

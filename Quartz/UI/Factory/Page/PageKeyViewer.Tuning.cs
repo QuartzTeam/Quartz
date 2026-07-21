@@ -186,6 +186,17 @@ internal static partial class PageKeyViewer {
         UISlider keyDelay = DmSlider(body, compact, "Key Display Delay", "keyviewer_dm_key_delay",
             def.DmKeyDisplayDelayMs, 0f, 9999f, conf.DmKeyDisplayDelayMs, "0 ms", 1f,
             v => { conf.DmKeyDisplayDelayMs = v; Apply(); }, Save);
+        UIToggle independentInput = DmToggle(
+            body, compact,
+            def.IndependentInput,
+            conf.IndependentInput,
+            v => { conf.IndependentInput = v; Apply(); Save(); },
+            "Independent Key Input",
+            "keyviewer_dm_independent_input"
+        );
+        UISlider minLit = DmSlider(body, compact, "Minimum Lit Time", "keyviewer_dm_min_lit",
+            def.DmMinLitMs, 0f, 500f, conf.DmMinLitMs, "0 ms", 1f,
+            v => { conf.DmMinLitMs = v; Apply(); }, Save);
         return () => {
             noteEffect.Set(conf.DmNoteEffect, false);
             reverse.Set(conf.DmNoteReverse, false);
@@ -200,6 +211,8 @@ internal static partial class PageKeyViewer {
             shortThreshold.SetOnlyValue(conf.DmShortNoteThresholdMs, true);
             shortMin.SetOnlyValue(conf.DmShortNoteMinLengthPx, true);
             keyDelay.SetOnlyValue(conf.DmKeyDisplayDelayMs, true);
+            independentInput.Set(conf.IndependentInput, false);
+            minLit.SetOnlyValue(conf.DmMinLitMs, true);
         };
     }
 }

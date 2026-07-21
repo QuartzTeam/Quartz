@@ -60,7 +60,7 @@ public static partial class KeyViewerOverlay {
     public static void RequestLayoutRebuild() {
         if(root == null || Conf == null) return;
         layoutRebuildPending = true;
-        layoutRebuildAt = Time.unscaledTime + LayoutRebuildDebounceSeconds;
+        layoutRebuildAt = KvClock.Now + LayoutRebuildDebounceSeconds;
     }
     public static event Action SyncSettingChanged;
     public static void RaiseSyncSettingChanged() => SyncSettingChanged?.Invoke();
@@ -229,6 +229,13 @@ public static partial class KeyViewerOverlay {
     }
     public static void Dispose() {
         if(canvasObj == null) return;
+        KvInputQueue.Shutdown();
+        keyMap.Clear();
+        pollBoxes.Clear();
+        drainBuffer.Clear();
+        uncoveredBindings = 0;
+        hookWasActive = false;
+        resyncRequested = false;
         if(!FlushCounts(immediate: true)) ConfMgr?.Save();
         Object.Destroy(canvasObj);
         canvasObj = null;

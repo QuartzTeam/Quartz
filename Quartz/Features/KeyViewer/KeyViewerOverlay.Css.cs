@@ -345,7 +345,7 @@ public static partial class KeyViewerOverlay {
             CssAnimGradient fg = pressed ? spec.ActiveFillGradient : spec.FillGradient;
             box.FillGrad.enabled = fg != null;
         }
-        if(spec.TransitionSec > 0.01f) box.TransStart = Time.unscaledTime;
+        if(spec.TransitionSec > 0.01f) box.TransStart = KvClock.Now;
     }
     private static void ApplyFilterTint(Box box, Color f, bool pressed) {
         if(box.Label != null && (pressed ? box.Dm.ActiveLabelGradient : box.Dm.LabelGradient) == null) {

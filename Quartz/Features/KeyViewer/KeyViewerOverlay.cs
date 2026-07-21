@@ -49,6 +49,13 @@ public static partial class KeyViewerOverlay {
     private static float dmShortNoteThresholdMs = 50f;
     private static float dmShortNoteMinLengthPx = 30f;
     private static float dmKeyDisplayDelayMs;
+    private static float dmMinLitSeconds;
+    private static readonly Dictionary<KeyCode, List<Box>> keyMap = new();
+    private static readonly List<Box> pollBoxes = [];
+    private static int uncoveredBindings;
+    private static readonly List<KvInputQueue.Ev> drainBuffer = [];
+    private static bool hookWasActive;
+    private static bool resyncRequested;
     private static readonly Queue<float> pressLog = new(64);
     private static int kpsMax;
     private static int kpsSum;
@@ -100,6 +107,9 @@ public static partial class KeyViewerOverlay {
         public bool Pressed;
         public bool GhostPressed;
         public bool RawPressed;
+        public float LitUntil;
+        public bool HookCovered;
+        public bool GhostHookCovered;
         public bool DisplayTargetPressed;
         public float DisplayTargetTime;
         public bool DelayedNotePending;

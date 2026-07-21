@@ -103,6 +103,7 @@ public static partial class KeyViewerOverlay {
         dmShortNoteThresholdMs = Mathf.Clamp(Conf.DmShortNoteThresholdMs, 0f, 2000f);
         dmShortNoteMinLengthPx = Mathf.Clamp(Conf.DmShortNoteMinLengthPx, 1f, 9999f);
         dmKeyDisplayDelayMs = Mathf.Clamp(Conf.DmKeyDisplayDelayMs, 0f, 9999f);
+        dmMinLitSeconds = Mathf.Clamp(Conf.DmMinLitMs, 0f, 500f) / 1000f;
     }
     private static void ExtendDmBounds(DmNoteSpec spec, ref float minX, ref float minY, ref float maxX, ref float maxY) {
         minX = Mathf.Min(minX, spec.X);
