@@ -1148,6 +1148,8 @@
     "TUF_BUY_DLC": "Buy DLC",
     "DESC_KEYVIEWER_EDITOR_EXPORT_JSON": "Write the layout to a plain DM Note preset. Anything DM Note cannot express is dropped, and the export says what.",
     "DESC_KEYVIEWER_EDITOR_EXPORT_QKV": "Write the layout and every Key Viewer setting to a .qkv. Quartz only, and the format to use to move a layout to another Quartz install.",
+    "DESC_KVI_COUNTER_SHOWWHILEPRESSING": "Keep the counter on screen while the key is held. Off hides it for as long as the key is down and brings it back on release; its space is still reserved, so the label does not move.",
+    "DESC_KVI_LABEL_ENABLED": "Draw this element's label. With it off the counter spreads over the whole box, and the box, border and rain are untouched.",
     "KEYVIEWER_DMGAP_COUNTER_PRESSED": "counters hidden while pressed",
     "KEYVIEWER_DMGAP_COUNT_IN_TOTAL": "keys kept out of the total",
     "KEYVIEWER_DMGAP_FOOT": "foot-row markers",
@@ -1167,6 +1169,9 @@
     "KEYVIEWER_EDITOR_EXPORT_JSON": "Export .json (DM Note)",
     "KEYVIEWER_EDITOR_EXPORT_QKV": "Export .qkv (Quartz)",
     "KEYVIEWER_EDITOR_IMPORTED_QKV": "Imported. {0} Key Viewer setting(s) came from the .qkv and replaced yours.",
+    "KVI_COUNTER_SHOWWHILEPRESSING": "Show Counter While Pressing",
+    "KVI_DISPLAY_PRESSED": "Label While Pressed (empty = same)",
+    "KVI_LABEL_ENABLED": "Show Label",
     "TOGGLE_BIND_HINT": "Right-click any toggle to give it its own hotkey. Press Esc while binding to unbind it."
   }
 }

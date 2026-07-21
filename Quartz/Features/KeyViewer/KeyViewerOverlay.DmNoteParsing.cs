@@ -278,6 +278,7 @@ public static partial class KeyViewerOverlay {
         spec.GhostRain = spec.GhostRainBottom;
         spec.FontSize = JInt(p, "fontSize", stat ? 16 : 18);
         spec.CounterEnabled = Conf.DmShowCounter && (counter != null ? JBool(counter, "enabled", true) : true);
+        spec.CounterShowWhilePressed = stat || JBool(p, "quartzCounterShowWhilePressed", true);
         spec.CounterFontSize = counter != null
             ? JInt(counter, "fontSize", 16)
             : 16;
@@ -310,6 +311,13 @@ public static partial class KeyViewerOverlay {
         spec.DisplayText = !string.IsNullOrEmpty(display)
             ? display
             : DefaultDmNoteDisplay(spec.KeyName, stat);
+        spec.PressedDisplayText = stat ? "" : JOptionalString(p, "quartzPressedText") ?? "";
+        spec.LabelEnabled = JBool(p, "quartzLabelEnabled", true);
+        if(!spec.LabelEnabled) {
+            spec.DisplayText = "";
+            spec.PressedDisplayText = "";
+            spec.InlineStatCounter = false;
+        }
         return spec;
     }
     private static string DefaultDmNoteDisplay(string keyName, bool stat) {

@@ -118,6 +118,27 @@ internal sealed partial class KvElement {
             else Raw.Remove("quartzPerKeyKps");
         }
     }
+    internal bool LabelEnabled {
+        get => Flag("quartzLabelEnabled", true);
+        set {
+            if(value) Raw.Remove("quartzLabelEnabled");
+            else Raw["quartzLabelEnabled"] = false;
+        }
+    }
+    internal bool CounterShowWhilePressed {
+        get => Flag("quartzCounterShowWhilePressed", true);
+        set {
+            if(value) Raw.Remove("quartzCounterShowWhilePressed");
+            else Raw["quartzCounterShowWhilePressed"] = false;
+        }
+    }
+    internal string PressedText {
+        get => Str("quartzPressedText", "");
+        set {
+            if(string.IsNullOrEmpty(value)) Raw.Remove("quartzPressedText");
+            else Raw["quartzPressedText"] = value;
+        }
+    }
     internal bool Foot {
         get => Flag("quartzFoot", false);
         set {

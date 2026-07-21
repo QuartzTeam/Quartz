@@ -28,6 +28,12 @@ internal sealed partial class KvInspector {
                 "DESC_KVI_COUNTER_PERKEYKPS",
                 "This key's counter shows its own presses-per-second instead of its running total. The total is still counted."
             );
+            Flag(root, tracked, "Show Counter While Pressing", "kvi_counter_showwhilepressing", true,
+                keys, el => el.CounterShowWhilePressed, (el, v) => el.CounterShowWhilePressed = v
+            ).Rect.AddToolTip(
+                "DESC_KVI_COUNTER_SHOWWHILEPRESSING",
+                "Keep the counter on screen while the key is held. Off hides it for as long as the key is down and brings it back on release; its space is still reserved, so the label does not move."
+            );
         }
         Header(root, "KVI_SEC_COUNTER_PLACE", "Placement");
         CounterSegments(root, batch, Placements, PlaceName, PlaceKey, "placement", "inside");

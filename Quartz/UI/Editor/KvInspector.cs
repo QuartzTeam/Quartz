@@ -293,6 +293,32 @@ internal sealed partial class KvInspector {
         tracked.Add(input);
         return input;
     }
+    private UIInput TextField(
+        RectTransform root, List<UIObject> tracked, KvElement[] batch, string id, string placeholder,
+        Func<KvElement, string> read, Action<KvElement, string> write
+    ) {
+        bool mixed = Mixed(batch, read);
+        bool typed = false;
+        UIInput input = KvWidgets.Input(
+            GenerateUI.Row(root), "", mixed ? "" : read(batch[0]),
+            v => {
+                typed = true;
+                Stream(id, () => {
+                    foreach(KvElement el in batch) write(el, v ?? "");
+                });
+            },
+            placeholder, MainCore.Spr.Get(UISprite.Text128), id
+        );
+        input.InputField.characterLimit = 24;
+        input.InputField.onEndEdit.AddListener(v => {
+            if(mixed && !typed) return;
+            Commit(id, () => {
+                foreach(KvElement el in batch) write(el, v ?? "");
+            });
+        });
+        tracked.Add(input);
+        return input;
+    }
     private static bool TryNum(string s, out float value) => float.TryParse(
         s, System.Globalization.NumberStyles.Float,
         System.Globalization.CultureInfo.InvariantCulture, out value

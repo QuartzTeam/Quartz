@@ -60,7 +60,9 @@ internal sealed partial class KvCanvas {
         v.Fill.color = Fade(KeyViewerOverlay.HexToColor(RawStr(el, "backgroundColor", DefaultBg), 0.9f), dim);
         v.Border.color = Fade(KeyViewerOverlay.HexToColor(RawStr(el, "borderColor", DefaultBorder), 0.9f), dim);
         KeyViewerOverlay.DmNoteSpec spec = CounterSpec(el);
-        if(v.Label != null) {
+        if(v.Label != null && v.Label.gameObject.activeSelf != el.LabelEnabled)
+            v.Label.gameObject.SetActive(el.LabelEnabled);
+        if(v.Label != null && el.LabelEnabled) {
             v.Label.color = Fade(KeyViewerOverlay.HexToColor(RawStr(el, "fontColor", DefaultFont), 1f), dim);
             v.Label.text = spec.InlineStatCounter ? LabelOf(el) + "  0" : LabelOf(el);
             KeyViewerOverlay.LayoutDmText(v.Label.rectTransform, spec, false);
@@ -101,7 +103,7 @@ internal sealed partial class KvCanvas {
             Y = el.Y,
             W = el.W,
             H = el.H,
-            DisplayText = LabelOf(el),
+            DisplayText = el.LabelEnabled ? LabelOf(el) : "",
             FontSize = Mathf.RoundToInt(RawFloat(el, "fontSize", stat ? 16f : 18f)),
             CounterEnabled = (el.Kind == KvElementKind.Key || stat)
                 && (c?["enabled"] is not JValue { Type: JTokenType.Boolean } enabled || enabled.ToObject<bool>()),
@@ -113,7 +115,7 @@ internal sealed partial class KvCanvas {
                 ? gap.ToObject<float>() : 6f,
             CounterOutside = string.Equals(c?["placement"]?.ToString(), "outside", StringComparison.OrdinalIgnoreCase),
         };
-        spec.InlineStatCounter = stat && spec.CounterEnabled
+        spec.InlineStatCounter = stat && spec.CounterEnabled && el.LabelEnabled
             && !spec.CounterOutside
             && string.Equals(spec.CounterAlignMode, "center", StringComparison.OrdinalIgnoreCase)
             && !string.Equals(spec.CounterAlign, "top", StringComparison.OrdinalIgnoreCase)

@@ -144,7 +144,10 @@ public static partial class KeyViewerOverlay {
         public float X, Y, W, H;
         public float ZIndex;
         public string DisplayText;
+        public bool LabelEnabled = true;
+        public string PressedDisplayText = "";
         public bool CounterEnabled;
+        public bool CounterShowWhilePressed = true;
         public bool InlineStatCounter;
         public bool NoteEnabled;
         public bool IsStat;

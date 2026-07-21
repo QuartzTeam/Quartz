@@ -21,6 +21,14 @@ public static partial class KeyViewerOverlay {
             DmNoteSpec spec = box.Dm;
             box.Border.color = dmPressed ? spec.ActiveOutline : spec.Outline;
             box.Fill.color = dmPressed ? spec.ActiveBg : spec.Bg;
+            if(box.Label != null && spec.PressedDisplayText.Length > 0 && !spec.InlineStatCounter) {
+                box.Label.text = dmPressed ? spec.PressedDisplayText : spec.DisplayText;
+                box.GradLabelText = null;
+            }
+            if(box.Value != null && !spec.CounterShowWhilePressed && box.Value.gameObject.activeSelf == dmPressed) {
+                box.Value.gameObject.SetActive(!dmPressed);
+                if(box.Label != null) LayoutDmText(box.Label.rectTransform, spec, false, counterHidden: dmPressed);
+            }
             if(box.Label != null && (dmPressed ? spec.ActiveLabelGradient : spec.LabelGradient) == null) {
                 box.Label.color = dmPressed ? spec.ActiveText : spec.Text;
                 box.GradLabelText = null;

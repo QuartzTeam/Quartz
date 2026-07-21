@@ -21,28 +21,26 @@ internal sealed partial class KvInspector {
         }
         else if(AllGraphs(batch)) BuildGraph(root, tracked, batch);
         Header(root, "KVI_SEC_LABEL", "Label");
-        bool mixedLabel = Mixed(batch, el => el.DisplayText);
-        bool typed = false;
-        UIInput label = KvWidgets.Input(
-            GenerateUI.Row(root), "", mixedLabel ? "" : first.DisplayText,
-            v => {
-                typed = true;
-                Stream("kvi_display", () => {
-                    foreach(KvElement el in batch) el.DisplayText = v ?? "";
-                });
-            },
-            "Label (empty = automatic)",
-            MainCore.Spr.Get(UISprite.Text128), "kvi_display"
+        Flag(
+            root, tracked, "Show Label", "kvi_label_enabled", true,
+            batch, el => el.LabelEnabled, (el, v) => el.LabelEnabled = v, rebuild: true
+        ).Rect.AddToolTip(
+            "DESC_KVI_LABEL_ENABLED",
+            "Draw this element's label. With it off the counter spreads over the whole box, and the box, border and rain are untouched."
         );
-        label.InputField.characterLimit = 24;
-        label.InputField.onEndEdit.AddListener(v => {
-            if(mixedLabel && !typed) return;
-            Commit("kvi_display", () => {
-                foreach(KvElement el in batch) el.DisplayText = v ?? "";
-            });
-        });
-        tracked.Add(label);
-        if(AllOf(batch, KvElementKind.Key)) {
+        bool anyLabel = false;
+        foreach(KvElement el in batch)
+            if(el.LabelEnabled) anyLabel = true;
+        bool allKeys = AllOf(batch, KvElementKind.Key);
+        if(anyLabel) {
+            TextField(root, tracked, batch, "kvi_display", "Label (empty = automatic)",
+                el => el.DisplayText, (el, v) => el.DisplayText = v);
+            if(allKeys) {
+                TextField(root, tracked, batch, "kvi_display_pressed", "Label While Pressed (empty = same)",
+                    el => el.PressedText, (el, v) => el.PressedText = v);
+            }
+        }
+        if(allKeys) {
             Header(root, "KVI_SEC_COUNT", "Press Count");
             Flag(
                 root, tracked, "Count Toward Total", "kvi_countintotal", true,

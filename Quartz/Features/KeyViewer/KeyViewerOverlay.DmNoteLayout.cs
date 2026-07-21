@@ -33,19 +33,21 @@ public static partial class KeyViewerOverlay {
             CenterX = spec.TrackX + spec.NoteW * 0.5f,
             BoxW = spec.NoteW,
         };
-        box.Label = NewText(fill.transform, "Label", spec.DisplayText, spec.FontSize);
-        box.Label.enableAutoSizing = true;
-        box.Label.fontSizeMin = 0f;
-        box.Label.fontSizeMax = Mathf.Max(8, spec.FontSize);
-        if(spec.LabelFontStyles != FontStyles.Normal) box.Label.fontStyle |= spec.LabelFontStyles;
-        if(spec.InlineStatCounter) {
-            box.Label.text = DmInlineStatText(spec, spec.IsTotal ? totalCount : 0);
-            box.DmStatPrefix = ((spec.DisplayText ?? "") + "  ").ToCharArray();
-            LayoutDmText(box.Label.rectTransform, spec, false);
-            box.Label.alignment = TextAlignmentOptions.Center;
-        } else {
-            LayoutDmText(box.Label.rectTransform, spec, false);
-            box.Label.alignment = DmCounterAlignment(spec, false);
+        if(spec.LabelEnabled) {
+            box.Label = NewText(fill.transform, "Label", spec.DisplayText, spec.FontSize);
+            box.Label.enableAutoSizing = true;
+            box.Label.fontSizeMin = 0f;
+            box.Label.fontSizeMax = Mathf.Max(8, spec.FontSize);
+            if(spec.LabelFontStyles != FontStyles.Normal) box.Label.fontStyle |= spec.LabelFontStyles;
+            if(spec.InlineStatCounter) {
+                box.Label.text = DmInlineStatText(spec, spec.IsTotal ? totalCount : 0);
+                box.DmStatPrefix = ((spec.DisplayText ?? "") + "  ").ToCharArray();
+                LayoutDmText(box.Label.rectTransform, spec, false);
+                box.Label.alignment = TextAlignmentOptions.Center;
+            } else {
+                LayoutDmText(box.Label.rectTransform, spec, false);
+                box.Label.alignment = DmCounterAlignment(spec, false);
+            }
         }
         if(spec.CounterEnabled && !spec.InlineStatCounter) {
             Transform counterParent = spec.CounterOutside ? root : fill.transform;
@@ -67,14 +69,14 @@ public static partial class KeyViewerOverlay {
         ApplyBoxColors(box);
     }
     private const float LineHeight = 1.2f;
-    internal static void LayoutDmText(RectTransform rt, DmNoteSpec spec, bool counter) {
+    internal static void LayoutDmText(RectTransform rt, DmNoteSpec spec, bool counter, bool counterHidden = false) {
         bool top = string.Equals(spec.CounterAlign, "top", StringComparison.OrdinalIgnoreCase);
         bool bottom = string.Equals(spec.CounterAlign, "bottom", StringComparison.OrdinalIgnoreCase);
         bool left = string.Equals(spec.CounterAlign, "left", StringComparison.OrdinalIgnoreCase);
         bool right = string.Equals(spec.CounterAlign, "right", StringComparison.OrdinalIgnoreCase);
         bool between = string.Equals(spec.CounterAlignMode, "between", StringComparison.OrdinalIgnoreCase);
         float gap = Mathf.Clamp(spec.CounterGap, -64f, 64f);
-        if(!spec.CounterEnabled || spec.CounterOutside || spec.InlineStatCounter || string.IsNullOrWhiteSpace(spec.DisplayText)) {
+        if(!spec.CounterEnabled || counterHidden || spec.CounterOutside || spec.InlineStatCounter || string.IsNullOrWhiteSpace(spec.DisplayText)) {
             rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = Vector2.zero;
             rt.sizeDelta = new Vector2(spec.W - 4f, spec.H - 4f);
