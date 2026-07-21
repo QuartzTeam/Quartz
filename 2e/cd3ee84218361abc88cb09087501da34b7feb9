@@ -1,0 +1,19 @@
+Quartz/Features/Optimizer/HitSoundRenderer.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 20,229-236,239-248,355
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2ecd3ee84218361abc88cb09087501da34b7feb9",
+  "prompts": {},
+  "sessions": {
+    "s_a9c1ba50eef6d7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4ace9ac-b0a6-47cf-bf45-8230428d814f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
