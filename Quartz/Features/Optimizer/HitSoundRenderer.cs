@@ -17,7 +17,7 @@ internal static class HitSoundRenderer {
     private const double AheadSeconds = 12.0;
     private const double ClipTailSeconds = 0.03;
     private const double LateMarginSeconds = 0.05;
-    private static readonly int SegmentSamples = (int)Math.Ceiling((SegmentSeconds + ClipTailSeconds) * SampleRate);
+    private static readonly int SegmentSamples = (int)Math.Ceiling(SegmentSeconds * SampleRate);
     private static readonly int SegmentFloats = SegmentSamples * Channels;
     private const int MaxVoices = 32;
     private const int MaxQueuePerFrame = 2;
@@ -226,17 +226,26 @@ internal static class HitSoundRenderer {
     private static void BuildSegments(List<HitSoundEvent> events) {
         Segments.Clear();
         nextSegmentIndex = 0;
-        double start = events[0].Time;
-        SegmentJob current = new() { Start = start, End = start + SegmentSeconds };
-        Segments.Add(current);
+        double first = events[0].Time;
+        double last = events[events.Count - 1].Time;
+        long wanted = (long)Math.Floor((last - first) / SegmentSeconds) + 1;
+        int count = (int)Math.Min(200000L, Math.Max(1L, wanted));
+        for(int i = 0; i < count; i++) {
+            double start = first + i * SegmentSeconds;
+            Segments.Add(new SegmentJob { Start = start, End = start + SegmentSeconds });
+        }
         for(int i = 0; i < events.Count; i++) {
             HitSoundEvent ev = events[i];
-            while(ev.Time >= current.End && Segments.Count < 200000) {
-                start = current.End;
-                current = new SegmentJob { Start = start, End = start + SegmentSeconds };
-                Segments.Add(current);
-            }
-            current.Events.Add(ev);
+            int startIdx = (int)Math.Floor((ev.Time - first) / SegmentSeconds);
+            if(startIdx < 0) startIdx = 0;
+            if(startIdx >= count) continue;
+            double ringOut = ev.Data != null && ev.Data.Frequency > 0
+                ? (double)ev.Data.Samples / ev.Data.Frequency
+                : 0.0;
+            int endIdx = (int)Math.Floor((ev.Time + ringOut - first) / SegmentSeconds);
+            if(endIdx >= count) endIdx = count - 1;
+            if(endIdx < startIdx) endIdx = startIdx;
+            for(int s = startIdx; s <= endIdx; s++) Segments[s].Events.Add(ev);
         }
     }
     private static void EnsureRenderThread() {
@@ -343,7 +352,7 @@ internal static class HitSoundRenderer {
         int maxOutSamples = output.Length / Channels;
         int startSample = (int)Math.Round((hit.Time - segmentStart) * SampleRate);
         if(startSample >= maxOutSamples) return;
-        int copySamples = Math.Min(maxOutSamples - Math.Max(0, startSample),
+        int copySamples = Math.Min(maxOutSamples - startSample,
             (int)Math.Ceiling((double)data.Samples * SampleRate / data.Frequency));
         if(copySamples <= 0) return;
         for(int outSample = 0; outSample < copySamples; outSample++) {
