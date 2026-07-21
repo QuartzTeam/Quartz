@@ -1,0 +1,46 @@
+Quartz/Features/ProgressBar/ProgressBar.cs
+  s_6d144e1e6fccca::t_e1ed267a0d93ff 92-109,114-117,119-121,123,125
+  s_6d144e1e6fccca::t_710a961d9a47a2 21
+  s_6d144e1e6fccca::t_15fff9282bffb4 175
+  s_6d144e1e6fccca::t_e82c94e0cebda7 122,124
+  s_6d144e1e6fccca::t_320a608b9dff21 196-200
+  s_6d144e1e6fccca::t_8ba440c32a0d95 148
+  s_6d144e1e6fccca::t_a50caaeecaf746 66-75
+  s_6d144e1e6fccca::t_1beab9b16e1652 110-113
+Quartz/Features/ProgressBar/ProgressBarSettings.cs
+  s_6d144e1e6fccca::t_17f42e1281e92b 50-53
+  s_6d144e1e6fccca::t_e5b674b9fa49bb 43
+  s_6d144e1e6fccca::t_caaa67530cb1fa 80-83
+  s_6d144e1e6fccca::t_5769a011c0c316 72-73
+  s_6d144e1e6fccca::t_ce146407e5af13 7-11,14,21-24
+Quartz/Features/ProgressBar/SegmentedBarGraphic.cs
+  s_6d144e1e6fccca::t_4fd5448e72e4d4 17-18
+  s_6d144e1e6fccca::t_42e8572aff0d80 1-16,19-70
+Quartz/UI/Factory/Page/PageProgressBar.cs
+  s_6d144e1e6fccca::t_ecbcbf51093c41 64,67-68,83,94,103,107-109,116,120,127,130,137,140,147-184,187,194-202,206,209,216,225,239,256,266,281,291,295-297,299,301,305
+  s_6d144e1e6fccca::t_f24099eae88f97 43-63,65,69-82,84-93,95-102,104-106,110-115,117
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_6d144e1e6fccca::t_a0a26f6ec7b1cf 582
+  s_6d144e1e6fccca::t_db814d1c06d8bf 156-157
+  s_6d144e1e6fccca::t_ac99293ed3a6b3 597-606
+Quartz/Resource/Export/Lang/en-US.json
+  s_6d144e1e6fccca::t_6192fba4d248d7 597-606
+  s_6d144e1e6fccca::t_a0da5ebd33477f 582
+  s_6d144e1e6fccca::t_335380ed10d6bd 156-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ad629630d2cebac4e64e05da352986f8466e2c33",
+  "prompts": {},
+  "sessions": {
+    "s_6d144e1e6fccca": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0c82240e-cee3-460e-a838-c633cd223c11",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
