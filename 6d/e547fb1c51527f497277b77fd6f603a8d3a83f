@@ -1,0 +1,53 @@
+Quartz/Features/KeyViewer/Layout/KvStore.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 8,168,170,204,206-207,221,228-233,241,243,247,253,255,257-258,263-267,273-274,276-277,312-317,335,340,346,348-352,354
+Quartz/Features/KeyViewer/Layout/KvExportShaping.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 1-135
+Quartz/Features/KeyViewer/Layout/KvStore.Transfer.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 1-82
+Quartz.Tests/Program.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 20-22
+Quartz.Tests/Features/KeyViewer/KvDocumentTests.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 306,333-337,420-510
+Quartz/Features/KeyViewer/Layout/KvElement.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 20,23,32-41
+Quartz/UI/Factory/Page/PageKeyViewer.Editor.cs
+  s_a9c1ba50eef6d7::t_f151c6af2ce0b6 87-94,99-122,124,127-133,142-143,152,155
+Quartz.Tests/Quartz.Tests.csproj
+  s_cc9ec3350fe20f::t_5dce0079c01d67 19
+Quartz/Resource/Export/Lang/en-US.json
+  s_8d101ed8af3510::t_15add3771e71c1 353,1149-1161,1164-1169
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_8d101ed8af3510::t_3232c6eaaa6031 353,1149-1161,1164-1169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6de547fb1c51527f497277b77fd6f603a8d3a83f",
+  "prompts": {},
+  "sessions": {
+    "s_8d101ed8af3510": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a142f204-4352-4ebc-9c45-063a817eee85",
+        "model": "unknown"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_a9c1ba50eef6d7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4ace9ac-b0a6-47cf-bf45-8230428d814f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    },
+    "s_cc9ec3350fe20f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f2b5795-8afe-4b57-85df-b9462c7a0a93",
+        "model": "unknown"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
