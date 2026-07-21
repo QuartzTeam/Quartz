@@ -56,7 +56,6 @@ public static class MenuFactory {
             ("General", "TWEAKS_GENERAL", (int)OriginalMenuState.TweaksGeneral),
             ("Optimizer", "SECTION_OPTIMIZER", (int)OriginalMenuState.TweaksOptimizer),
             ("Main Menu", "SECTION_MAIN_MENU", (int)OriginalMenuState.TweaksMainMenu),
-            ("Detailed Results", "SECTION_DETAILED_RESULTS", (int)OriginalMenuState.TweaksResults),
         ],
         [(int)OriginalMenuState.EditorTileReadout] = [
             ("Selected Tile Readout", "SECTION_SELECTED_TILE_READOUT", (int)OriginalMenuState.EditorTileReadout),

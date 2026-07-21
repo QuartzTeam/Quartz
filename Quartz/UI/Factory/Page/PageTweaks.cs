@@ -161,47 +161,4 @@ internal static class PageTweaks {
         );
         highBpm.Format = "0";
     }
-    public static void ResultsPage(RectTransform parent) {
-        Tweaks.EnsureConf();
-        TweaksSettings conf = Tweaks.Conf;
-        TweaksSettings def = new();
-        RectTransform content = Quartz.UI.Factory.PageFactory.CreateScrollablePage(parent);
-        var resultsSec = GenerateUI.FlatSection(content.transform, "Detailed Results");
-        GenerateUI.ToggleTip(
-            resultsSec.Body,
-            def.HideResultXAccuracy,
-            conf.HideResultXAccuracy,
-            v => { conf.HideResultXAccuracy = v; Tweaks.Save(); },
-            "Hide X-Accuracy",
-            "tw_result_xacc",
-            "Removes the X-Accuracy row from the detailed results screen."
-        );
-        GenerateUI.ToggleTip(
-            resultsSec.Body,
-            def.HideResultAccuracy,
-            conf.HideResultAccuracy,
-            v => { conf.HideResultAccuracy = v; Tweaks.Save(); },
-            "Hide Accuracy",
-            "tw_result_acc",
-            "Removes the Accuracy row from the detailed results screen."
-        );
-        GenerateUI.ToggleTip(
-            resultsSec.Body,
-            def.HideResultCheckpoints,
-            conf.HideResultCheckpoints,
-            v => { conf.HideResultCheckpoints = v; Tweaks.Save(); },
-            "Hide Checkpoints Used",
-            "tw_result_checkpoints",
-            "Removes the Checkpoints Used row from the detailed results screen."
-        );
-        GenerateUI.ToggleTip(
-            resultsSec.Body,
-            def.HideResultMaximumUsedKeys,
-            conf.HideResultMaximumUsedKeys,
-            v => { conf.HideResultMaximumUsedKeys = v; Tweaks.Save(); },
-            "Hide Maximum Used Keys",
-            "tw_result_maxkeys",
-            "Removes the Maximum Used Keys row from the detailed results screen."
-        );
-    }
 }

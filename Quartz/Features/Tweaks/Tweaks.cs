@@ -21,57 +21,9 @@ public static partial class Tweaks {
     private static bool ShouldDisableTileHitGlow => Enabled && Conf.DisableTileHitGlow;
     private static bool ShouldRemovePlanetGlow => Enabled && Conf.RemovePlanetGlow;
     private static bool ShouldDisableAutoPause => Enabled && Conf.DisableAutoPause;
-    private static bool ShouldHideAnyDetailedResultLabel => Enabled && (
-        Conf.HideResultXAccuracy ||
-        Conf.HideResultAccuracy ||
-        Conf.HideResultCheckpoints ||
-        Conf.HideResultMaximumUsedKeys
-    );
     private static bool ShouldBlockMouseWheelScroll =>
         Enabled && Conf.BlockMouseWheelScrollWhilePlaying && GameStats.InGame;
     private static bool ShouldDisableMenuMusic => Enabled && Conf.DisableMenuMusic;
-    internal static string FilterDetailedResults(string result) {
-        if(!ShouldHideAnyDetailedResultLabel || string.IsNullOrEmpty(result)) return result;
-        List<string> labels = [];
-        AddResultLabel(labels, Conf.HideResultXAccuracy, "xAccuracy");
-        AddResultLabel(labels, Conf.HideResultAccuracy, "accuracy");
-        AddResultLabel(labels, Conf.HideResultCheckpoints, "checkpoints");
-        AddResultLabel(labels, Conf.HideResultCheckpoints, "practiceAttempts");
-        AddResultLabel(labels, Conf.HideResultMaximumUsedKeys, "maximumUsedKeys");
-        if(labels.Count == 0) return result;
-        string[] rows = result.Split('\n');
-        List<string> kept = new(rows.Length);
-        for(int i = 0; i < rows.Length; i++) {
-            string filtered = FilterDetailedResultRow(rows[i], labels);
-            if(filtered != null) kept.Add(filtered);
-        }
-        return string.Join("\n", kept.ToArray());
-    }
-    private static void AddResultLabel(List<string> labels, bool enabled, string key) {
-        if(!enabled) return;
-        try {
-            string label = RDString.Get("status.results." + key);
-            if(!string.IsNullOrEmpty(label)) labels.Add(label + ": ");
-        } catch {
-        }
-    }
-    private static string FilterDetailedResultRow(string row, List<string> labels) {
-        if(string.IsNullOrEmpty(row)) return row;
-        string[] cells = row.Split(new[] { "     " }, StringSplitOptions.None);
-        List<string> kept = new(cells.Length);
-        for(int i = 0; i < cells.Length; i++) {
-            if(!CellMatchesLabel(cells[i], labels)) kept.Add(cells[i]);
-        }
-        if(kept.Count == 0) return null;
-        return string.Join("     ", kept.ToArray());
-    }
-    private static bool CellMatchesLabel(string cell, List<string> labels) {
-        string trimmed = cell.TrimStart();
-        for(int i = 0; i < labels.Count; i++) {
-            if(trimmed.StartsWith(labels[i], StringComparison.Ordinal)) return true;
-        }
-        return false;
-    }
     private static bool menuFast;
     private static bool ShouldCustomMenuBpm => Enabled && Conf.MenuBpmEnabled;
     internal static void ApplyInitialMenuBpm() {

@@ -43,7 +43,6 @@ public enum OriginalMenuState {
     TweaksGeneral,
     TweaksOptimizer,
     TweaksMainMenu,
-    TweaksResults,
     EditorTileReadout,
     EditorBga,
     EditorFlipRotate,

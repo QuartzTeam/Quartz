@@ -88,7 +88,6 @@ internal static class PageSearch {
         OriginalMenuState.TweaksGeneral => GenerateUI.Tr("TWEAKS_GENERAL", "General"),
         OriginalMenuState.TweaksOptimizer => GenerateUI.Tr("SECTION_OPTIMIZER", "Optimizer"),
         OriginalMenuState.TweaksMainMenu => GenerateUI.Tr("SECTION_MAIN_MENU", "Main Menu"),
-        OriginalMenuState.TweaksResults => GenerateUI.Tr("SECTION_DETAILED_RESULTS", "Detailed Results"),
         OriginalMenuState.EditorTileReadout => GenerateUI.Tr("SECTION_SELECTED_TILE_READOUT", "Selected Tile Readout"),
         OriginalMenuState.EditorBga => GenerateUI.Tr("SECTION_BGA_MOD", "BGA Mod"),
         OriginalMenuState.EditorFlipRotate => GenerateUI.Tr("SECTION_FLIP_ROTATE_TILES", "Flip & Rotate Tiles"),

@@ -177,8 +177,4 @@ public static partial class Tweaks {
             }
         }
     }
-    [HarmonyPatch(typeof(DetailedResults), "GenerateResults")]
-    private static class DetailedResultsGeneratePatch {
-        private static void Postfix(ref string __result) => __result = FilterDetailedResults(__result);
-    }
 }

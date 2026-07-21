@@ -13,10 +13,6 @@ public sealed class TweaksSettings : ISettingsFile {
     public bool MenuBpmEnabled = false;
     public float MenuSlowBpm = 100f;
     public float MenuHighBpm = 200f;
-    public bool HideResultXAccuracy = true;
-    public bool HideResultAccuracy = true;
-    public bool HideResultCheckpoints = true;
-    public bool HideResultMaximumUsedKeys = true;
     public JToken Serialize() =>
         new JObject {
             [nameof(RemoveAllCheckpoints)] = RemoveAllCheckpoints,
@@ -29,10 +25,6 @@ public sealed class TweaksSettings : ISettingsFile {
             [nameof(MenuBpmEnabled)] = MenuBpmEnabled,
             [nameof(MenuSlowBpm)] = MenuSlowBpm,
             [nameof(MenuHighBpm)] = MenuHighBpm,
-            [nameof(HideResultXAccuracy)] = HideResultXAccuracy,
-            [nameof(HideResultAccuracy)] = HideResultAccuracy,
-            [nameof(HideResultCheckpoints)] = HideResultCheckpoints,
-            [nameof(HideResultMaximumUsedKeys)] = HideResultMaximumUsedKeys,
         };
     public void Deserialize(JToken token) {
         RemoveAllCheckpoints = IOUtils.Read(token, nameof(RemoveAllCheckpoints), RemoveAllCheckpoints);
@@ -45,9 +37,5 @@ public sealed class TweaksSettings : ISettingsFile {
         MenuBpmEnabled = IOUtils.Read(token, nameof(MenuBpmEnabled), MenuBpmEnabled);
         MenuSlowBpm = IOUtils.Read(token, nameof(MenuSlowBpm), MenuSlowBpm);
         MenuHighBpm = IOUtils.Read(token, nameof(MenuHighBpm), MenuHighBpm);
-        HideResultXAccuracy = IOUtils.Read(token, nameof(HideResultXAccuracy), HideResultXAccuracy);
-        HideResultAccuracy = IOUtils.Read(token, nameof(HideResultAccuracy), HideResultAccuracy);
-        HideResultCheckpoints = IOUtils.Read(token, nameof(HideResultCheckpoints), HideResultCheckpoints);
-        HideResultMaximumUsedKeys = IOUtils.Read(token, nameof(HideResultMaximumUsedKeys), HideResultMaximumUsedKeys);
     }
 }
