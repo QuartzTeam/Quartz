@@ -53,6 +53,7 @@ public sealed partial class KeyViewerSettings : ISettingsFile {
             [nameof(DmShortNoteMinLengthPx)] = DmShortNoteMinLengthPx,
             [nameof(DmKeyDisplayDelayMs)] = DmKeyDisplayDelayMs,
             [nameof(DmMinLitMs)] = DmMinLitMs,
+            [nameof(IndependentInput)] = IndependentInput,
             [nameof(DmCssEnabled)] = DmCssEnabled,
             [nameof(DmCssText)] = DmCssText,
             [nameof(DmCssPath)] = DmCssPath,
@@ -171,6 +172,7 @@ public sealed partial class KeyViewerSettings : ISettingsFile {
         DmShortNoteMinLengthPx = Mathf.Clamp(IOUtils.Read(token, nameof(DmShortNoteMinLengthPx), DmShortNoteMinLengthPx), 1f, 9999f);
         DmKeyDisplayDelayMs = Mathf.Clamp(IOUtils.Read(token, nameof(DmKeyDisplayDelayMs), DmKeyDisplayDelayMs), 0f, 9999f);
         DmMinLitMs = Mathf.Clamp(IOUtils.Read(token, nameof(DmMinLitMs), DmMinLitMs), 0f, 500f);
+        IndependentInput = IOUtils.Read(token, nameof(IndependentInput), IndependentInput);
         DmCssEnabled = IOUtils.Read(token, nameof(DmCssEnabled), DmCssEnabled);
         DmCssText = IOUtils.Read(token, nameof(DmCssText), DmCssText) ?? "";
         DmCssPath = IOUtils.Read(token, nameof(DmCssPath), DmCssPath) ?? "";
