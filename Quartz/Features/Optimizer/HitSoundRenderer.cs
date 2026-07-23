@@ -11,14 +11,14 @@ using UnityEngine.SceneManagement;
 using Quartz.Compat.Game;
 namespace Quartz.Features.Optimizer;
 internal static class HitSoundRenderer {
-    private const int SampleRate = 48000;
+    private static int SampleRate = 48000;
     private const int Channels = 2;
     private const double SegmentSeconds = 0.5;
     private const double AheadSeconds = 12.0;
     private const double ClipTailSeconds = 0.03;
     private const double LateMarginSeconds = 0.05;
-    private static readonly int SegmentSamples = (int)Math.Ceiling(SegmentSeconds * SampleRate);
-    private static readonly int SegmentFloats = SegmentSamples * Channels;
+    private static int SegmentSamples = (int)Math.Ceiling(SegmentSeconds * 48000);
+    private static int SegmentFloats = SegmentSamples * Channels;
     private const int MaxVoices = 32;
     private const int MaxQueuePerFrame = 2;
     private const int MaxApplyPerFrame = 2;
@@ -115,10 +115,21 @@ internal static class HitSoundRenderer {
         sceneHookInstalled = true;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
+    private static void EnsureAudioFormat() {
+        int rate = AudioSettings.outputSampleRate;
+        if(rate <= 0) rate = 48000;
+        if(rate == SampleRate && SegmentSamples > 0) return;
+        SampleRate = rate;
+        SegmentSamples = (int)Math.Ceiling(SegmentSeconds * SampleRate);
+        SegmentFloats = SegmentSamples * Channels;
+        lock(bufferPoolLock) bufferPool.Clear();
+        DestroyPool();
+    }
     private static void OnSceneUnloaded(Scene scene) => StopAll("scene unloaded", destroyPool: true);
     internal static void Capture(scrConductor conductor) {
         if(conductor == null || !ReflectionReady) return;
         try {
+            EnsureAudioFormat();
             if(HitSoundsDataField.GetValue(conductor) is not System.Collections.IList list) return;
             if(list.Count == 0) { StopAll("no hit sounds"); return; }
             bool fast = EnsureCaptureGetters();
