@@ -14,6 +14,7 @@ public sealed class TufPackService : IRuntimeService {
     public TufPackListState DetailState { get; private set; } = TufPackListState.Idle;
     public string ListError { get; private set; } = "";
     public string DetailError { get; private set; } = "";
+    public bool OfflineError { get; private set; }
     public string Query { get; private set; } = "";
     public TufPackSort Sort { get; private set; } = TufPackSort.Recent;
     public bool Ascending { get; private set; }
@@ -59,6 +60,7 @@ public sealed class TufPackService : IRuntimeService {
         appendFailed = false;
         ListState = TufPackListState.Loading;
         ListError = "";
+        OfflineError = false;
         Notify();
         debounce = new CancellationTokenSource();
         DebouncedRefresh(debounce.Token);
@@ -109,19 +111,25 @@ public sealed class TufPackService : IRuntimeService {
             ListState = TufPackListState.Loading;
             ListError = "";
         }
+        OfflineError = false;
         Notify();
         try {
             TufPacksPage page = await api.FetchPacksAsync(query, sort, ascending, append ? nextOffset : 0, PageSize, token);
             MainThread.Enqueue(() => ApplyPacks(page, append, token, generation, query, sort, ascending));
-        } catch(OperationCanceledException) { }
+        } catch(OperationCanceledException) when(token.IsCancellationRequested) { }
         catch(Exception e) {
+            bool offline = e is OperationCanceledException || TufNetworkPolicy.IsOfflineError(e);
+            string message = e is OperationCanceledException
+                ? MainCore.Tr.Get("TUF_TIMEOUT", "The request to TUF timed out.")
+                : e.Message;
             MainThread.Enqueue(() => {
                 if(!ListRequestIsCurrent(token, generation, query, sort, ascending)) return;
                 MainCore.Log.Wrn("[TUF] pack list could not be loaded: " + e);
                 LoadingMore = false;
                 appendFailed = append;
                 ListState = TufPackListState.Error;
-                ListError = e.Message;
+                ListError = message;
+                OfflineError = offline;
                 Notify();
             });
         }
@@ -159,6 +167,7 @@ public sealed class TufPackService : IRuntimeService {
         packLevels.Clear();
         DetailState = TufPackListState.Loading;
         DetailError = "";
+        OfflineError = false;
         Notify();
         LoadPackLevels(pack, token, generation);
     }
@@ -167,13 +176,18 @@ public sealed class TufPackService : IRuntimeService {
             difficulties ??= await api.FetchDifficultiesAsync(token);
             IReadOnlyList<TufPackItem> items = await api.FetchPackItemsAsync(pack.Id, difficulties, token);
             MainThread.Enqueue(() => ApplyPackLevels(pack, items, token, generation));
-        } catch(OperationCanceledException) { }
+        } catch(OperationCanceledException) when(token.IsCancellationRequested) { }
         catch(Exception e) {
+            bool offline = e is OperationCanceledException || TufNetworkPolicy.IsOfflineError(e);
+            string message = e is OperationCanceledException
+                ? MainCore.Tr.Get("TUF_TIMEOUT", "The request to TUF timed out.")
+                : e.Message;
             MainThread.Enqueue(() => {
                 if(!DetailRequestIsCurrent(token, generation, pack)) return;
                 MainCore.Log.Wrn($"[TUF] pack {pack.Id} levels could not be loaded: {e}");
                 DetailState = TufPackListState.Error;
-                DetailError = e.Message;
+                DetailError = message;
+                OfflineError = offline;
                 Notify();
             });
         }
@@ -209,6 +223,7 @@ public sealed class TufPackService : IRuntimeService {
         packLevels.Clear();
         DetailState = TufPackListState.Idle;
         DetailError = "";
+        OfflineError = false;
         Notify();
     }
     public void RetryPackLevels() {

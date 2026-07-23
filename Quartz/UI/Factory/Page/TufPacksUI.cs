@@ -207,7 +207,8 @@ internal sealed class TufPacksView : MonoBehaviour {
         if(service.ListState == TufPackListState.Loading) {
             AddLoadingStatus(Tr("TUF_PACK_LOADING", "Loading packs…"));
         } else if(service.ListState == TufPackListState.Error && service.Packs.Count == 0) {
-            AddStatus(Tr("TUF_PACK_API_ERROR", "Could not load TUF packs.") + "\n" + service.ListError, true, service.RefreshPacks);
+            if(service.OfflineError) AddOfflineStatus(service.ListError, service.RefreshPacks);
+            else AddStatus(Tr("TUF_PACK_API_ERROR", "Could not load TUF packs.") + "\n" + service.ListError, true, service.RefreshPacks);
         } else if(service.ListState == TufPackListState.Empty) {
             AddStatus(Tr("TUF_PACK_EMPTY", "No packs matched your search."), false, null);
         } else {
@@ -229,7 +230,8 @@ internal sealed class TufPacksView : MonoBehaviour {
         if(service.DetailState == TufPackListState.Loading) {
             AddLoadingStatus(Tr("TUF_PACK_LOADING_LEVELS", "Loading pack levels…"));
         } else if(service.DetailState == TufPackListState.Error && service.PackLevels.Count == 0) {
-            AddStatus(Tr("TUF_PACK_LEVELS_ERROR", "Could not load this pack.") + "\n" + service.DetailError, true, service.RetryPackLevels);
+            if(service.OfflineError) AddOfflineStatus(service.DetailError, service.RetryPackLevels);
+            else AddStatus(Tr("TUF_PACK_LEVELS_ERROR", "Could not load this pack.") + "\n" + service.DetailError, true, service.RetryPackLevels);
         } else if(service.DetailState == TufPackListState.Empty) {
             AddStatus(Tr("TUF_PACK_NO_LEVELS", "This pack has no playable levels."), false, null);
         } else {
@@ -333,7 +335,7 @@ internal sealed class TufPacksView : MonoBehaviour {
     }
     private string BuildSignature() {
         StringBuilder sb = new();
-        sb.Append(ShowPreviews ? 'P' : 'p');
+        sb.Append(ShowPreviews ? 'P' : 'p').Append(service.OfflineError ? 'O' : 'o');
         if(service.SelectedPack != null) {
             sb.Append("D:").Append(service.SelectedPack.Id).Append('|')
                 .Append((int)service.DetailState).Append('|').Append(service.IsBusy ? '1' : '0').Append('|')
@@ -523,6 +525,29 @@ internal sealed class TufPacksView : MonoBehaviour {
         spinnerSize.minHeight = spinnerSize.preferredHeight = 26f;
         TMP_Text label = Text(row, message, 18f, TextAlignmentOptions.Center);
         label.color = new(1f, 1f, 1f, 0.48f);
+    }
+    private void AddOfflineStatus(string detail, Action retry) {
+        int installed = TufService.Instance?.InstalledCount ?? 0;
+        AddStatus(Tr("TUF_OFFLINE", "TUF could not be reached — you may be offline.") + "\n" + detail, false, null, 78f);
+        RectTransform row = FixedRow("Offline Actions", 58f);
+        HorizontalLayoutGroup layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
+        layout.spacing = 10f;
+        layout.childControlWidth = true;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = true;
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.padding = new RectOffset(0, 0, 6, 6);
+        (Image switchChip, TMP_Text switchLabel) = Chip(row, "", 264f, () => {
+            TufService.Instance?.ShowInstalledLevels();
+            MenuFactory.SetState((int)OriginalMenuState.NostalgiaTuf);
+        });
+        switchChip.color = installed > 0 ? UIColors.ObjectActive : UIColors.ObjectBG;
+        switchLabel.text = installed > 0
+            ? string.Format(Tr("TUF_OFFLINE_SWITCH", "Switch to Installed ({0})"), installed)
+            : Tr("TUF_OFFLINE_SWITCH_EMPTY", "Switch to Installed");
+        (Image _, TMP_Text retryLabel) = Chip(row, Tr("TUF_RETRY", "Retry"), 96f, retry);
+        retryLabel.color = new(1f, 1f, 1f, 0.82f);
     }
     private void AddStatus(string message, bool button, Action action, float height = 70f) {
         RectTransform row = FixedRow("Status", height);

@@ -18,6 +18,12 @@ public static class TufNetworkPolicy {
         if(addresses.Length == 0 || addresses.Any(IsNonPublic))
             throw new InvalidDataException("Download host resolved to a non-public address.");
     }
+    public static bool IsOfflineError(Exception error) {
+        for(Exception current = error; current != null; current = current.InnerException) {
+            if(current is SocketException or WebException or TimeoutException or IOException) return true;
+        }
+        return false;
+    }
     public static bool IsNonPublic(IPAddress address) {
         if(IPAddress.IsLoopback(address)) return true;
         if(address.IsIPv4MappedToIPv6) return IsNonPublic(address.MapToIPv4());

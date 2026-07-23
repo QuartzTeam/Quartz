@@ -10,6 +10,7 @@ public sealed class TufService : IRuntimeService {
     public IReadOnlyList<TufLevel> Levels => levels;
     public TufListState State { get; private set; } = TufListState.Idle;
     public string Error { get; private set; } = "";
+    public bool OfflineError { get; private set; }
     public string Query { get; private set; } = "";
     public TufSort Sort { get; private set; } = TufSort.Recent;
     public bool Ascending { get; private set; }
@@ -17,6 +18,8 @@ public sealed class TufService : IRuntimeService {
     public bool LoadingMore { get; private set; }
     public bool IsBusy => actions?.IsBusy ?? false;
     public bool ShowInstalled { get; private set; }
+    public int InstalledCount => index?.Data.Count ?? 0;
+    public int InfoRevision { get; private set; }
     internal TufDownloadService Downloads => downloads;
     internal TufLevelLauncher Launcher => launcher;
     public TufDifficultyFilter DifficultyFilter { get; private set; } = TufDifficultyFilter.AllRanked;
@@ -85,6 +88,7 @@ public sealed class TufService : IRuntimeService {
         }
         State = TufListState.Loading;
         Error = "";
+        OfflineError = false;
         Notify();
         debounce = new CancellationTokenSource();
         DebouncedRefresh(debounce.Token);
@@ -122,6 +126,10 @@ public sealed class TufService : IRuntimeService {
         nextOffset = 0;
         appendFailed = false;
         Refresh();
+    }
+    public void ShowInstalledLevels() {
+        if(!ShowInstalled) ToggleInstalled();
+        else Refresh();
     }
     public void SetDifficultyRange(int minIndex, int maxIndex) =>
         SetDifficultyFilter(DifficultyFilter.WithRange(minIndex, maxIndex));
@@ -250,6 +258,7 @@ public sealed class TufService : IRuntimeService {
         LoadingMore = false;
         appendFailed = false;
         Error = "";
+        OfflineError = false;
         State = levels.Count == 0 ? TufListState.Empty : TufListState.Ready;
         Notify();
     }
@@ -428,18 +437,24 @@ public sealed class TufService : IRuntimeService {
             State = TufListState.Loading;
             Error = "";
         }
+        OfflineError = false;
         Notify();
         try {
             TufPage page = await api.FetchAsync(query, sort, ascending, append ? nextOffset : 0, filter, token);
             MainThread.Enqueue(() => ApplyPage(page, append, token, generation, query, sort, ascending, filter));
-        } catch(OperationCanceledException) { }
+        } catch(OperationCanceledException) when(token.IsCancellationRequested) { }
         catch(Exception e) {
+            bool offline = e is OperationCanceledException || TufNetworkPolicy.IsOfflineError(e);
+            string message = e is OperationCanceledException
+                ? MainCore.Tr.Get("TUF_TIMEOUT", "The request to TUF timed out.")
+                : e.Message;
             MainThread.Enqueue(() => {
                 if(!RequestIsCurrent(token, generation, query, sort, ascending, filter)) return;
                 LoadingMore = false;
                 appendFailed = append;
                 State = TufListState.Error;
-                Error = e.Message;
+                Error = message;
+                OfflineError = offline;
                 Notify();
             });
         }

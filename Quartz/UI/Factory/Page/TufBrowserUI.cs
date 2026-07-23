@@ -326,7 +326,8 @@ internal sealed class TufBrowserView : MonoBehaviour {
         if(service.State == TufListState.Loading) {
             AddLoadingStatus(Tr("TUF_LOADING", "Loading levels…"));
         } else if(service.State == TufListState.Error && service.Levels.Count == 0) {
-            AddStatus(Tr("TUF_API_ERROR", "Could not load TUF levels.") + "\n" + service.Error, true, service.Refresh);
+            if(service.OfflineError && !service.ShowInstalled) AddOfflineStatus();
+            else AddStatus(Tr("TUF_API_ERROR", "Could not load TUF levels.") + "\n" + service.Error, true, service.Refresh);
         } else if(service.State == TufListState.Empty) {
             AddStatus(EmptyMessage(), false, null);
         } else {
@@ -354,7 +355,9 @@ internal sealed class TufBrowserView : MonoBehaviour {
             .Append(service.LoadingMore ? '1' : '0')
             .Append(service.IsBusy ? '1' : '0')
             .Append(service.ShowInstalled ? '1' : '0')
-            .Append(service.ShowPreviews ? '1' : '0').Append('|');
+            .Append(service.OfflineError ? '1' : '0')
+            .Append(service.ShowPreviews ? '1' : '0').Append('|')
+            .Append(service.InfoRevision).Append('|');
         foreach(TufLevel level in service.Levels)
             sb.Append(level.Id).Append(':').Append((int)level.State)
                 .Append(level.InstallFolder == null ? '-' : '+')
@@ -577,6 +580,24 @@ internal sealed class TufBrowserView : MonoBehaviour {
         spinnerSize.minHeight = spinnerSize.preferredHeight = 26f;
         TMP_Text label = Text(row, message, 18f, TextAlignmentOptions.Center);
         label.color = new(1f, 1f, 1f, 0.48f);
+    }
+    private void AddOfflineStatus() {
+        int installed = service.InstalledCount;
+        AddStatus(Tr("TUF_OFFLINE", "TUF could not be reached — you may be offline.") + "\n" + service.Error, false, null, 78f);
+        RectTransform row = FixedRow("Offline Actions", 58f);
+        HorizontalLayoutGroup layout = AddHorizontal(row, 10f);
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.padding = new RectOffset(0, 0, 6, 6);
+        (Image switchChip, TMP_Text switchLabel) = Chip(row, "", 264f, () => {
+            DisarmDelete();
+            service.ShowInstalledLevels();
+        });
+        switchChip.color = installed > 0 ? UIColors.ObjectActive : UIColors.ObjectBG;
+        switchLabel.text = installed > 0
+            ? string.Format(Tr("TUF_OFFLINE_SWITCH", "Switch to Installed ({0})"), installed)
+            : Tr("TUF_OFFLINE_SWITCH_EMPTY", "Switch to Installed");
+        (Image _, TMP_Text retryLabel) = Chip(row, Tr("TUF_RETRY", "Retry"), 96f, service.Refresh);
+        retryLabel.color = new(1f, 1f, 1f, 0.82f);
     }
     private void AddStatus(string message, bool button, Action action, float height = 70f) {
         RectTransform row = FixedRow("Status", height);
