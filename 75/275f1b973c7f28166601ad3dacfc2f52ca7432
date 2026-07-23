@@ -1,0 +1,57 @@
+Quartz.Tests/Program.cs
+  s_9f406ca5ec353a::t_551d075a0b3115 10-13
+Quartz/Resource/Export/Lang/en-US.json
+  s_9f406ca5ec353a::t_4834bc585739f5 1235-1245
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_9f406ca5ec353a::t_b808953196a145 1235-1245
+Quartz/UI/Generator/GenerateUI.Collapsible.cs
+  s_9f406ca5ec353a::t_5724a45f34c821 44
+Quartz/UI/UICore.cs
+  s_9f406ca5ec353a::t_f2ee11f82ce21e 64
+agents/project.md
+  s_9f406ca5ec353a::t_a799faa6a895a4 214
+Quartz/Resource/ResourceManager.cs
+  s_9f406ca5ec353a::t_4021bf623263c9 190
+  s_9f406ca5ec353a::t_6ea3067a2f697a 53
+Quartz/UI/Factory/Page/PageHelp.cs
+  s_9f406ca5ec353a::t_fd3a339deb3b58 1-108
+Quartz/UI/Factory/Page/PageSearch.cs
+  s_9f406ca5ec353a::t_a20448506eb3f7 104
+Quartz/Resource/SpriteManager.cs
+  s_9f406ca5ec353a::t_288cd70a8792a1 46
+  s_9f406ca5ec353a::t_bdf259818be2e1 260-261
+Quartz/UI/Factory/MenuFactory.cs
+  s_9f406ca5ec353a::t_c19bc1bbf10757 123
+  s_9f406ca5ec353a::t_8b24f50797f732 77-79
+Quartz/Core/Service/PathService.cs
+  s_9f406ca5ec353a::t_d04b0802cec45c 14
+Quartz/IO/FaqDocument.cs
+  s_9f406ca5ec353a::t_262d0b66eb3d84 1-136
+Quartz.Tests/Quartz.Tests.csproj
+  s_9f406ca5ec353a::t_6f3c44e352e5fc 15
+Quartz/IO/FaqFile.cs
+  s_9f406ca5ec353a::t_ebb9d1d9585049 12,17,26
+  s_9f406ca5ec353a::t_e4ef97b47f6224 1-11,13-16,18-25,27-47
+Quartz/Localization/TextLocalization.cs
+  s_9f406ca5ec353a::t_93314f7200aa25 38,41
+Quartz/UI/Factory/PageFactory.cs
+  s_9f406ca5ec353a::t_049c5f83e30f9c 74
+Quartz.Tests/IO/FaqDocumentTests.cs
+  s_9f406ca5ec353a::t_e6e688c527b702 1-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "75275f1b973c7f28166601ad3dacfc2f52ca7432",
+  "prompts": {},
+  "sessions": {
+    "s_9f406ca5ec353a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "422e54f8-fbc8-468e-be16-a1b456592612",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}

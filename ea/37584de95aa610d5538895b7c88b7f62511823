@@ -1,0 +1,21 @@
+Quartz/Resource/Export/Lang/en-US.json
+  s_9f406ca5ec353a::t_4834bc585739f5 1234
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_9f406ca5ec353a::t_b808953196a145 1234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ea37584de95aa610d5538895b7c88b7f62511823",
+  "prompts": {},
+  "sessions": {
+    "s_9f406ca5ec353a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "422e54f8-fbc8-468e-be16-a1b456592612",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}

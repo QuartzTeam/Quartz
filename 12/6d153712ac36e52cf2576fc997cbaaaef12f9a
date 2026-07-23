@@ -1,0 +1,28 @@
+Quartz/Features/Practice/PracticeDifficulty.cs
+  s_c946fbec1e2d3a::t_171ab310076ae9 30-39,42-55
+Quartz/Features/Practice/PracticeOverlay.cs
+  s_c946fbec1e2d3a::t_e1cefaf015b8c1 80-81
+  s_c946fbec1e2d3a::t_e7e96199f447e1 91
+Quartz/Resource/Export/Lang/ko-KR.json
+  s_c946fbec1e2d3a::t_267b47eeb769bf 629
+Quartz/UI/Factory/Page/PageGameplay.Practice.cs
+  s_c946fbec1e2d3a::t_267b47eeb769bf 27
+Quartz/Resource/Export/Lang/en-US.json
+  s_c946fbec1e2d3a::t_267b47eeb769bf 629
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "126d153712ac36e52cf2576fc997cbaaaef12f9a",
+  "prompts": {},
+  "sessions": {
+    "s_c946fbec1e2d3a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "059ed993-d3e5-43a3-9504-59518050ddea",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
