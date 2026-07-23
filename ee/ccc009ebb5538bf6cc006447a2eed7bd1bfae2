@@ -1,0 +1,19 @@
+Quartz/UI/Generator/GenerateUI.cs
+  s_d43016dceb4f37::t_3a72ec13e4cba6 503-504
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "eeccc009ebb5538bf6cc006447a2eed7bd1bfae2",
+  "prompts": {},
+  "sessions": {
+    "s_d43016dceb4f37": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "233c31ad-4b92-4a3a-a330-7b10afa16176",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "koren <131921956+kkorenn@users.noreply.github.com>"
+    }
+  }
+}
