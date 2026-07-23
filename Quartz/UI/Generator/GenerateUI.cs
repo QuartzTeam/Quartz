@@ -500,8 +500,8 @@ public static partial class GenerateUI {
                 )
                 .Join(
                     GTweenExtensions.Tween(
-                        () => listCg.alpha,
-                        x => listCg.alpha = x,
+                        () => listCg == null ? targetAlpha : listCg.alpha,
+                        x => { if(listCg != null) listCg.alpha = x; },
                         targetAlpha,
                         0.16f
                     ).SetEasing(Easing.OutSine)
