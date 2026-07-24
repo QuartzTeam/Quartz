@@ -36,6 +36,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Same embedded FAQ the mod ships, so FaqDocument.Default resolves in the
+		     test assembly too. Logical name matches the main csproj. -->
+		<EmbeddedResource Include="../Quartz/Resource/Export/FAQ.json">
+			<LogicalName>Quartz.FAQ.Default.json</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 </Project>

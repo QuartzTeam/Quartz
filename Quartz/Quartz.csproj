@@ -188,6 +188,12 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Resource\Embedded\**\*" />
+		<!-- The shipped FAQ (also copied to the data root as an ExportFile) is
+		     embedded as the in-binary fallback FaqDocument.Default reads when the
+		     on-disk copy is missing or unreadable. Single authored source. -->
+		<EmbeddedResource Include="Resource\Export\FAQ.json">
+			<LogicalName>Quartz.FAQ.Default.json</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<!-- Build number comes from build.json (repo root), keyed by the Version and

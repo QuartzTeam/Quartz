@@ -211,7 +211,7 @@ Resources:
 - Exported resources: `Quartz/Resource/Export/**` are copied into `UserData/Quartz` or UMM mod folder during packaging.
 - Languages: `Quartz/Resource/Export/Lang/` ships `en-US.json`, `ko-KR.json` and `zh-CN.json`, plus a `KEY_PREFIXES.md` legend. Only **en-US ↔ ko-KR** parity is enforced (by test and by `scripts/validate_i18n.py`); other languages are translator-authored and may lag.
 - Presets/fonts are shipped under `Quartz/Resource/Export/`.
-- FAQ: the Help ▸ FAQ page reads `FAQ.json` from the data root. It is deliberately **not** an exported resource — `FaqFile` seeds it from `FaqDocument.Default` only when the file is missing, so a mod update never overwrites a user's edited FAQ. A parse error falls back to the built-in questions and shows the error on the page. `FaqDocument` is Unity-free so the parser is covered by tests.
+- FAQ: the Help ▸ FAQ page reads `FAQ.json` from the data root. The questions are **maintainer-authored** — you edit `Quartz/Resource/Export/FAQ.json` in the repo, and the export pipeline ships it to the data root like `Lang/`, so a mod update refreshes it (local user edits are theirs to keep but get replaced on update). That one file is the single source: it is also embedded (`LogicalName` `Quartz.FAQ.Default.json`, in both `Quartz.csproj` and the test csproj) so `FaqDocument.Default` reads the embedded copy as the in-binary fallback when the on-disk file is missing or unreadable — never edit a second copy. `FaqFile` still seeds the embedded default if the on-disk file is absent. A parse error falls back to that default and shows the error on the page. `FaqDocument` is Unity-free so the parser is covered by tests.
 
 ## Tests
 

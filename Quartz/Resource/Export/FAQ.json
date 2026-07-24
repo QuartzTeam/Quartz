@@ -1,0 +1,371 @@
+{
+  "_readme": [
+    "This file fills the FAQ under Quartz's Help tab. Edit it, then press Reload on that tab.",
+    "Each entry takes 'question', 'answer', and an optional 'category' that groups entries under a heading.",
+    "'question', 'answer' and 'category' can each be plain text, a list of lines, or an object keyed by language: { \"en-US\": \"...\", \"ko-KR\": \"...\" }.",
+    "Answers accept rich text: <b>bold</b>, <i>italic</i>, <color=#FF9999>color</color>, <size=20>size</size>.",
+    "Quartz ships this file, so a mod update refreshes it — local edits are for your own use and get replaced. Delete it and press Reload to restore the shipped questions."
+  ],
+  "entries": [
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "What is Quartz?", "ko-KR": "Quartz가 뭔가요?" },
+      "answer": {
+        "en-US": "An all-in-one mod for A Dance of Fire and Ice. It adds an in-game overlay (key viewer, progress bar, combo, judgement, song title, stat panels), gameplay and visual options, editor tools, and a built-in browser for TUF levels and packs.",
+        "ko-KR": "A Dance of Fire and Ice용 올인원 모드입니다. 인게임 오버레이(키뷰어, 진행 바, 콤보, 판정, 곡 제목, 스탯 패널)와 게임플레이·비주얼 설정, 에디터 도구, TUF 레벨·팩 브라우저를 제공합니다."
+      }
+    },
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "Who made Quartz?", "ko-KR": "Quartz는 누가 만들었나요?" },
+      "answer": {
+        "en-US": "koren and sbrothers7, with other contributors. Quartz is the v2 rewrite of koren's original KorenResourcePack.",
+        "ko-KR": "koren과 sbrothers7, 그리고 여러 기여자들이 만들었습니다. Quartz는 koren의 초기 모드 KorenResourcePack을 새로 만든 v2입니다."
+      }
+    },
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "Is Quartz free and open source?", "ko-KR": "무료이고 오픈소스인가요?" },
+      "answer": {
+        "en-US": "Yes. Quartz is free and open source on GitHub under the GPL-3.0 license.",
+        "ko-KR": "네. Quartz는 GitHub에 GPL-3.0 라이선스로 공개된 무료 오픈소스입니다."
+      }
+    },
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "Is it stable yet?", "ko-KR": "안정적인가요?" },
+      "answer": {
+        "en-US": "It's v2.0.0 in alpha, so expect occasional bugs and changes. New builds are announced through the built-in updater and the Discord.",
+        "ko-KR": "현재 v2.0.0 알파 단계라서 가끔 버그나 변경이 있을 수 있습니다. 새 빌드는 내장 업데이터와 디스코드에서 알려드립니다."
+      }
+    },
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "Where do I download Quartz?", "ko-KR": "Quartz는 어디서 받나요?" },
+      "answer": {
+        "en-US": "From GitHub releases: github.com/PrismMods/Quartz/releases/latest. Each release ships <b>Quartz.zip</b> for MelonLoader and <b>QuartzUmm.zip</b> for UMM.",
+        "ko-KR": "GitHub 릴리스에서 받습니다: github.com/PrismMods/Quartz/releases/latest. 각 릴리스에는 MelonLoader용 <b>Quartz.zip</b>과 UMM용 <b>QuartzUmm.zip</b>이 함께 올라갑니다."
+      }
+    },
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "How do I open the Quartz menu?", "ko-KR": "Quartz 메뉴는 어떻게 여나요?" },
+      "answer": {
+        "en-US": "Press Alt + K in game (Option + K on Mac). The shortcut lives in the Settings tab, and 'Show Quartz Settings at Startup' there opens the menu as soon as the game launches.",
+        "ko-KR": "게임에서 Alt + K(Mac은 Option + K)를 누르세요. 단축키는 설정 탭에서 바꿀 수 있고, 같은 탭의 '시작 시 Quartz 설정 창 열기'를 켜면 게임을 켤 때 메뉴가 바로 열립니다."
+      }
+    },
+    {
+      "category": { "en-US": "Getting started", "ko-KR": "시작하기" },
+      "question": { "en-US": "Do I need MelonLoader or Unity Mod Manager?", "ko-KR": "MelonLoader와 Unity Mod Manager 중 뭐가 필요한가요?" },
+      "answer": {
+        "en-US": "Either one. Releases ship <b>Quartz.zip</b> for MelonLoader (recommended) and <b>QuartzUmm.zip</b> for UMM. Both are the same mod with the same menu — the UMM build does not use UMM's own settings panel. Install only one of them.",
+        "ko-KR": "둘 중 하나면 됩니다. 릴리스에는 MelonLoader용 <b>Quartz.zip</b>(권장)과 UMM용 <b>QuartzUmm.zip</b>이 함께 올라갑니다. 같은 모드에 같은 메뉴이며, UMM 빌드도 UMM 자체 설정 패널을 쓰지 않습니다. 둘 중 하나만 설치하세요."
+      }
+    },
+    {
+      "category": { "en-US": "Install and setup", "ko-KR": "설치와 설정" },
+      "question": { "en-US": "How do I install the MelonLoader build?", "ko-KR": "MelonLoader 빌드는 어떻게 설치하나요?" },
+      "answer": {
+        "en-US": "1) Get the modlist.org app and <b>Quartz.zip</b>. 2) If you don't have MelonLoader yet, install it from the modlist.org app. 3) In the app press 'Install Mod From File' and pick Quartz.zip. As a manual alternative, drop Quartz.zip's contents into your ADOFAI folder.",
+        "ko-KR": "1) modlist.org 앱과 <b>Quartz.zip</b>을 받습니다. 2) MelonLoader가 없다면 modlist.org 앱에서 설치합니다. 3) 앱에서 'Install Mod From File'을 눌러 Quartz.zip을 고릅니다. 직접 설치하려면 Quartz.zip 내용을 ADOFAI 폴더에 넣으면 됩니다."
+      }
+    },
+    {
+      "category": { "en-US": "Install and setup", "ko-KR": "설치와 설정" },
+      "question": { "en-US": "How do I install the UMM build?", "ko-KR": "UMM 빌드는 어떻게 설치하나요?" },
+      "answer": {
+        "en-US": "Set up Unity Mod Manager for ADOFAI first, then use 'Install mod' in the UMM installer and pick <b>QuartzUmm.zip</b> (or extract the Quartz folder into your UMM mods directory). Open the menu with the keybind — the UMM IMGUI panel isn't used.",
+        "ko-KR": "먼저 ADOFAI용 Unity Mod Manager를 설정한 뒤, UMM 설치기의 'Install mod'에서 <b>QuartzUmm.zip</b>을 고릅니다(또는 Quartz 폴더를 UMM 모드 폴더에 풀어 넣습니다). 메뉴는 단축키로 열며, UMM의 IMGUI 패널은 쓰지 않습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Install and setup", "ko-KR": "설치와 설정" },
+      "question": { "en-US": "How do I install on Mac?", "ko-KR": "Mac에서는 어떻게 설치하나요?" },
+      "answer": {
+        "en-US": "There's an auto installer (UMMInstall) for convenience, or use the modlist app. With the modlist app, press 'Copy Native Launch Options' on the Installed tab and paste it into your Steam launch arguments. If you install by hand, drag the files in — don't click Replace, which swaps the whole folder instead of merging.",
+        "ko-KR": "편의를 위한 자동 설치기(UMMInstall)가 있고, modlist 앱을 써도 됩니다. modlist 앱을 쓸 때는 Installed 탭의 'Copy Native Launch Options'를 눌러 Steam 실행 인자에 붙여넣으세요. 직접 설치할 때는 파일을 끌어다 넣으세요. 바꾸기(Replace)를 누르면 폴더 병합이 아니라 폴더 전체가 교체됩니다."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "Where are my settings stored?", "ko-KR": "설정은 어디에 저장되나요?" },
+      "answer": {
+        "en-US": "In Quartz's data folder, next to this FAQ file — Settings.json, languages, fonts, profiles, addons and downloaded TUF levels all live there. Press <b>Open Folder</b> above to jump straight to it. Deleting Settings.json resets Quartz to defaults.",
+        "ko-KR": "이 FAQ 파일과 같은 Quartz 데이터 폴더에 저장됩니다. Settings.json, 언어, 폰트, 프로필, 애드온, 내려받은 TUF 레벨이 모두 여기에 있습니다. 위의 <b>폴더 열기</b>를 누르면 바로 열립니다. Settings.json을 지우면 Quartz가 기본값으로 돌아갑니다."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "What general settings are there?", "ko-KR": "일반 설정에는 뭐가 있나요?" },
+      "answer": {
+        "en-US": "Language, UI Scale, Window Opacity, Accent Color, Fonts (including a separate Settings Window Font), 'Show Quartz Settings at Startup', and the menu toggle keybind.",
+        "ko-KR": "언어, 화면 배율, 창 투명도, 강조 색상, 폰트(설정 창 전용 폰트 포함), '시작 시 Quartz 설정 창 열기', 메뉴 토글 단축키가 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "How do I change the language?", "ko-KR": "언어는 어떻게 바꾸나요?" },
+      "answer": {
+        "en-US": "Settings tab → Language. Translations are community-maintained and Quartz refreshes them on launch, so a language can gain strings without a mod update.",
+        "ko-KR": "설정 탭 → 언어에서 바꿉니다. 번역은 커뮤니티가 관리하며 Quartz가 실행할 때마다 최신 번역을 받아오기 때문에, 모드를 업데이트하지 않아도 번역이 채워집니다."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "What are Profiles?", "ko-KR": "프로필이 뭔가요?" },
+      "answer": {
+        "en-US": "Saveable named setting profiles you can switch between. Create, rename, or delete them, and middle-click one to set it as the default.",
+        "ko-KR": "이름을 붙여 저장하고 전환할 수 있는 설정 프로필입니다. 만들기·이름 변경·삭제가 가능하고, 가운데 클릭으로 기본 프로필을 지정합니다."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "Does Quartz update itself?", "ko-KR": "자동으로 업데이트되나요?" },
+      "answer": {
+        "en-US": "It has a built-in updater — Check for Updates, read the notes, then Install, Skip, or Undo from the Updates section. Updates can occasionally break, so check the Discord if one doesn't go smoothly.",
+        "ko-KR": "내장 업데이터가 있습니다. Updates 항목에서 업데이트 확인 후 설명을 보고 설치·건너뛰기·되돌리기를 할 수 있습니다. 업데이트가 가끔 문제가 될 수 있으니 잘 안 되면 디스코드를 확인하세요."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "Can I import settings from other mods?", "ko-KR": "다른 모드의 설정을 가져올 수 있나요?" },
+      "answer": {
+        "en-US": "Yes — the Import option (Interop) brings settings in from supported mods.",
+        "ko-KR": "네. 가져오기(Interop) 기능으로 지원되는 모드의 설정을 가져올 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Files and settings", "ko-KR": "파일과 설정" },
+      "question": { "en-US": "How do I install an addon?", "ko-KR": "애드온은 어떻게 설치하나요?" },
+      "answer": {
+        "en-US": "Addons tab → Add Addon, or drop a .qaddon / .dll into the Addons folder and press Reload Addons. Addons can add their own tabs to this menu.",
+        "ko-KR": "애드온 탭 → 애드온 추가를 누르거나, Addons 폴더에 .qaddon / .dll 파일을 넣고 애드온 새로고침을 누르세요. 애드온은 이 메뉴에 자체 탭을 추가할 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What is the Key Limiter?", "ko-KR": "키 제한이 뭔가요?" },
+      "answer": {
+        "en-US": "Counts only your allowed keys as gameplay hits (mouse buttons are always allowed). It only applies during play, so typing in menus or the editor is unaffected.",
+        "ko-KR": "허용된 키만 게임플레이 입력으로 셉니다(마우스 버튼은 항상 허용). 플레이 중에만 적용되므로 메뉴나 에디터에서 타이핑하는 데는 영향이 없습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What is the Chatter Blocker?", "ko-KR": "채터링 차단이 뭔가요?" },
+      "answer": {
+        "en-US": "Blocks keyboard chatter. If a key re-fires within a set millisecond threshold — a switch 'chattering' — the repeat is dropped. Repeats within ~5ms are let through, since those are the engine double-reporting rather than real chatter.",
+        "ko-KR": "키보드 채터링을 막습니다. 설정한 밀리초 안에 키가 다시 눌리면(스위치 '채터링') 그 반복 입력을 버립니다. 약 5ms 이내의 반복은 실제 채터링이 아니라 엔진의 중복 보고이므로 통과시킵니다."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What are Judgement Restriction and Death Limit?", "ko-KR": "판정 제한과 죽음 개수 제한이 뭔가요?" },
+      "answer": {
+        "en-US": "Judgement Restriction fails your run the moment a hit breaks a chosen rule (accuracy floor, Perfect-only, a custom allowed set, or no Too-Early). Death Limit fails the run once misses/overloads pass a set cap — handy because those don't end a no-fail run on their own. The fail message is customizable.",
+        "ko-KR": "판정 제한은 정한 규칙(정확도 하한, 정확만 허용, 사용자 지정 허용 판정, 너무 빠름 금지)을 어기는 순간 런을 실패시킵니다. 죽음 개수 제한은 미스·과부하가 정한 개수를 넘으면 실패시키는데, 노페일 런에서는 이것들만으로는 끝나지 않기 때문에 유용합니다. 실패 메시지는 원하는 대로 바꿀 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What is Auto Deafen?", "ko-KR": "자동 헤드셋 음소거가 뭔가요?" },
+      "answer": {
+        "en-US": "Auto-deafens you in Discord once a run passes a set progress %, and undeafens on death, finish, or leaving. It works through Discord's local RPC using your own Discord OAuth app (client id + token, set in the Gameplay tab). There's a setup tutorial video.",
+        "ko-KR": "런이 정한 진행도 %를 넘으면 디스코드에서 자동으로 헤드셋을 음소거하고, 죽거나 끝나거나 나가면 해제합니다. 본인의 디스코드 OAuth 앱(클라이언트 ID와 토큰, 게임플레이 탭에서 설정)을 통해 디스코드 로컬 RPC로 동작합니다. 설정 튜토리얼 영상이 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What are the Tweaks?", "ko-KR": "트윅이 뭔가요?" },
+      "answer": {
+        "en-US": "Small gameplay/visual toggles: Remove All Checkpoints, Remove Ball Core Particles, Disable Tile Hit Glow, Remove Planet Glow, Disable Auto Pause (auto-play won't pause on focus loss), Block Mouse Wheel Scroll While Playing, and hiding chosen Detailed Results rows.",
+        "ko-KR": "작은 게임플레이·비주얼 토글 모음입니다: 모든 체크포인트 제거, 공 코어 파티클 제거, 타일 히트 글로우 끄기, 행성 글로우 제거, 자동 일시정지 끄기(오토플레이가 포커스를 잃어도 멈추지 않음), 플레이 중 마우스 휠 스크롤 차단, 상세 결과 항목 숨기기."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What is the Optimizer?", "ko-KR": "최적화가 뭔가요?" },
+      "answer": {
+        "en-US": "Engine/runtime performance toggles the game doesn't expose — GC scheduling, OS process priority, background execution. It doesn't change how levels look (that's the Effect Remover), and engine defaults are restored when you turn it off.",
+        "ko-KR": "게임이 직접 제공하지 않는 엔진·런타임 성능 토글입니다: GC 스케줄링, OS 프로세스 우선순위, 백그라운드 실행. 레벨의 겉모습은 바꾸지 않으며(그건 이펙트 제거), 끄면 엔진 기본값으로 되돌아갑니다."
+      }
+    },
+    {
+      "category": { "en-US": "Gameplay", "ko-KR": "게임플레이" },
+      "question": { "en-US": "What is the Effect Remover?", "ko-KR": "이펙트 제거가 뭔가요?" },
+      "answer": {
+        "en-US": "Strips visual/audio effect events (filters, decorations, camera moves, and so on) from a level as it loads, so heavy charts play clean. While it's on, the editor's Save buttons are disabled so you don't overwrite the original chart — unless you re-enable saving.",
+        "ko-KR": "레벨을 불러올 때 비주얼·오디오 이펙트 이벤트(필터, 데코레이션, 카메라 이동 등)를 걷어내서 무거운 채보도 깔끔하게 플레이됩니다. 켜져 있는 동안에는 원본 채보를 덮어쓰지 않도록 에디터의 저장 버튼이 꺼집니다(저장을 다시 켜지 않는 한)."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What does 'Enable Overlays' do?", "ko-KR": "'오버레이 활성화'는 무슨 기능인가요?" },
+      "answer": {
+        "en-US": "A master switch that turns the HUD overlays (Combo, Judgement, Song Title, and so on) on or off together.",
+        "ko-KR": "HUD 오버레이(콤보, 판정, 노래 제목 등)를 한꺼번에 켜고 끄는 마스터 스위치입니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What are Panels?", "ko-KR": "패널이 뭔가요?" },
+      "answer": {
+        "en-US": "User-composed HUD panels — named, draggable boxes that show the stat lines you pick, each with its own appearance. They replace the old fixed Left/Right status HUD; use Reorganize mode to drag and place them.",
+        "ko-KR": "사용자가 직접 구성하는 HUD 패널입니다. 이름을 붙인 드래그 가능한 상자에 원하는 스탯 줄을 넣고 상자마다 모양을 따로 꾸밉니다. 예전의 고정 좌/우 상태 HUD를 대체하며, 재배치 모드에서 끌어 배치합니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What stats can overlays show?", "ko-KR": "오버레이에 어떤 스탯이 나오나요?" },
+      "answer": {
+        "en-US": "Live stats like Accuracy, Attempts, KPS (Auto KPS), Checkpoints, Holds, BPM, and more.",
+        "ko-KR": "정확도, 시도 횟수, KPS(자동 KPS), 체크포인트, 홀드, BPM 등 실시간 스탯을 보여줍니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What is the Combo overlay?", "ko-KR": "콤보 오버레이가 뭔가요?" },
+      "answer": {
+        "en-US": "Counts consecutive Perfect (optionally Auto) hits and resets on any non-Perfect hit, with a center-screen pulse animation.",
+        "ko-KR": "연속 정확(선택 시 자동 포함) 입력을 세고, 정확이 아닌 입력이 나오면 초기화합니다. 화면 중앙에 펄스 애니메이션이 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What is the Judgement overlay?", "ko-KR": "판정 오버레이가 뭔가요?" },
+      "answer": {
+        "en-US": "Per-judgement hit counters for the run across nine slots: Overload, Too Early, Very Early, Early Perfect, Perfect (+Auto), Late Perfect, Very Late, Too Late, Miss.",
+        "ko-KR": "런 동안의 판정별 입력 수를 아홉 칸으로 보여줍니다: 과부하, 너무 빠름, 빠름!, 빠름, 정확(+자동), 느림, 느림!, 너무 느림, 미스."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What is the Key Viewer?", "ko-KR": "키 뷰어가 뭔가요?" },
+      "answer": {
+        "en-US": "An on-screen key viewer overlay. It supports DM Note-style custom CSS — gradients, :before/:after layers, @font-face fonts, transform, filter, transition, blend modes, backdrop-filter — for fully custom key visuals.",
+        "ko-KR": "화면에 표시되는 키 뷰어 오버레이입니다. DM Note 방식의 커스텀 CSS(그라데이션, :before/:after 레이어, @font-face 폰트, transform, filter, transition, 블렌드 모드, backdrop-filter)를 지원해 키 모양을 자유롭게 꾸밀 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What is the Progress Bar?", "ko-KR": "진행도 바가 뭔가요?" },
+      "answer": {
+        "en-US": "A top-of-screen progress bar. Partial or checkpoint runs fill from the checkpoint anchor rather than 0%. Its rounding/radius is adjustable, and it's draggable in Reorganize mode.",
+        "ko-KR": "화면 상단의 진행도 바입니다. 중간이나 체크포인트에서 시작한 런은 0%가 아니라 체크포인트 위치부터 채워집니다. 모서리 둥글기를 조절할 수 있고, 재배치 모드에서 끌어 옮길 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What is the Song Title overlay?", "ko-KR": "노래 제목 오버레이가 뭔가요?" },
+      "answer": {
+        "en-US": "A customizable song-title overlay that replaces the game's own title label. It uses a {artist}/{title} format with custom font, size, color, drop shadow, and drag placement.",
+        "ko-KR": "게임 자체의 제목 표시를 대체하는 커스텀 노래 제목 오버레이입니다. {artist}/{title} 형식을 쓰며 폰트, 크기, 색상, 그림자, 위치를 직접 지정할 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Overlays and HUD", "ko-KR": "오버레이와 HUD" },
+      "question": { "en-US": "What is the UI Hider?", "ko-KR": "UI 숨기기가 뭔가요?" },
+      "answer": {
+        "en-US": "Hides parts of the game's own HUD/UI. It has two profiles (Playing / Recording) with independent flag sets and a rebindable shortcut to flip between them for a clean capture layout.",
+        "ko-KR": "게임 자체의 HUD·UI 일부를 숨깁니다. 서로 다른 설정을 담은 두 프로필(플레이/녹화)이 있고, 깔끔한 녹화 화면을 위해 단축키로 둘을 전환할 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Visual and cosmetic", "ko-KR": "비주얼과 꾸미기" },
+      "question": { "en-US": "What are Planet Colors?", "ko-KR": "행성 색상이 뭔가요?" },
+      "answer": {
+        "en-US": "Custom planet (ball) colors. Each of the three planet slots gets its own ball color/opacity and tail color/opacity; special planet skins are disabled while this is active.",
+        "ko-KR": "행성(공) 색상을 직접 지정합니다. 세 행성 슬롯마다 공 색상·투명도와 꼬리 색상·투명도를 따로 정하며, 켜져 있는 동안에는 특수 행성 스킨이 꺼집니다."
+      }
+    },
+    {
+      "category": { "en-US": "Visual and cosmetic", "ko-KR": "비주얼과 꾸미기" },
+      "question": { "en-US": "What is the Otto Icon feature?", "ko-KR": "Otto 아이콘 기능이 뭔가요?" },
+      "answer": {
+        "en-US": "Replaces the editor's Otto (auto-play) icon with the mod's own recolored, repositioned sprite.",
+        "ko-KR": "에디터의 Otto(오토플레이) 아이콘을 모드 자체의 색·위치를 바꾼 스프라이트로 교체합니다."
+      }
+    },
+    {
+      "category": { "en-US": "Visual and cosmetic", "ko-KR": "비주얼과 꾸미기" },
+      "question": { "en-US": "What is Nostalgia (Back To The Past)?", "ko-KR": "추억(Back To The Past)이 뭔가요?" },
+      "answer": {
+        "en-US": "A faithful port of tjwogud's BackToThePast mod. It reverts modern ADOFAI behavior, visuals, and sounds to older versions: legacy result/flash/twirl, hide difficulty/no-fail, old practice mode, SFX mutes, old editor buttons, old menu background, the alpha-warning skip, and the OldXO secret-level easter egg.",
+        "ko-KR": "tjwogud의 BackToThePast 모드를 충실히 이식한 기능입니다. 최신 얼불춤의 동작·비주얼·사운드를 옛 버전으로 되돌립니다: 옛 결과/플래시/회전, 난이도·노페일 숨기기, 옛 연습 모드, 효과음 음소거, 옛 에디터 버튼, 옛 메뉴 배경, 알파 경고 건너뛰기, OldXO 히든 레벨 이스터에그."
+      }
+    },
+    {
+      "category": { "en-US": "Visual and cosmetic", "ko-KR": "비주얼과 꾸미기" },
+      "question": { "en-US": "What does the Status / BPM feature track?", "ko-KR": "상태·BPM 기능은 뭘 보여주나요?" },
+      "answer": {
+        "en-US": "BPM math for overlays: TBPM (chart bpm × song pitch × system speed) and CBPM (the real current bpm, including BPM-change tiles, × song pitch).",
+        "ko-KR": "오버레이용 BPM 계산입니다: TBPM(채보 BPM × 곡 피치 × 시스템 속도)과 CBPM(BPM 변경 타일까지 반영한 실제 현재 BPM × 곡 피치)."
+      }
+    },
+    {
+      "category": { "en-US": "Visual and cosmetic", "ko-KR": "비주얼과 꾸미기" },
+      "question": { "en-US": "What is Play Count?", "ko-KR": "플레이 횟수가 뭔가요?" },
+      "answer": {
+        "en-US": "Per-map tracking: lifetime Total Attempts, Best Progress (the highest % you've ever reached), and a per-session attempt counter. It's saved to UserData/Quartz/PlayCount.json.",
+        "ko-KR": "맵별로 기록합니다: 누적 총 시도, 최고 진행도(지금까지 도달한 최고 %), 세션별 시도 횟수. UserData/Quartz/PlayCount.json에 저장됩니다."
+      }
+    },
+    {
+      "category": { "en-US": "Editor", "ko-KR": "에디터" },
+      "question": { "en-US": "What editor tweaks are there?", "ko-KR": "에디터 트윅에는 뭐가 있나요?" },
+      "answer": {
+        "en-US": "'Horizontal Properties' lays out each inspector property as 'label [field]' on one row instead of the field below the label, plus a selected-tile readout that shows the total angle, beats, count, and duration of your selection on a tile.",
+        "ko-KR": "'가로 속성'은 각 인스펙터 속성을 라벨 아래 필드 대신 '라벨 [필드]' 형태로 한 줄에 배치합니다. 또한 선택한 타일에 선택 구간의 총 각도·박자·개수·길이를 표시하는 읽기 표시가 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Troubleshooting", "ko-KR": "문제 해결" },
+      "question": { "en-US": "Something broke — where do I look first?", "ko-KR": "뭔가 고장났어요. 어디부터 봐야 하나요?" },
+      "answer": {
+        "en-US": "The log. MelonLoader writes <b>MelonLoader/Latest.log</b> in your game folder; UMM writes <b>Player.log</b>. Errors from Quartz are tagged, and they usually name the exact feature that failed.",
+        "ko-KR": "로그부터 보세요. MelonLoader는 게임 폴더의 <b>MelonLoader/Latest.log</b>에, UMM은 <b>Player.log</b>에 기록합니다. Quartz의 오류에는 태그가 붙어 있어서 어떤 기능이 실패했는지 바로 알 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "Troubleshooting", "ko-KR": "문제 해결" },
+      "question": { "en-US": "On Mac the mod replaced my whole folder / files are missing.", "ko-KR": "Mac에서 모드가 폴더 전체를 덮어썼어요 / 파일이 사라졌어요." },
+      "answer": {
+        "en-US": "That's a known Mac install quirk — it can replace the folder instead of merging. Reinstall and drag the mod files in by hand.",
+        "ko-KR": "알려진 Mac 설치 문제입니다. 병합 대신 폴더가 교체될 수 있습니다. 다시 설치하되 모드 파일을 직접 끌어다 넣으세요."
+      }
+    },
+    {
+      "category": { "en-US": "Troubleshooting", "ko-KR": "문제 해결" },
+      "question": { "en-US": "Auto Deafen isn't working.", "ko-KR": "자동 음소거가 안 돼요." },
+      "answer": {
+        "en-US": "It needs your own Discord OAuth app — set the client id + token in the Gameplay tab, follow the setup tutorial video, and make sure Discord is running locally.",
+        "ko-KR": "본인의 디스코드 OAuth 앱이 필요합니다. 게임플레이 탭에서 클라이언트 ID와 토큰을 설정하고, 설정 튜토리얼 영상을 따라 하며, 디스코드가 로컬에서 실행 중인지 확인하세요."
+      }
+    },
+    {
+      "category": { "en-US": "Troubleshooting", "ko-KR": "문제 해결" },
+      "question": { "en-US": "I can't reposition an overlay.", "ko-KR": "오버레이를 옮길 수 없어요." },
+      "answer": {
+        "en-US": "Repositioning lives in Reorganize mode — open it from the Overlay tab at the top, then drag the overlay where you want it.",
+        "ko-KR": "위치 이동은 재배치 모드에서 합니다. 위쪽 오버레이 탭에서 재배치 모드를 켠 뒤 원하는 곳으로 끌어 옮기세요."
+      }
+    },
+    {
+      "category": { "en-US": "Troubleshooting", "ko-KR": "문제 해결" },
+      "question": { "en-US": "How do I report a bug or ask for a feature?", "ko-KR": "버그 제보나 기능 제안은 어디서 하나요?" },
+      "answer": {
+        "en-US": "Open an issue at github.com/PrismMods/Quartz, or say so in the Discord (discord.gg/mAzAghu5Xq). Attach the log and the level you were playing — that answers most questions on its own.",
+        "ko-KR": "github.com/PrismMods/Quartz에 이슈를 올리거나 디스코드(discord.gg/mAzAghu5Xq)에 알려주세요. 로그 파일과 플레이 중이던 레벨을 함께 올려주시면 대부분 바로 원인을 찾을 수 있습니다."
+      }
+    },
+    {
+      "category": { "en-US": "This page", "ko-KR": "이 페이지" },
+      "question": { "en-US": "How do I edit this FAQ?", "ko-KR": "이 FAQ는 어떻게 수정하나요?" },
+      "answer": {
+        "en-US": "Press <b>Open File</b> above to edit FAQ.json, add or change entries, then press <b>Reload</b>. These questions ship with Quartz, so a mod update replaces the file — your local edits are just for you. If the file has a syntax error Quartz keeps showing the shipped questions and prints the problem here.",
+        "ko-KR": "위의 <b>파일 열기</b>로 FAQ.json을 연 뒤 항목을 고치거나 추가하고 <b>새로고침</b>을 누르세요. 이 질문들은 Quartz에 포함되어 배포되므로 모드를 업데이트하면 파일이 교체되며, 직접 수정한 내용은 본인만 보게 됩니다. 파일에 문법 오류가 있으면 Quartz는 배포된 질문을 계속 보여주고 이 화면에 오류를 표시합니다."
+      }
+    }
+  ]
+}
